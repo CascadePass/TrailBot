@@ -1,0 +1,106 @@
+﻿<UserControl x:Class="CascadePass.TrailBot.UI.StatusStrip"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:CascadePass.TrailBot.UI"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.DataContext>
+        <local:StatusStripViewModel />
+    </UserControl.DataContext>
+
+    <StatusBar HorizontalAlignment="Stretch">
+        <StatusBarItem>
+            <StackPanel Orientation="Horizontal">
+                <Image
+                    Height="16" Width="16" Margin="0,0,3,0"
+                    VerticalAlignment="Center" HorizontalAlignment="Center"
+                    Visibility="{Binding IsSleeping, Converter={StaticResource bool2vis}}"
+                    Source="pack://application:,,,/Images/Time.png" />
+
+                <Image
+                    Height="16" Width="16" Margin="0,0,3,0"
+                    VerticalAlignment="Center" HorizontalAlignment="Center"
+                    Visibility="{Binding IsRequestingPage, Converter={StaticResource bool2vis}}"
+                    Source="pack://application:,,,/Images/GoToBottom.png" />
+
+                <ContentPresenter Content="{Binding StatusText}" HorizontalAlignment="Stretch" />
+            </StackPanel>
+        </StatusBarItem>
+
+        <StatusBarItem HorizontalAlignment="Right">
+            <StackPanel Orientation="Horizontal">
+                <Button Background="Transparent" BorderBrush="Transparent">
+                    <Border BorderBrush="LightGray" BorderThickness="0,0,.5,0" Padding="5,0,5,0">
+                        <StackPanel Orientation="Horizontal">
+                            <Image
+                    Height="16" Width="16" Margin="0,0,3,0"
+                    VerticalAlignment="Center" HorizontalAlignment="Center"
+                    Source="pack://application:,,,/Images/FastLineChart.png" />
+
+                            <TextBlock                
+                    ToolTip="Matched TRs"
+                    Foreground="OrangeRed"
+                    VerticalAlignment="Center"
+                    FontWeight="Bold">
+                    
+                    <Run Text="{Binding MatchedCount, Mode=OneWay, StringFormat='0,0.'}" />
+                            </TextBlock>
+
+                            <TextBlock Text="/" Margin="1,0,1,0" />
+
+                            <TextBlock                
+                    ToolTip="Pending TRs to read"
+                    Foreground="Blue"
+                    VerticalAlignment="Center"
+                    FontWeight="Bold">
+                    
+                    <Run Text="{Binding PendingCount, Mode=OneWay, StringFormat='0,0.'}" />
+                            </TextBlock>
+
+                            <TextBlock Text="/" Margin="1,0,1,0" />
+
+                            <TextBlock                
+                    ToolTip="TRs read"
+                    Foreground="Purple"
+                    VerticalAlignment="Center"
+                    FontWeight="Bold">
+                    
+                    <Run Text="{Binding TripReportsRead, Mode=OneWay, StringFormat='0,0.'}" />
+                            </TextBlock>
+                        </StackPanel>
+                    </Border>
+
+                </Button>
+
+
+                <TextBlock
+                    ToolTip="Private bytes (RAM) allocated to Trip Report Reader"
+                    Foreground="Red"
+                    Margin="5,0,5,0">
+
+                    <Image
+                        Height="16" Width="16"
+                        VerticalAlignment="Center"
+                        HorizontalAlignment="Center"
+                        Source="pack://application:,,,/Images/Reason.png" />
+                    <Run Text="{Binding MemoryAllocated, Mode=OneWay}" />
+                </TextBlock>
+
+
+                <StackPanel Orientation="Horizontal">
+                    <Button BorderBrush="Transparent" Background="Transparent">
+                        <Image Height="12" Width="12" VerticalAlignment="Center" HorizontalAlignment="Center" Source="pack://application:,,,/Images/RemoveCommand.png" />
+                    </Button>
+
+                    <Slider Minimum="7" Maximum="32" Value="{Binding SelectedFontSize}" Width="100" />
+
+                    <Button BorderBrush="Transparent" Background="Transparent">
+                        <Image Height="12" Width="12" VerticalAlignment="Center" HorizontalAlignment="Center" Source="pack://application:,,,/Images/AddOnlineVersion.png" />
+                    </Button>
+                </StackPanel>
+            </StackPanel>
+        </StatusBarItem>
+    </StatusBar>
+</UserControl>

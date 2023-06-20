@@ -1,0 +1,375 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{3FEE53B3-EC17-4AC9-9C4B-DB6AA721F71C}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <RootNamespace>CascadePass.TrailBot.UI</RootNamespace>
+    <AssemblyName>CascadePass.TrailBot.UI</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <LangVersion>10.0</LangVersion>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <WarningLevel>4</WarningLevel>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <Deterministic>true</Deterministic>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Controls.Ribbon" />
+    <Reference Include="System.Xml" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xaml">
+      <RequiredTargetFramework>4.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="WebDriver, Version=4.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Selenium.WebDriver.4.10.0\lib\net48\WebDriver.dll</HintPath>
+    </Reference>
+    <Reference Include="WindowsBase" />
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+  </ItemGroup>
+  <ItemGroup>
+    <ApplicationDefinition Include="App.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </ApplicationDefinition>
+    <Compile Include="ApplicationData.cs" />
+    <Compile Include="FeatureScreenProvider.cs" />
+    <Compile Include="Feature\Found\FoundFeature.xaml.cs">
+      <DependentUpon>FoundFeature.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Feature\Found\ReportPreview.xaml.cs">
+      <DependentUpon>ReportPreview.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Feature\Found\TripReportsView.xaml.cs">
+      <DependentUpon>TripReportsView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Feature\TopicEditor\TopicEditorFeature.xaml.cs">
+      <DependentUpon>TopicEditorFeature.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Feature\TopicEditor\TopicEditorViewModel.cs" />
+    <Compile Include="Feature\TopicEditor\TopicViewModel.cs" />
+    <Compile Include="Feature\WelcomeScreen\ManagementDataStorageView.xaml.cs">
+      <DependentUpon>ManagementDataStorageView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Feature\WelcomeScreen\ProviderSetupView.xaml.cs">
+      <DependentUpon>ProviderSetupView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Feature\WelcomeScreen\ProviderSetupViewModel.cs" />
+    <Compile Include="Feature\WelcomeScreen\SetupDataStorageTaskViewModel.cs" />
+    <Compile Include="SetupTaskViewModel.cs" />
+    <Compile Include="Feature\WelcomeScreen\TopicSetupView.xaml.cs">
+      <DependentUpon>TopicSetupView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Feature\WelcomeScreen\TopicSetupViewModel.cs" />
+    <Compile Include="Feature\WelcomeScreen\WebDataProviderViewModel.cs" />
+    <Compile Include="Feature\WelcomeScreen\WelcomeSetupFeature.xaml.cs">
+      <DependentUpon>WelcomeSetupFeature.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Feature\WelcomeScreen\WelcomeSetupFeatureViewModel.cs" />
+    <Compile Include="QuickSettingsViewModel.cs" />
+    <Compile Include="ReportPreviewViewModel.cs" />
+    <Compile Include="UIcore\DelegateCommand.cs" />
+    <Compile Include="MatchedTripReportViewModel.cs" />
+    <Compile Include="ObservableObject.cs" />
+    <Compile Include="UIcore\ReverseBooleanToBooleanConverter.cs" />
+    <Compile Include="UIcore\ReverseBooleanToVisibilityConverter.cs" />
+    <Compile Include="UIcore\RibbonStrip.xaml.cs">
+      <DependentUpon>RibbonStrip.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UIcore\RibbonViewModel.cs" />
+    <Compile Include="Feature\Found\ReaderViewModel.cs" />
+    <Compile Include="Settings.cs" />
+    <Compile Include="SettingsView.xaml.cs">
+      <DependentUpon>SettingsView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="SettingsViewModel.cs" />
+    <Compile Include="UIcore\StatusStrip.xaml.cs">
+      <DependentUpon>StatusStrip.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UIcore\StatusStripViewModel.cs" />
+    <Compile Include="ViewModel.cs" />
+    <Page Include="Feature\Found\FoundFeature.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Feature\Found\ReportPreview.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Feature\Found\TripReportsView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Feature\TopicEditor\TopicEditorFeature.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Feature\WelcomeScreen\ManagementDataStorageView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Feature\WelcomeScreen\ProviderSetupView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Feature\WelcomeScreen\TopicSetupView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Feature\WelcomeScreen\WelcomeSetupFeature.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UIcore\MainWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Compile Include="App.xaml.cs">
+      <DependentUpon>App.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UIcore\MainWindow.xaml.cs">
+      <DependentUpon>MainWindow.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Page Include="SettingsView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UIcore\RibbonStrip.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UIcore\StatusStrip.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <None Include="packages.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\TrailBot.TextAnalysis\TrailBot.TextAnalysis.csproj">
+      <Project>{6833993a-6a7e-4c63-ba86-03ce769106ba}</Project>
+      <Name>TrailBot.TextAnalysis</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TrailBot\TrailBot.csproj">
+      <Project>{a76cee83-015b-4277-813b-d9aecb538db1}</Project>
+      <Name>TrailBot</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Settings.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\WebApplication.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\WebFolderOpened.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Time.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\AssemblyInfoFile.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\ClassFile.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\CompilableFile.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\AggregateDesign.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Analysis.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\AlphaTest.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\AllLoadedTests.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Run.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Stop.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\ZoomIn.png" />
+    <Resource Include="Images\ZoomOut.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\xWorldFile.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\XmlFile.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\WebLog.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\WebFile.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Report.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\CSSilverlight.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\EnumerationSnippet.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\ErrorSummary.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Unsubscribe.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\TransferDatabaseObject.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\TransferStoredProcedure.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\AddOnlineVersion.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\RemoveCommand.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Reason.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Quote.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\RadarChart.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Bookmark.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\ClearBookmark.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\DownloadDocument.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\FastLineChart.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Online.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\GoToBottom.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\WelcomeWebOnline.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\CancelPerformanceReport.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Feature\Dashboard\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\DebugCheckedTests.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\OverlayAlert.png" />
+    <Resource Include="Images\OverlayError.png" />
+    <Resource Include="Images\OverlayExcluded.png" />
+    <Resource Include="Images\OverlayFriend.png" />
+    <Resource Include="Images\OverlayInfo.png" />
+    <Resource Include="Images\OverlayLock.png" />
+    <Resource Include="Images\OverlayLoginDisabled.png" />
+    <Resource Include="Images\OverlayNo.png" />
+    <Resource Include="Images\OverlayNotLoaded.png" />
+    <Resource Include="Images\OverlayOffline.png" />
+    <Resource Include="Images\OverlayOK.png" />
+    <Resource Include="Images\OverlayOnline.png" />
+    <Resource Include="Images\OverlayPaused.png" />
+    <Resource Include="Images\OverlayPolicy.png" />
+    <Resource Include="Images\OverlayProperty.png" />
+    <Resource Include="Images\OverlayProtected.png" />
+    <Resource Include="Images\OverlayRemote.png" />
+    <Resource Include="Images\OverlayRunning.png" />
+    <Resource Include="Images\OverlaySealed.png" />
+    <Resource Include="Images\OverlayShortcut.png" />
+    <Resource Include="Images\OverlayStatic.png" />
+    <Resource Include="Images\OverlayStopped.png" />
+    <Resource Include="Images\OverlayTimelineMarkBlack.png" />
+    <Resource Include="Images\OverlayTimelineMarkGray.png" />
+    <Resource Include="Images\OverlayTimelineMarkPurple.png" />
+    <Resource Include="Images\OverlayTimelineMarkRed.png" />
+    <Resource Include="Images\OverlayUnknown.png" />
+    <Resource Include="Images\OverlayWarning.png" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="..\packages\Selenium.WebDriver.4.10.0\build\Selenium.WebDriver.targets" Condition="Exists('..\packages\Selenium.WebDriver.4.10.0\build\Selenium.WebDriver.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\Selenium.WebDriver.4.10.0\build\Selenium.WebDriver.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Selenium.WebDriver.4.10.0\build\Selenium.WebDriver.targets'))" />
+  </Target>
+</Project>

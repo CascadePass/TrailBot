@@ -1,0 +1,91 @@
+﻿<UserControl x:Class="CascadePass.TrailBot.UI.RibbonStrip"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:CascadePass.TrailBot.UI"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Ribbon FontSize="{DynamicResource Font.Normal}">
+        <Ribbon.DataContext>
+            <local:RibbonViewModel />
+        </Ribbon.DataContext>
+        <RibbonTab Header="Home">
+            <RibbonGroup Header="Data Collection" Foreground="Black">
+                <RibbonButton
+                    Label="Start"
+                    IsEnabled="{Binding WebProviderManager.IsRunning, Converter={StaticResource bool2ReverseBool}}"
+                    LargeImageSource="pack://application:,,,/Images/Run.png"
+                    Command="{Binding StartCommand}" />
+
+                <RibbonButton
+                    Label="Stop"
+                    IsEnabled="{Binding WebProviderManager.IsRunning}"
+                    LargeImageSource="pack://application:,,,/Images/Stop.png"
+                    Command="{Binding StopCommand}" />
+            </RibbonGroup>
+
+            <RibbonGroup Header="Selected Report" IsEnabled="{Binding ReaderViewModel.HasSelectedMatch, Mode=OneWay}">
+                <RibbonButton
+                    Label="View in Browser"
+                    SmallImageSource="pack://application:,,,/Images/WebApplication.png"
+                    Command="{Binding ViewInBrowserCommand}" />
+
+                <RibbonButton
+                    Label="Remove"
+                    SmallImageSource="pack://application:,,,/Images/Unsubscribe.png"
+                    Command="{Binding RemoveSelectedMatchCommand}"
+                    />
+
+                <RibbonButton
+                    Label="Mark Read"
+                    SmallImageSource="pack://application:,,,/Images/Bookmark.png"
+                    Command="{Binding MarkReadCommand}"
+                    />
+
+                <RibbonButton
+                    Label="Mark Unread"
+                    SmallImageSource="pack://application:,,,/Images/ClearBookmark.png"
+                    Command="{Binding MarkUnreadCommand}"
+                    />
+            </RibbonGroup>
+
+            <RibbonGroup Header="View">
+                <RibbonCheckBox
+                    Label="Show Preview"
+                    IsChecked="{Binding Settings.ShowPreviewPane}"
+                    />
+
+                <RibbonTextBox Label="Search" SmallImageSource="pack://application:,,,/Images/ZoomIn.png" />
+
+                <RibbonComboBox Label="Filter" ItemsSource="{Binding ReaderViewModel.SearchTerms}" />
+            </RibbonGroup>
+        </RibbonTab>
+        
+        <RibbonTab Header="Settings" IsSelected="{Binding IsSettingsTabSelected}">
+            <RibbonGroup Header="Bot Activity">
+                <RibbonComboBox Label="Browser" SmallImageSource="pack://application:,,,/Images/WelcomeWebOnline.png">
+                    <RibbonGallery SelectedItem="{Binding QuickSettingsViewModel.SelectedBrowser}">
+                        <RibbonGalleryCategory ItemsSource="{Binding QuickSettingsViewModel.AvailableBrowsers}" />
+                    </RibbonGallery>
+                </RibbonComboBox>
+
+                <RibbonComboBox Label="Save" SmallImageSource="pack://application:,,,/Images/TransferDatabaseObject.png">
+                    <RibbonGallery SelectedItem="{Binding QuickSettingsViewModel.PreservationRule}">
+                        <RibbonGalleryCategory ItemsSource="{Binding QuickSettingsViewModel.AvailablePreservationRules}" />
+                    </RibbonGallery>
+                </RibbonComboBox>
+
+                <StackPanel Orientation="Horizontal">
+                    <Image Height="16" Width="16" Source="pack://application:,,,/Images/Time.png" />
+                    <Label Content="Crawl Speed" />
+                    <Slider Minimum="1" Maximum="100" Width="100" />
+                </StackPanel>
+            </RibbonGroup>
+
+            <RibbonGroup Header="Topics">
+                <RibbonButton Label="Edit Topics" Command="{Binding EditTopicCommand}" />
+            </RibbonGroup>
+        </RibbonTab>
+    </Ribbon>
+</UserControl>

@@ -1,0 +1,122 @@
+﻿<UserControl x:Class="CascadePass.TrailBot.UI.SettingsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:CascadePass.TrailBot.UI"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.DataContext>
+        <local:SettingsViewModel />
+    </UserControl.DataContext>
+    <UserControl.Resources>
+        <Style x:Key="SettingsHeaderText" TargetType="TextBlock">
+            <Setter Property="FontWeight" Value="Bold" />
+            <Setter Property="FontSize" Value="{DynamicResource Font.Larger}" />
+        </Style>
+    </UserControl.Resources>
+
+    <ScrollViewer>
+        <StackPanel>
+            <WrapPanel Orientation="Horizontal">
+                <TextBlock Margin="0,0,5,0">
+                    <Image Height="16" Width="16" Source="pack://application:,,,/Images/WebApplication.png" />
+                    <Run Text="Choose a web browser to get trip reports with:" />
+                </TextBlock>
+
+                <ComboBox
+                    ItemsSource="{Binding SupportedBrowsers, Mode=OneWay}"
+                    SelectedItem="{Binding ApplicationSettings.Browser}"
+                    />
+            </WrapPanel>
+
+            <TextBlock />
+
+            <TextBlock Text="Files" Style="{StaticResource SettingsHeaderText}" />
+            
+            <TextBlock TextWrapping="Wrap">
+                <Image Height="16" Width="16" Source="pack://application:,,,/Images/ClassFile.png" />
+                <Run Text="Trip Report Reader maintains an index of which TR urls it has already read, so that it can pick up where it left off if you close it or reboot your computer.  Choose where this goes." />
+            </TextBlock>
+            <StackPanel Orientation="Horizontal">
+                <TextBox Text="{Binding ApplicationSettings.IndexFilename}" />
+                <Button>
+                    <TextBlock Text="..." />
+                </Button>
+            </StackPanel>
+
+            <TextBlock />
+
+            <TextBlock>
+                <Image Height="16" Width="16" Source="pack://application:,,,/Images/CompilableFile.png" />
+                <Run Text="Choose where the trip report files go." />
+            </TextBlock>
+            <StackPanel Orientation="Horizontal">
+                <TextBox Text="{Binding ApplicationSettings.DestinationFolder}" />
+                <Button>
+                    <TextBlock Text="..." />
+                </Button>
+            </StackPanel>
+
+            <TextBlock />
+
+            <TextBlock Text="Choose which trip reports to save:" />
+            <StackPanel Orientation="Horizontal">
+                <RadioButton Content="All" />
+                <RadioButton Content="Matches only" />
+                <RadioButton Content="None (save urls only)" />
+            </StackPanel>
+
+            <TextBlock />
+
+            <TextBlock Text="Politeness" Style="{StaticResource SettingsHeaderText}" />
+            <TextBlock Text="Trip Report Reader throttles its work to minimize impact on the server.  Choose how long it will give the site between requests." />
+            <WrapPanel Orientation="Horizontal">
+                <WrapPanel Orientation="Horizontal">
+                    <TextBlock>
+                        <Image Height="16" Width="16" Source="pack://application:,,,/Images/Time.png" />
+                        <Run Text="Minimum wait (in seconds):" />
+                    </TextBlock>
+                    <TextBox Text="{Binding ApplicationSettings.MinimumSleepTime}" MinWidth="50" />
+                </WrapPanel>
+
+                <WrapPanel Orientation="Horizontal">
+                    <TextBlock>
+                        <Image Height="16" Width="16" Source="pack://application:,,,/Images/Time.png" />
+                        <Run Text="Maximum wait (in seconds):" />
+                    </TextBlock>
+                    <TextBox Text="{Binding ApplicationSettings.MaximumSleepTime}" MinWidth="50" />
+                </WrapPanel>
+            </WrapPanel>
+
+            <TextBlock />
+
+            <TextBlock Style="{StaticResource SettingsHeaderText}">
+                <Image Height="16" Width="16" Source="pack://application:,,,/Images/AlphaTest.png" />
+                <Run Text="Matching" />
+            </TextBlock>
+
+            <TextBlock>
+                <Run Text="Match trip reports that contain" />
+                <Run Text="any" FontWeight="Bold" />
+                <Run Text="of these words:" />
+            </TextBlock>
+
+            <TextBox Text="{Binding WebProviderManager.MatchingPolicy.MatchAny}" MinLines="3" AcceptsReturn="True" />
+
+            <TextBlock>
+                <Run Text="Match trip reports that contain" />
+                <Run Text="all" FontWeight="Bold" />
+                <Run Text="of these words:" />
+            </TextBlock>
+            <TextBox Text="{Binding WebProviderManager.MatchingPolicy.MatchAll}" MinLines="3" AcceptsReturn="True" />
+
+            <TextBlock>
+                <Run Text="Match trip reports that contain" />
+                <Run Text="none" FontWeight="Bold" />
+                <Run Text="of these words:" />
+            </TextBlock>
+            <TextBox Text="{Binding WebProviderManager.MatchingPolicy.MatchNone}" MinLines="3" AcceptsReturn="True" />
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

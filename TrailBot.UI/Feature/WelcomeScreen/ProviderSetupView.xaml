@@ -1,0 +1,87 @@
+﻿<UserControl x:Class="CascadePass.TrailBot.UI.Feature.WelcomeScreen.ProviderSetupView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:CascadePass.TrailBot.UI.Feature.WelcomeScreen"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+
+    <Border Background="{Binding BackgroundBrush}" BorderBrush="Gray" BorderThickness=".5" CornerRadius="5" Padding="10">
+        <StackPanel>
+            <TextBlock
+                Style="{StaticResource HeaderText}"
+                Text="Web Sites"
+                />
+
+            <ItemsControl ItemsSource="{Binding Providers}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Expander IsExpanded="True" BorderThickness=".5" BorderBrush="Gray" Background="{Binding BackgroundBrush}">
+                            <Expander.Header>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock
+                                        FontWeight="Bold"
+                                        Text="{Binding Provider.SourceName}"
+                                        />
+
+                                    <CheckBox
+                                        Content="Collect this data"
+                                        FontWeight="SemiBold"
+                                        Margin="5,0,0,0"
+                                        IsChecked="{Binding InUse}"
+                                        />
+                                </StackPanel>
+                            </Expander.Header>
+
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="36" />
+                                    <ColumnDefinition />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition />
+                                </Grid.RowDefinitions>
+
+                                <Image
+                                    Grid.Row="0" Grid.Column="0"
+                                    Height="32" Width="32"
+                                    Source="pack://application:,,,/Images/GoToBottom.png" />
+
+                                <StackPanel Grid.Row="0" Grid.Column="1">
+                                    <TextBlock
+                                        TextWrapping="Wrap"
+                                        Text="Trail Bot reads every trip report as soon as it gets posted, and can save them as xml files if you would like to preserve the data, or to analyze it in another application." />
+
+                                    <WrapPanel Orientation="Horizontal">
+                                        <TextBlock
+                                            Text="Which trip reports would you like to save?"
+                                            Margin="0,5,0,0"
+                                            />
+
+                                        <ComboBox
+                                            IsEnabled="{Binding InUse}"
+                                            ItemsSource="{Binding AvailablePreservationRules}"
+                                            SelectedItem="{Binding PreservationRule}"
+                                            />
+                                    </WrapPanel>
+
+                                    <TextBlock
+                                        Text="Where would you like these files to go?"
+                                        Margin="0,5,0,0"
+                                        />
+
+                                    <TextBox
+                                        Text="{Binding DestinationFolder, UpdateSourceTrigger=PropertyChanged}"
+                                        IsEnabled="{Binding NeedsFilePath}"
+                                        Margin="0,5,0,0"
+                                        />
+                                </StackPanel>
+                            </Grid>
+                        </Expander>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </StackPanel>
+    </Border>
+</UserControl>
