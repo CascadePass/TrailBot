@@ -1,12 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Windows.Input;
 
 namespace CascadePass.TrailBot.UI.Feature.TopicEditor
 {
     public class TopicViewModel : SetupTaskViewModel
     {
+        public event EventHandler Deleted;
+
+        private bool isExpanded;
         private Topic topic;
+        private DelegateCommand deleteCommand;
 
         public Topic Topic
         {
@@ -75,9 +80,24 @@ namespace CascadePass.TrailBot.UI.Feature.TopicEditor
             }
         }
 
+        public bool IsExpanded
+        {
+            get => this.isExpanded;
+            set
+            {
+                if (this.isExpanded != value)
+                {
+                    this.isExpanded = value;
+                    this.OnPropertyChanged(nameof(this.IsExpanded));
+                }
+            }
+        }
+
         public int AnyCount => this.Topic?.AnyCount ?? 0;
 
         public int UnlessCount => this.Topic?.UnlessCount ?? 0;
+
+        public ICommand DeleteCommand => this.deleteCommand ??= new DelegateCommand(this.RequestDelete);
 
         public string SortLines(string multilineString)
         {
@@ -107,6 +127,16 @@ namespace CascadePass.TrailBot.UI.Feature.TopicEditor
                 this.Topic != null &&
                 !string.IsNullOrWhiteSpace(this.Topic.Name) &&
                 !string.IsNullOrWhiteSpace(this.MatchAny);
+        }
+
+        public void RequestDelete()
+        {
+            this.OnDeleted(this, EventArgs.Empty);
+        }
+
+        protected void OnDeleted(object sender, EventArgs e)
+        {
+            this.Deleted?.Invoke(sender, e);
         }
     }
 }
