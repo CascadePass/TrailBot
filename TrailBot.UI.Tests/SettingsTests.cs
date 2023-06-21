@@ -33,7 +33,7 @@ namespace CascadePass.TrailBot.UI.Tests
         #region get/set access same value
 
         [TestMethod]
-        public void XmlFolder()
+        public void XmlFolder_GetSetAccessSameValue()
         {
             string value = Guid.NewGuid().ToString();
             Settings settings = new();
@@ -43,7 +43,7 @@ namespace CascadePass.TrailBot.UI.Tests
         }
 
         [TestMethod]
-        public void ShowPreviewPane()
+        public void ShowPreviewPane_GetSetAccessSameValue()
         {
             Settings settings = new();
 
@@ -55,13 +55,23 @@ namespace CascadePass.TrailBot.UI.Tests
         }
 
         [TestMethod]
-        public void IndexFilename()
+        public void IndexFilename_GetSetAccessSameValue()
         {
             string value = Guid.NewGuid().ToString();
             Settings settings = new();
 
             settings.IndexFilename = value;
             Assert.IsTrue(string.Equals(settings.IndexFilename, value, StringComparison.Ordinal));
+        }
+
+        [TestMethod]
+        public void DebugMode_GetSetAccessSameValue()
+        {
+            Settings settings = new();
+
+            bool value = !settings.DebugMode;
+            settings.DebugMode = value;
+            Assert.AreEqual(settings.DebugMode, value);
         }
 
         #endregion
@@ -94,6 +104,15 @@ namespace CascadePass.TrailBot.UI.Tests
             Settings settings = new();
 
             settings.IndexFilename = value;
+            Assert.IsTrue(settings.IsDirty);
+        }
+
+        [TestMethod]
+        public void DebugMode_Makes_IsDirty_True()
+        {
+            Settings settings = new();
+
+            settings.DebugMode = !settings.DebugMode;
             Assert.IsTrue(settings.IsDirty);
         }
 

@@ -7,7 +7,7 @@ namespace CascadePass.TrailBot.UI
     public class Settings : ObservableObject
     {
         private string xmlFolder, indexFilename;
-        private bool showPreviewPane, isDirty;
+        private bool showPreviewPane, isDirty, debugMode;
 
         #region Properties
 
@@ -51,6 +51,19 @@ namespace CascadePass.TrailBot.UI
                 {
                     this.showPreviewPane = value;
                     this.OnPropertyChanged(nameof(this.ShowPreviewPane));
+                }
+            }
+        }
+
+        public bool DebugMode
+        {
+            get => this.debugMode;
+            set
+            {
+                if (this.debugMode != value)
+                {
+                    this.debugMode = value;
+                    this.OnPropertyChanged(nameof(this.DebugMode));
                 }
             }
         }
