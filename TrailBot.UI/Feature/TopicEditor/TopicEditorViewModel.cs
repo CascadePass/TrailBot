@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Windows.Input;
 
 namespace CascadePass.TrailBot.UI.Feature.TopicEditor
 {
@@ -8,6 +10,7 @@ namespace CascadePass.TrailBot.UI.Feature.TopicEditor
     {
         private ObservableCollection<TopicViewModel> topicViewModels;
         private Topic[] topics;
+        private DelegateCommand addNewTopic;
 
         public TopicEditorViewModel()
         {
@@ -21,7 +24,7 @@ namespace CascadePass.TrailBot.UI.Feature.TopicEditor
                 {
                     this.topics = value;
                     this.OnPropertyChanged(nameof(this.Topics));
-                    this.TopicViewModels = TopicEditorViewModel.GetTopicViewModels(value);
+                    this.TopicViewModels = this.GetTopicViewModels(value);
                 }
             }
         }
@@ -39,16 +42,38 @@ namespace CascadePass.TrailBot.UI.Feature.TopicEditor
             }
         }
 
-        public static ObservableCollection<TopicViewModel> GetTopicViewModels(IEnumerable<Topic> rawTopics)
+        public ICommand AddTopicCommand => this.addNewTopic ??= new DelegateCommand(this.AddEmptyTopic);
+
+        public ObservableCollection<TopicViewModel> GetTopicViewModels(IEnumerable<Topic> rawTopics)
         {
             ObservableCollection<TopicViewModel> result = new();
 
             foreach (Topic t in rawTopics)
             {
-                result.Add(new() { Topic = t });
+                TopicViewModel topicViewModel = new() { Topic = t, IsExpanded = rawTopics.Count() < 2 };
+
+                topicViewModel.Deleted += this.TopicViewModel_Deleted;
+                result.Add(topicViewModel);
             }
 
             return result;
+        }
+
+        public void AddEmptyTopic()
+        {
+            Topic topic = new();
+            TopicViewModel topicViewModel = new() { Topic = topic, IsExpanded = true };
+            topicViewModel.Deleted += this.TopicViewModel_Deleted;
+
+            this.TopicViewModels.Add(topicViewModel);
+            ApplicationData.WebProviderManager.Topics.Add(topic);
+        }
+
+        private void TopicViewModel_Deleted(object sender, System.EventArgs e)
+        {
+            TopicViewModel topicViewModel = sender as TopicViewModel;
+            this.TopicViewModels.Remove(topicViewModel);
+            ApplicationData.WebProviderManager.Topics.Remove(topicViewModel.Topic);
         }
     }
 }
