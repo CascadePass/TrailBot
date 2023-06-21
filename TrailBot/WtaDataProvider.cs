@@ -323,11 +323,18 @@ namespace CascadePass.TrailBot
         private List<string> ParseReportFeature(IWebDriver webDriver)
         {
             List<string> found = new();
-            IWebElement tripHighlights = webDriver.FindElement(By.ClassName("wta-icon-list"));
 
-            foreach (var ele in tripHighlights?.FindElements(By.ClassName("wta-icon")))
+            try
             {
-                found.Add(ele.Text);
+                IWebElement tripHighlights = webDriver.FindElement(By.ClassName("wta-icon-list"));
+
+                foreach (var ele in tripHighlights?.FindElements(By.ClassName("wta-icon")))
+                {
+                    found.Add(ele.Text);
+                }
+            }
+            catch (NoSuchElementException)
+            {
             }
 
             return found;
