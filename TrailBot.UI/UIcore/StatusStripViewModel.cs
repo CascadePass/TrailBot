@@ -125,6 +125,9 @@ namespace CascadePass.TrailBot.UI
             }
         }
 
+        //TODO: Create local settings reference, subscribe to changes, raise notifications for this
+        public bool ShowMemoryInfo => ApplicationData.Settings.DebugMode;
+
         public string StatusText
         {
             get => this.statusText;
