@@ -6,6 +6,7 @@
         xmlns:local="clr-namespace:CascadePass.TrailBot.UI"
         mc:Ignorable="d"
         FontSize="{DynamicResource Font.Normal}"
+        Icon="pack://application:,,,/Images/RadarChart.png"
         Title="TrailBot" Height="450" Width="800">
 
     <DockPanel>
