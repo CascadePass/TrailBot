@@ -10,6 +10,71 @@
         <Ribbon.DataContext>
             <local:RibbonViewModel />
         </Ribbon.DataContext>
+        <Ribbon.HelpPaneContent>
+            <RibbonSplitButton SmallImageSource="pack://application:,,,/Images/RadarChart.png" Command="{Binding ViewDiscussionsOnGithubCommand}">
+                <RibbonSplitMenuItem
+                    Header="Issues"
+                    Command="{Binding ViewIssuesOnGithubCommand}"
+                    ImageSource="pack://application:,,,/Images/Analysis.png"
+                    />
+
+                <RibbonSplitMenuItem
+                    Header="Discussions"
+                    Command="{Binding ViewDiscussionsOnGithubCommand}"
+                    ImageSource="pack://application:,,,/Images/EnumerationSnippet.png"
+                    ToolTip="Visit TrailBot on GitHub"
+                    />
+
+                <RibbonSplitMenuItem
+                    Header="Code"
+                    Command="{Binding ViewCodeOnGithubCommand}"
+                    ImageSource="pack://application:,,,/Images/ClassFile.png"
+                    ToolTip="Visit TrailBot on GitHub"
+                    />
+            </RibbonSplitButton>
+        </Ribbon.HelpPaneContent>
+        <Ribbon.QuickAccessToolBar>
+            <RibbonQuickAccessToolBar>
+                <RibbonButton
+                    Command="{Binding ViewResultsCommand}"
+                    SmallImageSource="pack://application:,,,/Images/WelcomeWebOnline.png"
+                    ToolTip="View trip reports matching your topics"
+                    />
+
+                <RibbonButton
+                    Command="{Binding EditTopicsCommand}"
+                    SmallImageSource="pack://application:,,,/Images/xWorldFile.png"
+                    ToolTip="Edit topics"
+                    />
+
+                <RibbonButton
+                    Command="{Binding DashboardCommand}"
+                    Visibility="Collapsed"
+                    SmallImageSource="pack://application:,,,/Images/FastLineChart.png"
+                    ToolTip="Dashboard"
+                    />
+            </RibbonQuickAccessToolBar>
+        </Ribbon.QuickAccessToolBar>
+        <Ribbon.ApplicationMenu>
+            <RibbonApplicationMenu>
+                <RibbonApplicationMenuItem
+                    Header="Results"
+                    Command="{Binding ViewResultsCommand}"
+                    ImageSource="pack://application:,,,/Images/WelcomeWebOnline.png"
+                    />
+                <RibbonApplicationMenuItem
+                    Header="Topic Editor"
+                    Command="{Binding EditTopicsCommand}"
+                    ImageSource="pack://application:,,,/Images/xWorldFile.png"
+                    />
+                <RibbonApplicationMenuItem
+                    Visibility="Collapsed"
+                    Header="Dashboard"
+                    Command="{Binding DashboardCommand}"
+                    ImageSource="pack://application:,,,/Images/FastLineChart.png"
+                    />
+            </RibbonApplicationMenu>
+        </Ribbon.ApplicationMenu>
         <RibbonTab Header="Home">
             <RibbonGroup Header="Data Collection" Foreground="Black">
                 <RibbonButton
@@ -84,7 +149,7 @@
             </RibbonGroup>
 
             <RibbonGroup Header="Topics">
-                <RibbonButton Label="Edit Topics" Command="{Binding EditTopicCommand}" />
+                <RibbonButton Label="Edit Topics" Command="{Binding EditTopicsCommand}" />
             </RibbonGroup>
         </RibbonTab>
     </Ribbon>
