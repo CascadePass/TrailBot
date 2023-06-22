@@ -196,5 +196,23 @@ namespace CascadePass.TrailBot.Tests
         }
 
         #endregion
+
+        #region GetMatchCounts
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void GetMatchCounts_null_ThrowsCorrectly()
+        {
+            _ = MatchedTripReport.GetMatchCounts(null);
+        }
+
+        [TestMethod]
+        public void GetMatchCounts_EmptyList_ReturnsZero()
+        {
+            int result = MatchedTripReport.GetMatchCounts(new());
+            Assert.AreEqual(0, result);
+        }
+
+        #endregion
     }
 }

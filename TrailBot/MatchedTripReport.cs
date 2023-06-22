@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace CascadePass.TrailBot
 {
@@ -79,6 +80,7 @@ namespace CascadePass.TrailBot
                 Region = (tripReport as WtaTripReport)?.Region,
                 TripDate = tripReport.TripDate,
                 WordCount = matches[0].WordCount,
+                MatchingTermCount = MatchedTripReport.GetMatchCounts(matches),
                 HikeType = (tripReport as WtaTripReport)?.HikeType,
                 BroaderContext = MatchedTripReport.GetExerpts(matches),
                 Topics = matches.Where(m => !m.IsEmpty).Select(m => m.Topic.Name).ToList(),
@@ -139,6 +141,18 @@ namespace CascadePass.TrailBot
             }
 
             return exerpts.ToString().Trim();
+        }
+
+        public static int GetMatchCounts(List<MatchInfo> matchInfos)
+        {
+            if (matchInfos is null)
+            {
+                throw new ArgumentNullException(nameof(matchInfos));
+            }
+
+            Dictionary<string, int> consolidated = MatchedTripReport.ConsolidateMatches(matchInfos);
+            int sum = consolidated.Sum(m => m.Value);
+            return sum;
         }
 
         private static Dictionary<string, int> ConsolidateMatches(List<MatchInfo> matchInfos)
