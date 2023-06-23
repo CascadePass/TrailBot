@@ -213,6 +213,46 @@ namespace CascadePass.TrailBot.Tests
             Assert.AreEqual(0, result);
         }
 
+        [TestMethod]
+        public void GetMatchCounts_SimpleCaseIsCorrect()
+        {
+            List<MatchInfo> matches = new();
+
+            Dictionary<string, int> termCounts = new();
+            Topic topic = new();
+            MatchInfo matchInfo = new() { MatchCounts = termCounts, Topic = topic };
+
+            termCounts.Add("test", 3);
+            matches.Add(matchInfo);
+
+            int result = MatchedTripReport.GetMatchCounts(matches);
+            Assert.AreEqual(3, result);
+        }
+
+        [TestMethod]
+        public void GetMatchCounts_OneTermMultipleTopics()
+        {
+            List<MatchInfo> matches = new();
+
+            Dictionary<string, int> termCounts1 = new(), termCounts2 = new(), termCounts3 = new();
+            Topic t1 = new(), t2 = new(), t3 = new();
+            MatchInfo
+                m1 = new() { MatchCounts = termCounts1, Topic = t1 },
+                m2 = new() { MatchCounts = termCounts2, Topic = t2 },
+                m3 = new() { MatchCounts = termCounts3, Topic = t3 };
+
+            termCounts1.Add("test", 1);
+            termCounts2.Add("test", 2);
+            termCounts3.Add("test", 3);
+
+            matches.Add(m1);
+            matches.Add(m2);
+            matches.Add(m3);
+
+            int result = MatchedTripReport.GetMatchCounts(matches);
+            Assert.AreEqual(6, result);
+        }
+
         #endregion
     }
 }
