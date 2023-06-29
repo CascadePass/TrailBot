@@ -19,6 +19,7 @@ namespace CascadePass.TrailBot
         {
             this.PendingUrls = new();
             this.CompletedUrls = new();
+            this.ErrorUrls = new();
             this.Statistics = new();
         }
 
@@ -41,6 +42,8 @@ namespace CascadePass.TrailBot
         public List<string> PendingUrls { get; set; }
 
         public List<string> CompletedUrls { get; set; }
+
+        public List<string> ErrorUrls { get; set; }
 
         [XmlAttribute]
         public virtual int MinimumSleep
