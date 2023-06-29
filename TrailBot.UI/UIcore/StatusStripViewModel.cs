@@ -25,7 +25,8 @@ namespace CascadePass.TrailBot.UI
             t.Start();
         }
 
-        public double SelectedFontSize {
+        public double SelectedFontSize
+        {
             get => (double)this.Resources["Font.Normal"];
             set
             {
@@ -116,12 +117,22 @@ namespace CascadePass.TrailBot.UI
         {
             get
             {
-                //return GC.GetTotalMemory(false).ToString("#,##0");
+                if (!this.ShowMemoryInfo)
+                {
+                    return string.Empty;
+                }
 
-                using var currentProcess = Process.GetCurrentProcess();
-                currentProcess.Refresh();
+                try
+                {
+                    using var currentProcess = Process.GetCurrentProcess();
+                    currentProcess.Refresh();
 
-                return currentProcess.PrivateMemorySize64.ToString("#,##0");
+                    return currentProcess.PrivateMemorySize64.ToString("#,##0");
+                }
+                catch (InvalidOperationException)
+                {
+                    return string.Empty;
+                }
             }
         }
 
