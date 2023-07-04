@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CascadePass.TrailBot.UI.Dialogs.AddTermToTopic;
+using System;
 using System.Linq;
 using System.Windows;
 using System.Windows.Documents;
@@ -6,14 +7,15 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Xml.Serialization;
 
-namespace CascadePass.TrailBot.UI
+namespace CascadePass.TrailBot.UI.Feature.Found
 {
     [Serializable]
     public class MatchedTripReportViewModel : ViewModel
     {
         private TripReport tripReport;
         private FlowDocument previewDocument;
-        private DelegateCommand viewTripReportInWebBrowserCommand;
+        private string selectedPreviewText;
+        private DelegateCommand viewTripReportInWebBrowserCommand, addTextToTopicCommand, addExceptionTextCommand, createTopicCommand, copySelectedCommand;
 
         public MatchedTripReport MatchedTripReport { get; set; }
 
@@ -66,6 +68,21 @@ namespace CascadePass.TrailBot.UI
 
         public FontWeight FontWeight => this.HasBeenSeen ? FontWeights.Normal : FontWeights.SemiBold;
 
+        public string SelectedPreviewText { 
+            get => this.selectedPreviewText;
+            set
+            {
+                if (!string.Equals(this.selectedPreviewText, value, StringComparison.Ordinal))
+                {
+                    this.selectedPreviewText = value;
+                    this.OnPropertyChanged(nameof(this.SelectedPreviewText));
+                    this.OnPropertyChanged(nameof(this.HasSelectedText));
+                }
+            }
+        }
+
+        public bool HasSelectedText => !string.IsNullOrWhiteSpace(this.SelectedPreviewText);
+
         public FlowDocument PreviewDocument
         {
             get
@@ -79,12 +96,83 @@ namespace CascadePass.TrailBot.UI
             }
         }
 
-        public ICommand ViewInBrowserCommand => this.viewTripReportInWebBrowserCommand ??= new DelegateCommand(this.LaunchTripReportInBrowser);
+        public ICommand ViewInBrowserCommand => this.viewTripReportInWebBrowserCommand ??= new(this.LaunchTripReportInBrowser);
+
+        public ICommand AddTextToTopicCommand => this.addTextToTopicCommand ??= new(this.AddTextToTopicImplementation);
+
+        public ICommand AddExceptionTextToTopicCommand => this.addExceptionTextCommand ??= new(this.AddExceptionTextToTopicImplementation);
+
+        public ICommand CreateTopicCommand => this.createTopicCommand ??= new(this.CreateTopicImplementation);
+
+        public ICommand CopySelectedTextCommand => this.copySelectedCommand ??= new(this.CopySelectedTextImplementation);
 
         private void LaunchTripReportInBrowser()
         {
             this.ViewInBrowser(this.MatchedTripReport.SourceUri);
             this.HasBeenSeen = true;
+        }
+
+        private void AddTextToTopicImplementation()
+        {
+            this.AddTerm(AddTermMode.AddToExistingTopic, null);
+        }
+
+        private void AddExceptionTextToTopicImplementation()
+        {
+            this.AddTerm(AddTermMode.AddExceptionToExistingTopic, null);
+        }
+
+        private void CreateTopicImplementation()
+        {
+            this.AddTerm(AddTermMode.CreateNewTopic, new());
+        }
+
+        private void CopySelectedTextImplementation()
+        {
+            Clipboard.SetText(this.SelectedPreviewText);
+        }
+
+        private void AddTerm(AddTermMode mode, Topic topic)
+        {
+            AddTermToTopicDialog dialog = new();
+            AddTermToTopicViewModel viewModel = (AddTermToTopicViewModel)dialog.DataContext;
+            Window hostWindow = new()
+            {
+                Width = 600,
+                Height = 400,
+                WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                WindowStyle = WindowStyle.None,
+                Owner = App.Current.MainWindow,
+                Content = dialog,
+                Title = "Add to Topic"
+            };
+
+            if (topic == null && viewModel.Topics != null)
+            {
+                topic = viewModel.Topics.FirstOrDefault(m => m.Name == this.MatchedTripReport?.Topics.FirstOrDefault());
+            }
+
+            viewModel.Window = hostWindow;
+
+
+            //TODO: Make a local property don't use this globally
+            viewModel.Settings = ApplicationData.Settings;
+            viewModel.Topics = ApplicationData.WebProviderManager.Topics;
+
+
+            viewModel.Topic = topic;
+            viewModel.EditMode = mode;
+            viewModel.InitialTerm = this.SelectedPreviewText?.Trim();
+            hostWindow.ShowDialog();
+
+            if (viewModel.WasUpdated)
+            {
+                if (mode == AddTermMode.CreateNewTopic)
+                {
+                    ApplicationData.WebProviderManager.Topics.Add(topic);
+                }
+                // redraw the preview
+            }
         }
 
         #region Preview Flow Document
