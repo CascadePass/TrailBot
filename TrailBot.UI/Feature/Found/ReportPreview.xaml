@@ -32,10 +32,42 @@
                 </Border>
 
                 <FlowDocumentScrollViewer
-                        Document="{Binding PreviewDocument}"
-                        FontSize="{DynamicResource Font.Normal}"
-                        HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
-                    />
+                    Document="{Binding PreviewDocument}"
+                    FontSize="{DynamicResource Font.Normal}"
+                    ContextMenuOpening="ContextMenu_ContextMenuOpening"
+                    HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                    <FlowDocumentScrollViewer.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="Copy" Command="{Binding CopySelectedTextCommand}" IsEnabled="{Binding HasSelectedText}">
+                                <MenuItem.Icon>
+                                    <Image Source="pack://application:,,,/Images/Copy.png" />
+                                </MenuItem.Icon>
+                            </MenuItem>
+
+                            <Separator />
+
+                            <MenuItem Header="Add to topic" Command="{Binding AddTextToTopicCommand}" IsEnabled="{Binding HasSelectedText}">
+                                <MenuItem.Icon>
+                                    <Image Source="pack://application:,,,/Images/AddCustomControl.png" />
+                                </MenuItem.Icon>
+                            </MenuItem>
+
+                            <MenuItem Header="Add to topic as false match" Command="{Binding AddExceptionTextToTopicCommand}" IsEnabled="{Binding HasSelectedText}">
+                                <MenuItem.Icon>
+                                    <Image Source="pack://application:,,,/Images/AdvancedProductionBreakpointAlert.png" />
+                                </MenuItem.Icon>
+                            </MenuItem>
+
+                            <Separator />
+
+                            <MenuItem Header="Create new topic" Command="{Binding CreateTopicCommand}" IsEnabled="{Binding HasSelectedText}">
+                                <MenuItem.Icon>
+                                    <Image Source="pack://application:,,,/Images/AddComment.png" />
+                                </MenuItem.Icon>
+                            </MenuItem>
+                        </ContextMenu>
+                    </FlowDocumentScrollViewer.ContextMenu>
+                </FlowDocumentScrollViewer>
             </DockPanel>
         </TabItem>
 

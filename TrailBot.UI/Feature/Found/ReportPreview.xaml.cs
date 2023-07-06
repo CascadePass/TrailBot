@@ -45,5 +45,18 @@ namespace CascadePass.TrailBot.UI.Feature.Found
 
             this.WebBrowserControl.Navigate(url);
         }
+
+        private void ContextMenu_ContextMenuOpening(object sender, ContextMenuEventArgs e)
+        {
+            if (sender is FlowDocumentScrollViewer docViewer)
+            {
+                TextRange selection = new(docViewer.Selection.Start, docViewer.Selection.End);
+
+                if (this.DataContext is MatchedTripReportViewModel vm)
+                {
+                    vm.SelectedPreviewText = selection.Text;
+                }
+            }
+        }
     }
 }
