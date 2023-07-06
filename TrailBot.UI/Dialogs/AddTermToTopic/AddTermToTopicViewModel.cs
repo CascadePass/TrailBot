@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 
@@ -16,6 +15,12 @@ namespace CascadePass.TrailBot.UI.Dialogs.AddTermToTopic
         private AddTermMode addTermMode;
         private Settings settings;
         private DelegateCommand addCommand, cancelCommand;
+
+        public AddTermToTopicViewModel()
+        {
+            this.anyTerms = string.Empty;
+            this.unlessTerms = string.Empty;
+        }
 
         public Settings Settings {
             get => this.settings;
@@ -72,14 +77,7 @@ namespace CascadePass.TrailBot.UI.Dialogs.AddTermToTopic
                     this.Settings.SuggestAdditionalTerms = value;
                     this.OnPropertyChanged(nameof(this.SuggestAdditionalTerms));
 
-                    if (value)
-                    {
-                        this.SuggestTerms(this.InitialTerm);
-                    }
-                    else
-                    {
-                        this.RemoveSuggestions(this.InitialTerm);
-                    }
+                    this.SetSuggestionState();
                 }
             }
         }
@@ -94,14 +92,7 @@ namespace CascadePass.TrailBot.UI.Dialogs.AddTermToTopic
                     this.initialTerm = value;
                     this.OnPropertyChanged(nameof(this.InitialTerm));
 
-                    if (this.SuggestAdditionalTerms)
-                    {
-                        this.SuggestTerms(this.InitialTerm);
-                    }
-                    else
-                    {
-                        this.RemoveSuggestions(this.InitialTerm);
-                    }
+                    this.SetSuggestionState();
                 }
             }
         }
@@ -160,19 +151,15 @@ namespace CascadePass.TrailBot.UI.Dialogs.AddTermToTopic
             AddTermMode.CreateNewTopic => "Create a Topic",
             AddTermMode.AddToExistingTopic => "Add to Topic",
             AddTermMode.AddExceptionToExistingTopic => "Add to Topic",
+            AddTermMode.ValueNotSet => "You found a bug",
             _ => "You found a bug"
         };
 
         public Window Window { get; set; }
 
-        public bool WasUpdated { get; set; }
+        public bool WasUpdated { get; internal set; }
 
-        public bool IsNewTopic => this.Topics?.Contains(this.Topic) ?? true;
-
-        public bool CanAdd => this.Topic != null;
-
-        // Is something not dirty?
-        public bool CanCancel => true;
+        public bool CanAdd => this.Topic != null && !string.IsNullOrWhiteSpace(this.Topic.Name);
 
         public ICommand AddCommand => this.addCommand ??= new(this.AddTermImplementation);
 
@@ -180,6 +167,11 @@ namespace CascadePass.TrailBot.UI.Dialogs.AddTermToTopic
 
         public static string GetSuggestions(string baseTerm)
         {
+            if (string.IsNullOrWhiteSpace(baseTerm))
+            {
+                return string.Empty;
+            }
+
             string[] postfixes = { "s", "ing", "er", "ers" };
             StringBuilder stringBuilder = new();
 
@@ -192,14 +184,19 @@ namespace CascadePass.TrailBot.UI.Dialogs.AddTermToTopic
                 }
             }
 
-            return stringBuilder.ToString();
+            return stringBuilder.ToString().Trim();
         }
 
-        public void SuggestTerms(string baseTerm)
+        public void AddSuggestions(string baseTerm)
         {
             StringBuilder stringBuilder = new();
             stringBuilder.AppendLine(baseTerm);
-            stringBuilder.AppendLine(AddTermToTopicViewModel.GetSuggestions(baseTerm));
+
+            string suggestions = AddTermToTopicViewModel.GetSuggestions(baseTerm);
+            if (!string.IsNullOrWhiteSpace(suggestions))
+            {
+                stringBuilder.Append(suggestions);
+            }
 
             if (this.EditMode == AddTermMode.AddExceptionToExistingTopic)
             {
@@ -242,7 +239,7 @@ namespace CascadePass.TrailBot.UI.Dialogs.AddTermToTopic
             }
         }
 
-        public string GetMergedText(string source, string target)
+        public static string GetMergedText(string source, string target)
         {
             if (string.IsNullOrEmpty(target))
             {
@@ -251,8 +248,8 @@ namespace CascadePass.TrailBot.UI.Dialogs.AddTermToTopic
 
             char[] delimiter = new char[] { '\r', '\n' };
 
-            string[] sourceLines = source.Split(delimiter, StringSplitOptions.RemoveEmptyEntries);
-            string[] targetLines = target.Split(delimiter, StringSplitOptions.RemoveEmptyEntries);
+            string[] sourceLines = AddTermToTopicViewModel.SplitIntoLines(source);
+            string[] targetLines = AddTermToTopicViewModel.SplitIntoLines(target);
 
             StringBuilder result = new();
 
@@ -260,7 +257,7 @@ namespace CascadePass.TrailBot.UI.Dialogs.AddTermToTopic
 
             foreach (string term in sourceLines)
             {
-                if (!string.IsNullOrWhiteSpace(term) && !targetLines.Contains(term))
+                if (!targetLines.Contains(term))
                 {
                     result.AppendLine(term);
                 }
@@ -269,16 +266,73 @@ namespace CascadePass.TrailBot.UI.Dialogs.AddTermToTopic
             return result.ToString().Trim();
         }
 
-        public void AddTermImplementation()
+        public static string[] SplitIntoLines(string text)
         {
-            if (this.Topic == null)
+            if (string.IsNullOrWhiteSpace(text))
             {
-                throw new InvalidOperationException($"{nameof(this.Topic)} is null");
+                return null;
             }
 
-            //TODO: Test both of these lines well!
-            this.Topic.MatchAny = this.GetMergedText(this.AnyTerms, this.Topic.MatchAny);
-            this.Topic.MatchAnyUnless = this.GetMergedText(this.UnlessTerms, this.Topic.MatchAnyUnless);
+            List<string> result = new();
+            char[] delimiter = new char[] { '\r', '\n' };
+            string[] sourceLines = text.Split(delimiter, StringSplitOptions.RemoveEmptyEntries);
+
+            foreach (string line in sourceLines)
+            {
+                if (!string.IsNullOrWhiteSpace(line))
+                {
+                    result.Add(line.Trim());
+                }
+            }
+
+            return result.ToArray();
+        }
+
+        public void SetSuggestionState()
+        {
+            if (this.SuggestAdditionalTerms)
+            {
+                this.AddSuggestions(this.InitialTerm);
+            }
+            else
+            {
+                this.RemoveSuggestions(this.InitialTerm);
+            }
+
+            if (this.EditMode == AddTermMode.AddToExistingTopic && !this.AnyTerms.Contains(this.InitialTerm))
+            {
+                this.AnyTerms = this.InitialTerm;
+            }
+            else if (this.EditMode == AddTermMode.AddExceptionToExistingTopic && !this.UnlessTerms.Contains(this.InitialTerm))
+            {
+                this.UnlessTerms = this.InitialTerm;
+            }
+
+        }
+
+        public void AddTermImplementation()
+        {
+            #region Sanity checks
+
+            if (this.Topic == null)
+            {
+                throw new InvalidOperationException($"{nameof(this.Topic)} can't be null.");
+            }
+
+            if (this.EditMode == AddTermMode.ValueNotSet)
+            {
+                throw new InvalidOperationException($"{nameof(this.EditMode)} must have a valid value.");
+            }
+
+            if (!this.CanAdd)
+            {
+                throw new InvalidOperationException($"{nameof(this.CanAdd)} is false.");
+            }
+
+            #endregion
+
+            this.Topic.MatchAny = AddTermToTopicViewModel.GetMergedText(this.AnyTerms, this.Topic.MatchAny);
+            this.Topic.MatchAnyUnless = AddTermToTopicViewModel.GetMergedText(this.UnlessTerms, this.Topic.MatchAnyUnless);
 
             this.WasUpdated = true;
 
@@ -297,16 +351,5 @@ namespace CascadePass.TrailBot.UI.Dialogs.AddTermToTopic
                 this.Window.Close();
             }
         }
-    }
-
-    public enum AddTermMode
-    {
-        ValueNotSet,
-
-        AddToExistingTopic,
-
-        AddExceptionToExistingTopic,
-
-        CreateNewTopic
     }
 }

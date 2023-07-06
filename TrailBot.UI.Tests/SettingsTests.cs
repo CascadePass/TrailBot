@@ -74,6 +74,16 @@ namespace CascadePass.TrailBot.UI.Tests
             Assert.AreEqual(settings.DebugMode, value);
         }
 
+        [TestMethod]
+        public void SuggestAdditionalTerms_GetSetAccessSameValue()
+        {
+            Settings settings = new();
+
+            bool value = !settings.SuggestAdditionalTerms;
+            settings.SuggestAdditionalTerms = value;
+            Assert.AreEqual(settings.SuggestAdditionalTerms, value);
+        }
+
         #endregion
 
         #region Properties turn IsDirty true
@@ -113,6 +123,15 @@ namespace CascadePass.TrailBot.UI.Tests
             Settings settings = new();
 
             settings.DebugMode = !settings.DebugMode;
+            Assert.IsTrue(settings.IsDirty);
+        }
+
+        [TestMethod]
+        public void SuggestAdditionalTerms_Makes_IsDirty_True()
+        {
+            Settings settings = new();
+
+            settings.SuggestAdditionalTerms = !settings.SuggestAdditionalTerms;
             Assert.IsTrue(settings.IsDirty);
         }
 
