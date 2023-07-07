@@ -49,7 +49,7 @@ namespace CascadePass.TrailBot
 
         public WtaTripReport GetTripReport(IWebDriver webDriver, Uri uri)
         {
-            if (this.AgeOfLastTripReportRequest.TotalMilliseconds < this.MinimumSleep)
+            if (this.AgeOfLastTripReportRequest.TotalMilliseconds < this.SleepRange.Minimum)
             {
                 this.Sleep();
             }
@@ -129,7 +129,7 @@ namespace CascadePass.TrailBot
 
         public List<string> GetRecentTripReportAddresses(IWebDriver webDriver, Uri uri)
         {
-            if (this.AgeOfLastRecentReportsRequest.TotalMilliseconds < this.MinimumSleep)
+            if (this.AgeOfLastRecentReportsRequest.TotalMilliseconds < this.SleepRange.Minimum)
             {
                 this.Sleep();
             }

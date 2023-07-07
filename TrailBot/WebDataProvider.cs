@@ -13,7 +13,7 @@ namespace CascadePass.TrailBot
         public event EventHandler<TripReportCompletedEventArgs> TripReportCompleted;
         public event EventHandler<SleepEventArgs> Sleeping;
 
-        private int minSleepTime, maxSleepTime;
+        protected RandomRange sleepRange;
 
         public WebDataProvider()
         {
@@ -25,12 +25,7 @@ namespace CascadePass.TrailBot
 
         #region Properties
 
-        public virtual Range MinSleepRange => new(30000, 90000);
-        public virtual Range MaxSleepRange => new(60000, 180000);
-
-        public virtual int MinimumAllowedSleep => 45000;
-
-        public virtual int MaximumRandomSleep => 600000;
+        public virtual RandomRange SleepRange => new(20000, 30000, 180000, 600000);
 
         public abstract SupportedTripReportSource TripReportSource { get; }
 
@@ -45,30 +40,6 @@ namespace CascadePass.TrailBot
 
         public List<string> ErrorUrls { get; set; }
 
-        [XmlAttribute]
-        public virtual int MinimumSleep
-        {
-            // Get runs through ForceIntoRange so that if a child class doesn't call the base
-            // constructor or provide a default value, zero will not be returned.
-            get => WebDataProvider.ForceIntoRange(this.minSleepTime, this.MinimumAllowedSleep, this.MaximumRandomSleep);
-            set
-            {
-                this.minSleepTime = WebDataProvider.ForceIntoRange(value, this.MinimumAllowedSleep, this.MaximumRandomSleep);
-            }
-        }
-
-        [XmlAttribute]
-        public virtual int MaximumSleep
-        {
-            // Get runs through ForceIntoRange so that if a child class doesn't call the base
-            // constructor or provide a default value, zero will not be returned.
-            get => WebDataProvider.ForceIntoRange(this.maxSleepTime, this.MinimumAllowedSleep, this.MaximumRandomSleep);
-            set
-            {
-                this.maxSleepTime = WebDataProvider.ForceIntoRange(value, this.MinimumAllowedSleep, this.MaximumRandomSleep);
-            }
-        }
-
         public ProviderStatistics Statistics { get; set; }
 
         [XmlAttribute]
@@ -81,24 +52,9 @@ namespace CascadePass.TrailBot
 
         #endregion
 
-        public static int ForceIntoRange(int value, int minimum, int maximum)
-        {
-            if (value < minimum)
-            {
-                return minimum;
-            }
-
-            if (value > maximum)
-            {
-                return maximum;
-            }
-
-            return value;
-        }
-
         protected void Sleep()
         {
-            int msDelay = new Random().Next(this.MinimumSleep, this.MaximumSleep);
+            int msDelay = new Random().Next(this.SleepRange.Minimum, this.SleepRange.Maximum);
             TimeSpan timeSpan = TimeSpan.FromMilliseconds(msDelay);
 
             this.OnSleeping(this, new SleepEventArgs() { Duration = timeSpan });
