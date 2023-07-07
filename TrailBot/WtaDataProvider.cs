@@ -59,6 +59,12 @@ namespace CascadePass.TrailBot
             webDriver.Navigate().GoToUrl(uri);
             this.LastTripReportRequest = DateTime.Now;
 
+            if (WtaDataProvider.IsPageNotFound(webDriver))
+            {
+                this.ErrorUrls.Add(uri.ToString());
+                return null;
+            }
+
             WtaTripReport report = this.ParseTripReport(webDriver, uri);
 
             this.OnTripReportCompleted(this, new TripReportCompletedEventArgs() { TripReport = report });
@@ -217,6 +223,25 @@ namespace CascadePass.TrailBot
             report.Snow = this.FindHikeCondition(report, "SNOW");
 
             return report;
+        }
+
+        public static bool IsPageNotFound(IWebDriver webDriver)
+        {
+            try
+            {
+                IWebElement reportBody = webDriver.FindElement(By.ClassName("documentFirstHeading"));
+
+                if (reportBody.Text.Contains("does not seem to exist"))
+                {
+                    return true;
+                }
+
+                return false;
+            }
+            catch (NoSuchElementException)
+            {
+                return false;
+            }
         }
 
         private string ParseReportText(IWebDriver webDriver)
