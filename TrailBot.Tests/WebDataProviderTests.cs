@@ -9,9 +9,7 @@ namespace CascadePass.TrailBot.Tests
     {
         public override SupportedTripReportSource TripReportSource => throw new NotImplementedException();
 
-        public override int MinimumAllowedSleep => 50;
-
-        public override int MaximumRandomSleep => 100;
+        public override RandomRange SleepRange => new RandomRange(50, 100);
 
         public void CallSleep() => base.Sleep();
 
@@ -37,7 +35,7 @@ namespace CascadePass.TrailBot.Tests
         {
             WebDataProviderConcreteTestImplementation testObject = new();
 
-            Assert.IsTrue(testObject.MinimumSleep > 0);
+            Assert.IsTrue(testObject.SleepRange.Minimum > 0);
         }
 
         [TestMethod]
@@ -45,7 +43,7 @@ namespace CascadePass.TrailBot.Tests
         {
             WebDataProviderConcreteTestImplementation testObject = new();
 
-            Assert.IsTrue(testObject.MinimumSleep > 0);
+            Assert.IsTrue(testObject.SleepRange.Maximum > 0);
         }
 
         [TestMethod]
@@ -195,9 +193,9 @@ namespace CascadePass.TrailBot.Tests
         {
             WebDataProviderConcreteTestImplementation testObject = new();
 
-            testObject.MinimumSleep = 0;
+            testObject.SleepRange.Minimum = 0;
 
-            Assert.IsTrue(testObject.MinimumSleep > 0);
+            Assert.IsTrue(testObject.SleepRange.Minimum > 0);
         }
 
         [TestMethod]
@@ -205,9 +203,9 @@ namespace CascadePass.TrailBot.Tests
         {
             WebDataProviderConcreteTestImplementation testObject = new();
 
-            testObject.MaximumSleep = 0;
+            testObject.SleepRange.Maximum = 0;
 
-            Assert.IsTrue(testObject.MinimumSleep > 0);
+            Assert.IsTrue(testObject.SleepRange.Maximum > 0);
         }
 
         [TestMethod]
@@ -215,9 +213,9 @@ namespace CascadePass.TrailBot.Tests
         {
             WebDataProviderConcreteTestImplementation testObject = new();
 
-            testObject.MinimumSleep = int.MaxValue;
+            testObject.SleepRange.Minimum = int.MaxValue;
 
-            Assert.IsTrue(testObject.MinimumSleep < int.MaxValue);
+            Assert.IsTrue(testObject.SleepRange.Minimum < int.MaxValue);
         }
 
         [TestMethod]
@@ -225,54 +223,56 @@ namespace CascadePass.TrailBot.Tests
         {
             WebDataProviderConcreteTestImplementation testObject = new();
 
-            testObject.MaximumSleep = int.MaxValue;
+            testObject.SleepRange.Maximum = int.MaxValue;
 
-            Assert.IsTrue(testObject.MinimumSleep < int.MaxValue);
+            Assert.IsTrue(testObject.SleepRange.Maximum < int.MaxValue);
         }
 
         #endregion
 
         #region Valid sleep ranges
 
-        [TestMethod]
-        public void MinimumSleepTimeAllowsMinValue()
-        {
-            WebDataProviderConcreteTestImplementation testObject = new();
+        //TODO: Re-implement these.  The idea is for a class to define limits of its own.
 
-            testObject.MinimumSleep = testObject.MinimumAllowedSleep;
+        //[TestMethod]
+        //public void MinimumSleepTimeAllowsMinValue()
+        //{
+        //    WebDataProviderConcreteTestImplementation testObject = new();
 
-            Assert.AreEqual(testObject.MinimumSleep, testObject.MinimumAllowedSleep);
-        }
+        //    testObject.MinimumSleep = testObject.MinimumAllowedSleep;
 
-        [TestMethod]
-        public void MinimumSleepTimeAllowsMaxValue()
-        {
-            WebDataProviderConcreteTestImplementation testObject = new();
+        //    Assert.AreEqual(testObject.MinimumSleep, testObject.MinimumAllowedSleep);
+        //}
 
-            testObject.MinimumSleep = testObject.MaximumRandomSleep;
+        //[TestMethod]
+        //public void MinimumSleepTimeAllowsMaxValue()
+        //{
+        //    WebDataProviderConcreteTestImplementation testObject = new();
 
-            Assert.AreEqual(testObject.MinimumSleep, testObject.MaximumRandomSleep);
-        }
+        //    testObject.MinimumSleep = testObject.MaximumRandomSleep;
 
-        [TestMethod]
-        public void MaximumSleepSleepTimeAllowsMinValue()
-        {
-            WebDataProviderConcreteTestImplementation testObject = new();
+        //    Assert.AreEqual(testObject.MinimumSleep, testObject.MaximumRandomSleep);
+        //}
 
-            testObject.MaximumSleep = testObject.MinimumAllowedSleep;
+        //[TestMethod]
+        //public void MaximumSleepSleepTimeAllowsMinValue()
+        //{
+        //    WebDataProviderConcreteTestImplementation testObject = new();
 
-            Assert.AreEqual(testObject.MaximumSleep, testObject.MinimumAllowedSleep);
-        }
+        //    testObject.MaximumSleep = testObject.MinimumAllowedSleep;
 
-        [TestMethod]
-        public void MaximumSleepSleepTimeAllowsMaxValue()
-        {
-            WebDataProviderConcreteTestImplementation testObject = new();
+        //    Assert.AreEqual(testObject.MaximumSleep, testObject.MinimumAllowedSleep);
+        //}
 
-            testObject.MaximumSleep = testObject.MaximumRandomSleep;
+        //[TestMethod]
+        //public void MaximumSleepSleepTimeAllowsMaxValue()
+        //{
+        //    WebDataProviderConcreteTestImplementation testObject = new();
 
-            Assert.AreEqual(testObject.MaximumSleep, testObject.MaximumRandomSleep);
-        }
+        //    testObject.MaximumSleep = testObject.MaximumRandomSleep;
+
+        //    Assert.AreEqual(testObject.MaximumSleep, testObject.MaximumRandomSleep);
+        //}
 
         #endregion
 

@@ -57,7 +57,7 @@
     <Compile Include="PreservationRule.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ProviderStatistics.cs" />
-    <Compile Include="Range.cs" />
+    <Compile Include="RandomRange.cs" />
     <Compile Include="SleepEventArgs.cs" />
     <Compile Include="SupportedBrowser.cs" />
     <Compile Include="SupportedTripReportSource.cs" />

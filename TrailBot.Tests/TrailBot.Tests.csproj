@@ -64,7 +64,7 @@
     <Compile Include="MatchInfoTests.cs" />
     <Compile Include="MockWebDriver.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RangeTests.cs" />
+    <Compile Include="RandomRangeTests.cs" />
     <Compile Include="Topic\TopicTests.cs" />
     <Compile Include="Topic\TopicExerptTests.cs" />
     <Compile Include="Topic\MatchingTests.cs" />
