@@ -169,7 +169,7 @@ namespace CascadePass.TrailBot
                     }
                     else
                     {
-                        result[word.Key] += 1;
+                        result[word.Key] += word.Value;
                     }
                 }
             }
