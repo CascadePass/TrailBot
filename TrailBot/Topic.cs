@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Xml.Serialization;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace CascadePass.TrailBot
 {
@@ -35,6 +36,9 @@ namespace CascadePass.TrailBot
             }
         }
 
+        [XmlIgnore]
+        public List<Phrase> MatchAnyPhrases => this.anyPhrases;
+
         public string MatchAnyUnless
         {
             get => this.matchAnyUnless;
@@ -47,6 +51,9 @@ namespace CascadePass.TrailBot
                 }
             }
         }
+
+        [XmlIgnore]
+        public List<Phrase> MatchAnyUnlessPhrases => this.anyUnlessPhrases;
 
         #endregion
 
@@ -81,13 +88,23 @@ namespace CascadePass.TrailBot
         {
             if (tripReport == null)
             {
-                return null;
+                return new();
+            }
+
+            return this.GetMatchInfo(tripReport.GetSearchableReportText());
+        }
+
+        public MatchInfo GetMatchInfo(string text)
+        {
+            if (string.IsNullOrWhiteSpace(text))
+            {
+                return new();
             }
 
             int lastBreak = 0;
             MatchInfo found = new() { Topic = this };
             Tokenizer tokenizer = new();
-            tokenizer.GetTokens(tripReport.GetSearchableReportText());
+            tokenizer.GetTokens(text);
 
             found.WordCount = tokenizer.OrderedTokens.Count(m => m.IsWord);
 
@@ -186,6 +203,16 @@ namespace CascadePass.TrailBot
             }
 
             return found;
+        }
+
+        public override string ToString()
+        {
+            if (!string.IsNullOrWhiteSpace(this.Name))
+            {
+                return this.Name;
+            }
+
+            return base.ToString();
         }
     }
 }

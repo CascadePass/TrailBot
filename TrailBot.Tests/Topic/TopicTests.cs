@@ -54,14 +54,23 @@ namespace CascadePass.TrailBot.Tests
         public void GetMatchInfo_NullTripReportDoesntThrow()
         {
             Topic t = new();
-            _ = t.GetMatchInfo(null);
+            _ = t.GetMatchInfo((TripReport)null);
         }
 
         [TestMethod]
         public void GetMatchInfo_NullTripReportNotAMatch()
         {
             Topic t = new();
-            var result = t.GetMatchInfo(null);
+            var result = t.GetMatchInfo((TripReport)null);
+
+            Assert.IsTrue(result == null || result.Count == 0);
+        }
+
+        [TestMethod]
+        public void GetMatchInfo_NullStringNotAMatch()
+        {
+            Topic t = new();
+            var result = t.GetMatchInfo((string)null);
 
             Assert.IsTrue(result == null || result.Count == 0);
         }
@@ -207,6 +216,42 @@ namespace CascadePass.TrailBot.Tests
             topic.MatchAnyUnless = testText;
 
             Assert.AreEqual(testText, topic.MatchAnyUnless);
+        }
+
+        #endregion
+
+        #region GetMatchInfo
+
+        [TestMethod]
+        public void GetMatchInfo_NullString()
+        {
+            Topic topic = new();
+            MatchInfo result = topic.GetMatchInfo((string)null);
+            Assert.IsTrue(result.IsEmpty);
+        }
+
+        [TestMethod]
+        public void GetMatchInfo_NullTripReport()
+        {
+            Topic topic = new();
+            MatchInfo result = topic.GetMatchInfo((TripReport)null);
+            Assert.IsTrue(result.IsEmpty);
+        }
+
+        [TestMethod]
+        public void GetMatchInfo_EmptyString()
+        {
+            Topic topic = new();
+            MatchInfo result = topic.GetMatchInfo(string.Empty);
+            Assert.IsTrue(result.IsEmpty);
+        }
+
+        [TestMethod]
+        public void GetMatchInfo_WhiteSpace()
+        {
+            Topic topic = new();
+            MatchInfo result = topic.GetMatchInfo("   ");
+            Assert.IsTrue(result.IsEmpty);
         }
 
         #endregion
