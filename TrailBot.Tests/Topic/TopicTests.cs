@@ -152,6 +152,22 @@ namespace CascadePass.TrailBot.Tests
             Assert.AreEqual(1, result.Count);
         }
 
+        [TestMethod]
+        public void ParseSearchTerms_ApostropheIsPartOfWord()
+        {
+            var result = Topic.ParseSearchTerms("occam's razor");
+
+            // 1 term (one line, terms are separated by line, this method was intended for parsing Match terms)
+            Assert.AreEqual(1, result.Count);
+
+            // 1 term has 2 keywords
+            // If the ' is not handled correctly, there will be 3 words:  occam s razor
+            Assert.AreEqual(2, result[0].Parts.Length);
+
+            Assert.AreEqual(result[0].Parts[0].Text, "occam's");
+            Assert.AreEqual(result[0].Parts[1].Text, "razor");
+        }
+
         #endregion
 
         #region Count Properties
@@ -184,6 +200,17 @@ namespace CascadePass.TrailBot.Tests
         }
 
         [TestMethod]
+        public void AnyCount_AgreesWith_MatchAnyPhrases()
+        {
+            Topic topic = new()
+            {
+                MatchAny = "one phrase\rper\n\r\n\r\nline",
+            };
+
+            Assert.AreEqual(topic.MatchAnyPhrases.Count, topic.AnyCount);
+        }
+
+        [TestMethod]
         public void UnlessCount_CountsLines()
         {
             Topic topic = new()
@@ -192,6 +219,17 @@ namespace CascadePass.TrailBot.Tests
             };
 
             Assert.AreEqual(3, topic.UnlessCount);
+        }
+
+        [TestMethod]
+        public void UnlessCount_AgreesWith_MatchAnyUnlessPhrases()
+        {
+            Topic topic = new()
+            {
+                MatchAnyUnless = "one phrase\rper\n\r\n\r\nline",
+            };
+
+            Assert.AreEqual(topic.MatchAnyUnlessPhrases.Count, topic.UnlessCount);
         }
 
         #endregion
@@ -252,6 +290,34 @@ namespace CascadePass.TrailBot.Tests
             Topic topic = new();
             MatchInfo result = topic.GetMatchInfo("   ");
             Assert.IsTrue(result.IsEmpty);
+        }
+
+        #endregion
+
+        #region ToString
+
+        [TestMethod]
+        public void ToString_Returns_Name()
+        {
+            Topic topic = new()
+            {
+                Name = "crime",
+                MatchAny = "broken\r\nwindow",
+            };
+
+            Assert.AreEqual(topic.Name, topic.ToString());
+        }
+
+        [TestMethod]
+        public void ToString_NoName_Returns_ClassName()
+        {
+            Topic topic = new()
+            {
+                MatchAny = "broken\r\nwindow",
+            };
+
+            Console.WriteLine(topic.ToString());
+            Assert.IsTrue(topic.ToString().Contains(typeof(Topic).FullName));
         }
 
         #endregion

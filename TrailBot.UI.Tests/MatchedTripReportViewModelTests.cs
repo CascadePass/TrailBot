@@ -3,7 +3,9 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
 using System.Windows;
+using System.Windows.Documents;
 using System.Windows.Input;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace CascadePass.TrailBot.UI.Tests
 {
@@ -71,16 +73,25 @@ namespace CascadePass.TrailBot.UI.Tests
         [TestMethod]
         public void PreviewDocument_TripReport_Guid()
         {
+            string text = Guid.NewGuid().ToString();
+
             MatchedTripReportViewModel vm = new() {
                 AllTopics = new(),
                 Report = new() {
-                    ReportText = Guid.NewGuid().ToString()
+                    ReportText = text,
                 }
             };
 
             Assert.IsNotNull(vm.PreviewDocument);
+            Assert.IsTrue(vm.PreviewDocument.Blocks.FirstBlock is Paragraph);
 
             // Gibberish input should not crash the UI
+
+            var paragraph = (Paragraph)vm.PreviewDocument.Blocks.LastBlock;
+
+            Assert.AreEqual(1, paragraph.Inlines.Count);
+            Assert.IsTrue(paragraph.Inlines.FirstInline is Run);
+            Assert.AreEqual(text, ((Run)paragraph.Inlines.FirstInline).Text.Trim());
         }
 
         [TestMethod]
@@ -110,6 +121,13 @@ namespace CascadePass.TrailBot.UI.Tests
             };
 
             Assert.IsNotNull(vm.PreviewDocument);
+            Assert.IsTrue(vm.PreviewDocument.Blocks.FirstBlock is Paragraph);
+            Assert.IsTrue(vm.PreviewDocument.Blocks.LastBlock is Paragraph);
+
+            var paragraph = (Paragraph)vm.PreviewDocument.Blocks.LastBlock;
+            Assert.AreEqual(1, paragraph.Inlines.Count);
+            Assert.IsTrue(paragraph.Inlines.FirstInline is Run);
+            Assert.AreEqual(vm.Report.ReportText, ((Run)paragraph.Inlines.FirstInline).Text.Trim());
         }
 
         [TestMethod]
@@ -125,6 +143,12 @@ namespace CascadePass.TrailBot.UI.Tests
             };
 
             Assert.IsNotNull(vm.PreviewDocument);
+            Assert.IsTrue(vm.PreviewDocument.Blocks.FirstBlock is Paragraph);
+            Assert.IsTrue(vm.PreviewDocument.Blocks.LastBlock is Paragraph);
+
+            var paragraph = (Paragraph)vm.PreviewDocument.Blocks.LastBlock;
+            Assert.IsTrue(paragraph.Inlines.FirstInline is Run);
+            Assert.AreEqual(vm.Report.ReportText, ((Run)paragraph.Inlines.FirstInline).Text.Trim());
         }
 
         [TestMethod]
@@ -135,11 +159,22 @@ namespace CascadePass.TrailBot.UI.Tests
                 AllTopics = new(),
                 Report = new()
                 {
-                    ReportText = "Somebody broke my passenger side window while I was hiking.  I should have looked out for prowlers."
+                    ReportText = "Somebody broke my passenger side window while I was hiking. I should have looked out for prowlers."
                 }
             };
 
             Assert.IsNotNull(vm.PreviewDocument);
+            Assert.IsTrue(vm.PreviewDocument.Blocks.FirstBlock is Paragraph);
+            Assert.IsTrue(vm.PreviewDocument.Blocks.LastBlock is Paragraph);
+
+            var paragraph = (Paragraph)vm.PreviewDocument.Blocks.LastBlock;
+            Assert.IsTrue(paragraph.Inlines.FirstInline is Run);
+
+            string fullText =
+                ((Run)paragraph.Inlines.FirstInline).Text.Trim() + " " +
+                ((Run)paragraph.Inlines.FirstInline.NextInline).Text.Trim();
+            
+            Assert.AreEqual(vm.Report.ReportText, fullText);
         }
 
         [TestMethod]
@@ -150,11 +185,27 @@ namespace CascadePass.TrailBot.UI.Tests
                 AllTopics = new(),
                 Report = new()
                 {
-                    ReportText = "Somebody broke my passenger side window while I was hiking.  I should have looked out for prowlers.\r\n\r\nIf you hike here, don't leave anything in your car."
+                    ReportText = "Somebody broke my passenger side window while I was hiking. I should have looked out for prowlers.\r\n\r\nIf you hike here, don't leave anything in your car."
                 }
             };
 
             Assert.IsNotNull(vm.PreviewDocument);
+            Assert.IsTrue(vm.PreviewDocument.Blocks.FirstBlock is Paragraph);
+            Assert.IsTrue(vm.PreviewDocument.Blocks.LastBlock is Paragraph);
+
+            var paragraph = (Paragraph)vm.PreviewDocument.Blocks.FirstBlock.NextBlock;
+            Assert.IsTrue(paragraph.Inlines.FirstInline is Run);
+
+            string fullText =
+                ((Run)paragraph.Inlines.FirstInline).Text.Trim() + " " +
+                ((Run)paragraph.Inlines.FirstInline.NextInline).Text.Trim();
+
+            Assert.AreEqual("Somebody broke my passenger side window while I was hiking. I should have looked out for prowlers.", fullText);
+
+            paragraph = (Paragraph)vm.PreviewDocument.Blocks.LastBlock;
+            fullText = ((Run)paragraph.Inlines.FirstInline).Text.Trim();
+
+            Assert.AreEqual("If you hike here, don't leave anything in your car.", fullText);
         }
 
         [TestMethod]
@@ -165,13 +216,75 @@ namespace CascadePass.TrailBot.UI.Tests
                 AllTopics = new(),
                 Report = new()
                 {
-                    ReportText = "Somebody broke my passenger side window while I was hiking.  I should have looked out for prowlers.\r\n\r\nIf you hike here, don't leave anything in your car."
+                    ReportText = "Somebody broke my passenger side window while I was hiking. I should have looked out for prowlers.\r\n\r\nIf you hike here, don't leave anything in your car."
                 }
             };
 
             vm.AllTopics.Add(new() { Name = "Crime", MatchAny = "broke\r\nwindow" });
 
             Assert.IsNotNull(vm.PreviewDocument);
+        }
+
+        [TestMethod]
+        public void PreviewDocument_TripReport_TwoParagraphs_NullTopics()
+        {
+            MatchedTripReportViewModel vm = new()
+            {
+                AllTopics = null,
+                Report = new()
+                {
+                    ReportText = "Somebody broke my passenger side window while I was hiking.  I should have looked out for prowlers.\r\n\r\nIf you hike here, don't leave anything in your car."
+                }
+            };
+
+            Assert.IsNotNull(vm.PreviewDocument);
+        }
+
+        [TestMethod]
+        public void PreviewDocument_TripReport_TwoParagraphs_MatchingTopicWithApostrophe()
+        {
+            MatchedTripReportViewModel vm = new()
+            {
+                AllTopics = new(),
+                Report = new()
+                {
+                    ReportText = "Somebody broke my passenger side window while I was hiking.  I should have looked out for prowlers.\r\n\r\nIf you hike here, don't leave anything in your car."
+                }
+            };
+
+            vm.AllTopics.Add(new());
+
+            vm.AllTopics[0].Name = "Test Topic";
+            vm.AllTopics[0].MatchAny = "don't leave";
+
+            Assert.IsNotNull(vm.PreviewDocument);
+        }
+
+        [TestMethod]
+        public void PreviewDocument_TripReport_Title()
+        {
+            MatchedTripReportViewModel vm = new()
+            {
+                AllTopics = new(),
+                Report = new()
+                {
+                    Title = "Test",
+                    TripDate = new DateTime(1977, 12, 21),
+                    ReportText = "Somebody broke my passenger side window while I was hiking. I should have looked out for prowlers.",
+                }
+            };
+
+            Assert.IsNotNull(vm.PreviewDocument);
+            Assert.IsTrue(vm.PreviewDocument.Blocks.FirstBlock is Paragraph);
+
+            var paragraph = (Paragraph)vm.PreviewDocument.Blocks.FirstBlock;
+            Assert.IsTrue(paragraph.Inlines.FirstInline is Hyperlink);
+
+            var titleHyperlink = (Hyperlink)paragraph.Inlines.FirstInline;
+            var titleRun = (Run)titleHyperlink.Inlines.FirstInline;
+            string expectedTitleText = $"{vm.Report.Title} ({vm.Report.TripDate.ToShortDateString()})";
+
+            Assert.AreEqual(expectedTitleText, titleRun.Text.Trim());
         }
 
         #endregion

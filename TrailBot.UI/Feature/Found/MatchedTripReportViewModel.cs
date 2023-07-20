@@ -206,7 +206,7 @@ namespace CascadePass.TrailBot.UI.Feature.Found
 
         public void CreatePreviewDocumentSentence(string sentence, Paragraph flowParagraph)
         {
-            bool isMatch = false;
+            bool sentenceMatchesTopic = false;
 
             if (this.AllTopics != null)
             {
@@ -214,13 +214,13 @@ namespace CascadePass.TrailBot.UI.Feature.Found
                 {
                     if (!topic.GetMatchInfo(sentence).IsEmpty)
                     {
-                        isMatch = true;
+                        sentenceMatchesTopic = true;
                         break;
                     }
                 }
             }
 
-            if (!isMatch)
+            if (!sentenceMatchesTopic)
             {
                 var run = new Run(sentence.Trim() + " ") { Foreground = Brushes.DarkSlateGray };
 
@@ -232,33 +232,49 @@ namespace CascadePass.TrailBot.UI.Feature.Found
             Tokenizer tokenizer = new();
             tokenizer.GetTokens(sentence);
 
+            int wordsLeftInMatchingPhrase = 0;
             for (int i = 0; i < tokenizer.OrderedTokens.Count; i++)
             {
-                bool found = false;
+                bool wordIsTopicKeyword = false;
 
-                foreach (Topic topic in this.AllTopics)
+                if (wordsLeftInMatchingPhrase > 0)
                 {
-                    foreach (Phrase topicPhrase in topic.MatchAnyPhrases)
+                    wordIsTopicKeyword = true;
+                    wordsLeftInMatchingPhrase--;
+                }
+                else
+                {
+                    foreach (Topic topic in this.AllTopics)
                     {
-                        if (tokenizer.IsMatchAt(topicPhrase, i))
+                        foreach (Phrase topicPhrase in topic.MatchAnyPhrases)
                         {
-                            found = true;
+                            if (tokenizer.IsMatchAt(topicPhrase, i))
+                            {
+                                wordIsTopicKeyword = true;
+                                wordsLeftInMatchingPhrase = (int)topicPhrase.Length - 1;
+
+                                break;
+                            }
+                        }
+
+                        if (wordIsTopicKeyword)
+                        {
                             break;
                         }
                     }
                 }
 
-                string following = i < tokenizer.OrderedTokens.Count - 1 && tokenizer.OrderedTokens[i + 1].IsWord ? " " : string.Empty;
-                if (found)
+                string nextChar = i < tokenizer.OrderedTokens.Count - 1 && tokenizer.OrderedTokens[i + 1].IsWord ? " " : string.Empty;
+
+                var wordRun = new Run(tokenizer.OrderedTokens[i].Text + nextChar) { Background = Brushes.Yellow };
+
+                if (wordIsTopicKeyword)
                 {
-                    var wordRun = new Run(tokenizer.OrderedTokens[i].Text) { Background = Brushes.Yellow, FontWeight = FontWeights.Bold, Foreground = Brushes.Black };
-                    flowParagraph.Inlines.Add(wordRun);
-                    flowParagraph.Inlines.Add(new Run(following) { Background = Brushes.Yellow });
+                    wordRun.FontWeight = FontWeights.Bold;
+                    wordRun.Foreground = Brushes.Black;
                 }
-                else
-                {
-                    flowParagraph.Inlines.Add(new Run(tokenizer.OrderedTokens[i].Text + following) { Background = Brushes.Yellow });
-                }
+
+                flowParagraph.Inlines.Add(wordRun);
             }
 
             flowParagraph.Inlines.Add(new Run(" "));

@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Xml.Serialization;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace CascadePass.TrailBot
 {
@@ -72,7 +71,7 @@ namespace CascadePass.TrailBot
                     Tokenizer tokenizer = new();
                     tokenizer.GetTokens(line);
 
-                    Phrase phrase = new Phrase(tokenizer.OrderedTokens.ToArray());
+                    Phrase phrase = new(tokenizer.OrderedTokens.ToArray());
 
                     if (!string.IsNullOrWhiteSpace(phrase.Text))
                     {
