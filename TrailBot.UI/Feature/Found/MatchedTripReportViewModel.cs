@@ -264,7 +264,7 @@ namespace CascadePass.TrailBot.UI.Feature.Found
                     }
                 }
 
-                string nextChar = i < tokenizer.OrderedTokens.Count - 1 && tokenizer.OrderedTokens[i + 1].IsWord ? " " : string.Empty;
+                string nextChar = i < tokenizer.OrderedTokens.Count - 1 && !tokenizer.OrderedTokens[i + 1].IsPunctuation ? " " : string.Empty;
 
                 var wordRun = new Run(tokenizer.OrderedTokens[i].Text + nextChar) { Background = Brushes.Yellow };
 
