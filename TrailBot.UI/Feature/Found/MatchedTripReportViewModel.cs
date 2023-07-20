@@ -1,6 +1,9 @@
-﻿using CascadePass.TrailBot.UI.Dialogs.AddTermToTopic;
+﻿using CascadePass.TrailBot.TextAnalysis;
+using CascadePass.TrailBot.UI.Dialogs.AddTermToTopic;
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Input;
@@ -19,16 +22,6 @@ namespace CascadePass.TrailBot.UI.Feature.Found
 
         public MatchedTripReport MatchedTripReport { get; set; }
 
-        //public string SourceUri { get; set; }
-
-        //public DateTime TripDate { get; set; }
-
-        //public string Title { get; set; }
-
-        //public string HikeType { get; set; }
-
-        //public string Region { get; set; }
-
         [XmlIgnore]
         public TripReport Report {
             get => this.tripReport;
@@ -43,12 +36,6 @@ namespace CascadePass.TrailBot.UI.Feature.Found
             }
         }
 
-        //public string Matches { get; set; }
-
-        //public string Filename { get; set; }
-
-        //public int WordCount { get; set; }
-
         public bool HasBeenSeen { 
             get => this.MatchedTripReport.HasBeenSeen;
             set
@@ -61,10 +48,6 @@ namespace CascadePass.TrailBot.UI.Feature.Found
                 }
             }
         }
-
-        //public string BroaderContext { get; set; }
-
-        //public List<string> Topics { get; set; }
 
         public FontWeight FontWeight => this.HasBeenSeen ? FontWeights.Normal : FontWeights.SemiBold;
 
@@ -83,6 +66,10 @@ namespace CascadePass.TrailBot.UI.Feature.Found
 
         public bool HasSelectedText => !string.IsNullOrWhiteSpace(this.SelectedPreviewText);
 
+        public List<Topic> AllTopics { get; set; }
+
+        public Settings Settings { get; set; }
+
         public FlowDocument PreviewDocument
         {
             get
@@ -91,8 +78,8 @@ namespace CascadePass.TrailBot.UI.Feature.Found
                 {
                     return null;
                 }
-                
-                return this.previewDocument ??= this.FormatFlowDocument(this.CreateFlowDocument(this.Report));
+
+                return this.previewDocument ??= this.CreateFlowDocument(this.Report);
             }
         }
 
@@ -155,9 +142,8 @@ namespace CascadePass.TrailBot.UI.Feature.Found
             viewModel.Window = hostWindow;
 
 
-            //TODO: Make a local property don't use this globally
-            viewModel.Settings = ApplicationData.Settings;
-            viewModel.Topics = ApplicationData.WebProviderManager.Topics;
+            viewModel.Settings = this.Settings;
+            viewModel.Topics = this.AllTopics;
 
 
             viewModel.Topic = topic;
@@ -169,111 +155,129 @@ namespace CascadePass.TrailBot.UI.Feature.Found
             {
                 if (mode == AddTermMode.CreateNewTopic)
                 {
-                    ApplicationData.WebProviderManager.Topics.Add(topic);
+                    this.AllTopics.Add(topic);
                 }
-                // redraw the preview
+                
+                //TODO: redraw the preview
             }
         }
 
         #region Preview Flow Document
 
-        private FlowDocument CreateFlowDocument(TripReport tripReportSource)
+        public FlowDocument CreateFlowDocument(TripReport tripReportSource)
         {
             var document = new FlowDocument() { PagePadding = new Thickness(5) };
             document.SetResourceReference(FlowDocument.FontSizeProperty, "Font.Large");
 
             string[] paragraphs = tripReportSource.ReportText.Split(new char[] { '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries);
 
-            var titleRun = new Run($"{tripReportSource.Title} ({tripReportSource.TripDate.ToShortDateString()})");
-            var titleLink = new Hyperlink(titleRun) { Command = this.ViewInBrowserCommand };
-            var titleParagraph = new Paragraph(titleLink) { Margin = new Thickness(0, 0, 0, 10), FontWeight = FontWeights.ExtraBold };
-            titleRun.SetResourceReference(FlowDocument.FontSizeProperty, "Font.Huger");
-            document.Blocks.Add(titleParagraph);
-
+            document.Blocks.Add(this.CreatePreviewDocumentTitle(tripReportSource));            
 
             foreach (string paraText in paragraphs)
             {
-                var run = new Run(paraText) { Foreground = Brushes.DarkSlateGray };
-                var flowParagraph = new Paragraph(run) { Margin = new Thickness(0, 0, 0, 15) };
-
-                document.Blocks.Add(flowParagraph);
+                document.Blocks.Add(this.CreatePreviewDocumentParagraph(paraText));
             }
 
             return document;
         }
 
-        private FlowDocument FormatFlowDocument(FlowDocument document)
+        public Paragraph CreatePreviewDocumentTitle(TripReport tripReportSource)
         {
-            TextPointer currentPosition = document.ContentStart;
-            char[] punctuation = Topic.ClauseBoundaries;
+            var titleRun = new Run($"{tripReportSource.Title} ({tripReportSource.TripDate.ToShortDateString()})");
+            var titleLink = new Hyperlink(titleRun) { Command = this.ViewInBrowserCommand };
+            var titleParagraph = new Paragraph(titleLink) { Margin = new Thickness(0, 0, 0, 10), FontWeight = FontWeights.ExtraBold };
 
+            titleRun.SetResourceReference(FlowDocument.FontSizeProperty, "Font.Huger");
 
-            while (currentPosition != null)
+            return titleParagraph;
+        }
+
+        public Paragraph CreatePreviewDocumentParagraph(string paraText)
+        {
+            var flowParagraph = new Paragraph() { Margin = new Thickness(0, 0, 0, 15), Foreground = Brushes.DarkSlateGray };
+
+            foreach (string sentence in Regex.Split(paraText, "(?<=[.!?])"))
             {
-                if (currentPosition.CompareTo(document.ContentEnd) == 0)
-                {
-                    break;
-                }
+                this.CreatePreviewDocumentSentence(sentence, flowParagraph);
+            }
 
-                if (currentPosition.GetPointerContext(LogicalDirection.Forward) == TextPointerContext.Text)
+            return flowParagraph;
+        }
+
+        public void CreatePreviewDocumentSentence(string sentence, Paragraph flowParagraph)
+        {
+            bool sentenceMatchesTopic = false;
+
+            if (this.AllTopics != null)
+            {
+                foreach (Topic topic in this.AllTopics)
                 {
-                    foreach (var wordCount in this.MatchedTripReport.Matches.Split(','))
+                    if (!topic.GetMatchInfo(sentence).IsEmpty)
                     {
-                        string textInCurrentRun = currentPosition.GetTextInRun(LogicalDirection.Forward);
-
-                        string compareText = textInCurrentRun.ToLower();
-                        if (compareText.Contains(wordCount))
-                        {
-                            int wordStartIndex = compareText.IndexOf(wordCount);
-                            int previousSentenceEnd = 0;
-
-                            for (int i = wordStartIndex; i >= 0; i--)
-                            {
-                                if (punctuation.Contains(compareText[i]))
-                                {
-                                    previousSentenceEnd = i + 1;
-                                    break;
-                                }
-                            }
-
-                            int curentSentenceEnd = compareText.IndexOfAny(punctuation, wordStartIndex);
-
-                            int offset = 0;
-                            if (previousSentenceEnd > 0 && curentSentenceEnd > 0)
-                            {
-                                TextPointer
-                                    sentenceStart = currentPosition.GetPositionAtOffset(previousSentenceEnd),
-                                    sentenceEnd = currentPosition.GetPositionAtOffset(curentSentenceEnd);
-
-                                offset = 3;
-                                var sentenceRange = new TextRange(sentenceStart, sentenceEnd);
-
-                                sentenceRange.ApplyPropertyValue(TextElement.ForegroundProperty, Brushes.Black);
-                                sentenceRange.ApplyPropertyValue(TextElement.FontWeightProperty, FontWeights.Medium);
-                                sentenceRange.ApplyPropertyValue(TextElement.BackgroundProperty, Brushes.Yellow);
-                            }
-
-                            TextPointer
-                                start = currentPosition.GetPositionAtOffset(offset + wordStartIndex),
-                                end = currentPosition.GetPositionAtOffset(offset + wordStartIndex + wordCount.Length)
-                                ;
-
-                            var colorRange = new TextRange(start, end);
-
-                            colorRange.ApplyPropertyValue(TextElement.ForegroundProperty, Brushes.Red);
-                            colorRange.ApplyPropertyValue(TextElement.FontWeightProperty, FontWeights.Bold);
-                        }
+                        sentenceMatchesTopic = true;
+                        break;
                     }
-
-                    currentPosition = currentPosition.GetNextContextPosition(LogicalDirection.Forward);
-                }
-                else
-                {
-                    currentPosition = currentPosition.GetNextContextPosition(LogicalDirection.Forward);
                 }
             }
 
-            return document;
+            if (!sentenceMatchesTopic)
+            {
+                var run = new Run(sentence.Trim() + " ") { Foreground = Brushes.DarkSlateGray };
+
+                flowParagraph.Inlines.Add(run);
+
+                return;
+            }
+
+            Tokenizer tokenizer = new();
+            tokenizer.GetTokens(sentence);
+
+            int wordsLeftInMatchingPhrase = 0;
+            for (int i = 0; i < tokenizer.OrderedTokens.Count; i++)
+            {
+                bool wordIsTopicKeyword = false;
+
+                if (wordsLeftInMatchingPhrase > 0)
+                {
+                    wordIsTopicKeyword = true;
+                    wordsLeftInMatchingPhrase--;
+                }
+                else
+                {
+                    foreach (Topic topic in this.AllTopics)
+                    {
+                        foreach (Phrase topicPhrase in topic.MatchAnyPhrases)
+                        {
+                            if (tokenizer.IsMatchAt(topicPhrase, i))
+                            {
+                                wordIsTopicKeyword = true;
+                                wordsLeftInMatchingPhrase = (int)topicPhrase.Length - 1;
+
+                                break;
+                            }
+                        }
+
+                        if (wordIsTopicKeyword)
+                        {
+                            break;
+                        }
+                    }
+                }
+
+                string nextChar = i < tokenizer.OrderedTokens.Count - 1 && !tokenizer.OrderedTokens[i + 1].IsPunctuation ? " " : string.Empty;
+
+                var wordRun = new Run(tokenizer.OrderedTokens[i].Text + nextChar) { Background = Brushes.Yellow };
+
+                if (wordIsTopicKeyword)
+                {
+                    wordRun.FontWeight = FontWeights.Bold;
+                    wordRun.Foreground = Brushes.Black;
+                }
+
+                flowParagraph.Inlines.Add(wordRun);
+            }
+
+            flowParagraph.Inlines.Add(new Run(" "));
         }
 
         #endregion

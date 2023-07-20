@@ -1,5 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using System.Windows.Data;
 
 namespace CascadePass.TrailBot.UI.Feature.Found
@@ -97,15 +98,24 @@ namespace CascadePass.TrailBot.UI.Feature.Found
                 {
                     foreach (var item in this.webProviderManager.Found)
                     {
-                        this.MatchedTripReports.Add(new MatchedTripReportViewModel() { MatchedTripReport = item });
+                        this.MatchedTripReports.Add(ReaderViewModel.CreateMatchedViewModel(item));
                     }
                 }
             }
         }
 
+        public static MatchedTripReportViewModel CreateMatchedViewModel(MatchedTripReport item)
+        {
+            return new() {
+                MatchedTripReport = item,
+                AllTopics = ApplicationData.WebProviderManager.Topics,
+                Settings = ApplicationData.Settings,
+            };
+        }
+
         private void WebProviderManager_FoundMatch(object sender, MatchingTripReportEventArgs e)
         {
-            this.MatchedTripReports.Add(new() { MatchedTripReport = e.MatchedTripReport });
+            this.MatchedTripReports.Add(ReaderViewModel.CreateMatchedViewModel(e.MatchedTripReport));
         }
 
         private void Settings_PropertyChanged(object sender, PropertyChangedEventArgs e)
