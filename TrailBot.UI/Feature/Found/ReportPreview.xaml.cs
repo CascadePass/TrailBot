@@ -35,17 +35,6 @@ namespace CascadePass.TrailBot.UI.Feature.Found
 
         public Settings Settings { get; set; }
 
-        public void NavigateTo(string url)
-        {
-            dynamic activeX = this.WebBrowserControl.GetType().InvokeMember("ActiveXInstance",
-                                BindingFlags.GetProperty | BindingFlags.Instance | BindingFlags.NonPublic,
-                                null, this.WebBrowserControl, new object[] { });
-
-            activeX.Silent = true;
-
-            this.WebBrowserControl.Navigate(url);
-        }
-
         private void ContextMenu_ContextMenuOpening(object sender, ContextMenuEventArgs e)
         {
             if (sender is FlowDocumentScrollViewer docViewer)

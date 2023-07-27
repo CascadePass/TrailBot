@@ -73,6 +73,9 @@
     <Compile Include="Feature\Found\FoundFeature.xaml.cs">
       <DependentUpon>FoundFeature.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Feature\Found\MatchDetails.xaml.cs">
+      <DependentUpon>MatchDetails.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Feature\Found\ReportPreview.xaml.cs">
       <DependentUpon>ReportPreview.xaml</DependentUpon>
     </Compile>
@@ -106,6 +109,7 @@
     <Compile Include="UIcore\DelegateCommand.cs" />
     <Compile Include="Feature\Found\MatchedTripReportViewModel.cs" />
     <Compile Include="ObservableObject.cs" />
+    <Compile Include="UIcore\ParameterizedDelegateCommand.cs" />
     <Compile Include="UIcore\ReverseBooleanToBooleanConverter.cs" />
     <Compile Include="UIcore\ReverseBooleanToVisibilityConverter.cs" />
     <Compile Include="UIcore\RibbonStrip.xaml.cs">
@@ -128,6 +132,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Feature\Found\FoundFeature.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Feature\Found\MatchDetails.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -392,6 +400,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\Copy.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Close.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\Selenium.WebDriver.4.10.0\build\Selenium.WebDriver.targets" Condition="Exists('..\packages\Selenium.WebDriver.4.10.0\build\Selenium.WebDriver.targets')" />

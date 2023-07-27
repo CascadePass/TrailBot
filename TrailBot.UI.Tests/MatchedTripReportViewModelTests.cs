@@ -54,6 +54,54 @@ namespace CascadePass.TrailBot.UI.Tests
 
         #endregion
 
+        #region get/set access same value
+
+        [TestMethod]
+        public void HasBeenSeen_GetSetAccessSameValue()
+        {
+            MatchedTripReportViewModel vm = new() { MatchedTripReport = new() };
+            bool originalValue = vm.HasBeenSeen;
+
+            vm.HasBeenSeen = !originalValue;
+            
+            Assert.AreEqual(!originalValue, vm.HasBeenSeen);
+        }
+
+        [TestMethod]
+        public void IsMatchDetailPanelVisible_GetSetAccessSameValue()
+        {
+            MatchedTripReportViewModel vm = new();
+            bool originalValue = vm.IsMatchDetailPanelVisible;
+
+            vm.IsMatchDetailPanelVisible = !originalValue;
+
+            Assert.AreEqual(!originalValue, vm.IsMatchDetailPanelVisible);
+        }
+
+        [TestMethod]
+        public void IsMatchTermListVisible_GetSetAccessSameValue()
+        {
+            MatchedTripReportViewModel vm = new();
+            bool originalValue = vm.IsMatchTermListVisible;
+
+            vm.IsMatchTermListVisible = !originalValue;
+
+            Assert.AreEqual(!originalValue, vm.IsMatchTermListVisible);
+        }
+
+        [TestMethod]
+        public void TopicExerpts_GetSetAccessSameValue()
+        {
+            MatchedTripReportViewModel vm = new();
+            string value = Guid.NewGuid().ToString();
+
+            vm.TopicExerpts = value;
+
+            Assert.AreEqual(value, vm.TopicExerpts);
+        }
+
+        #endregion
+
         #region PreviewDocument
 
         [TestMethod]
@@ -327,6 +375,20 @@ namespace CascadePass.TrailBot.UI.Tests
         }
 
         [TestMethod]
+        public void CloseMatchDetailCommand_NotNull()
+        {
+            MatchedTripReportViewModel vm = new();
+            Assert.IsNotNull(vm.CloseMatchDetailCommand);
+        }
+
+        [TestMethod]
+        public void ShowSearchTermsCommand_NotNull()
+        {
+            MatchedTripReportViewModel vm = new();
+            Assert.IsNotNull(vm.ShowSearchTermsCommand);
+        }
+
+        [TestMethod]
         public void AllCommandsAreUnique()
         {
             MatchedTripReportViewModel vm = new();
@@ -337,6 +399,8 @@ namespace CascadePass.TrailBot.UI.Tests
             commands.Add(vm.AddExceptionTextToTopicCommand);
             commands.Add(vm.CreateTopicCommand);
             commands.Add(vm.CopySelectedTextCommand);
+            commands.Add(vm.CloseMatchDetailCommand);
+            commands.Add(vm.ShowSearchTermsCommand);
 
             // The purpose of this test is to catch copy/paste errors in property definitions
         }
