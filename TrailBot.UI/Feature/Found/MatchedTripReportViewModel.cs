@@ -18,7 +18,7 @@ namespace CascadePass.TrailBot.UI.Feature.Found
     {
         private TripReport tripReport;
         private FlowDocument previewDocument;
-        private string selectedPreviewText, topicExerpts;
+        private string selectedPreviewText, topicExerpts, matchTermsAreFor;
         private bool isMatchDetailPanelVisible, isMatchTermListVisible;
         private DelegateCommand viewTripReportInWebBrowserCommand, addTextToTopicCommand, addExceptionTextCommand, createTopicCommand, copySelectedCommand, closeMatchDetailCommand;
         private ParameterizedDelegateCommand showSearchTermsCommand, editTopicCommand;
@@ -187,6 +187,12 @@ namespace CascadePass.TrailBot.UI.Feature.Found
         {
             string topicName = (string)topic;
 
+            if (this.IsMatchTermListVisible && string.Equals(topicName, this.matchTermsAreFor, StringComparison.Ordinal))
+            {
+                this.IsMatchTermListVisible = false;
+                return;
+            }
+
             StringBuilder result = new();
             bool addNextLine = false;
             foreach (string line in this.MatchedTripReport.BroaderContext.Split(new char[] { '\r', '\n' }))
@@ -205,8 +211,9 @@ namespace CascadePass.TrailBot.UI.Feature.Found
                 }
             }
 
-            this.TopicExerpts = result.ToString();
+            this.TopicExerpts = result.ToString().Trim();
             this.IsMatchTermListVisible = true;
+            this.matchTermsAreFor = topicName;
         }
 
         private void EditTopicImplementation(object topic)

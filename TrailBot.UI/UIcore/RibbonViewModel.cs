@@ -18,9 +18,11 @@ namespace CascadePass.TrailBot.UI
             if (Application.Current is App tripReportReaderApplication)
             {
                 this.Settings = ApplicationData.Settings;
-                this.ReaderViewModel = tripReportReaderApplication.MainWindow.DataContext as ReaderViewModel;
+                //this.ReaderViewModel = tripReportReaderApplication.MainWindow.DataContext as ReaderViewModel;
                 this.WebProviderManager = ApplicationData.WebProviderManager;
             }
+
+            this.ReaderViewModel = new();
 
             this.QuickSettingsViewModel = new() {
                 Settings = this.Settings,
