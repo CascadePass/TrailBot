@@ -8,113 +8,48 @@
              FontSize="{DynamicResource Font.Normal}"
              d:DesignHeight="450" d:DesignWidth="800">
 
-    <TabControl>
-        <TabItem>
-            <TabItem.Header>
-                <TextBlock>
-                    <Image Height="16" Width="16" Source="pack://application:,,,/Images/Report.png" />
-                    <Run Text="Text" />
-                    <Run Text="(" />
-                    <Run Text="{Binding WordCount}" />
-                    <Run Text="Words)" />
-                </TextBlock>
-            </TabItem.Header>
-            <DockPanel>
-                <Border DockPanel.Dock="Top" Background="Orange" BorderBrush="DarkOrange" Padding="5,2,5,2">
-                    <StackPanel>
-                        <TextBlock FontSize="{DynamicResource Font.Large}">
-                                <Run Text="Matched: " />
-                                <Run Text="{Binding MatchedTripReport.Matches}" FontWeight="Bold" />
-                        </TextBlock>
+    <DockPanel>
+        <local:MatchDetails
+            DockPanel.Dock="Top"
+            Visibility="{Binding IsMatchDetailPanelVisible, Converter={StaticResource bool2vis}}" />
 
-                        <TextBlock Text="{Binding MatchedTripReport.BroaderContext}" />
-                    </StackPanel>
-                </Border>
+        <FlowDocumentScrollViewer
+            Document="{Binding PreviewDocument}"
+            FontSize="{DynamicResource Font.Normal}"
+            ContextMenuOpening="ContextMenu_ContextMenuOpening"
+            HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+            <FlowDocumentScrollViewer.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="Copy" Command="{Binding CopySelectedTextCommand}" IsEnabled="{Binding HasSelectedText}">
+                        <MenuItem.Icon>
+                            <Image Source="pack://application:,,,/Images/Copy.png" />
+                        </MenuItem.Icon>
+                    </MenuItem>
 
-                <FlowDocumentScrollViewer
-                    Document="{Binding PreviewDocument}"
-                    FontSize="{DynamicResource Font.Normal}"
-                    ContextMenuOpening="ContextMenu_ContextMenuOpening"
-                    HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-                    <FlowDocumentScrollViewer.ContextMenu>
-                        <ContextMenu>
-                            <MenuItem Header="Copy" Command="{Binding CopySelectedTextCommand}" IsEnabled="{Binding HasSelectedText}">
-                                <MenuItem.Icon>
-                                    <Image Source="pack://application:,,,/Images/Copy.png" />
-                                </MenuItem.Icon>
-                            </MenuItem>
+                    <Separator />
 
-                            <Separator />
+                    <MenuItem Header="Add to topic" Command="{Binding AddTextToTopicCommand}" IsEnabled="{Binding HasSelectedText}">
+                        <MenuItem.Icon>
+                            <Image Source="pack://application:,,,/Images/AddCustomControl.png" />
+                        </MenuItem.Icon>
+                    </MenuItem>
 
-                            <MenuItem Header="Add to topic" Command="{Binding AddTextToTopicCommand}" IsEnabled="{Binding HasSelectedText}">
-                                <MenuItem.Icon>
-                                    <Image Source="pack://application:,,,/Images/AddCustomControl.png" />
-                                </MenuItem.Icon>
-                            </MenuItem>
+                    <MenuItem Header="Add to topic as false match" Command="{Binding AddExceptionTextToTopicCommand}" IsEnabled="{Binding HasSelectedText}">
+                        <MenuItem.Icon>
+                            <Image Source="pack://application:,,,/Images/AdvancedProductionBreakpointAlert.png" />
+                        </MenuItem.Icon>
+                    </MenuItem>
 
-                            <MenuItem Header="Add to topic as false match" Command="{Binding AddExceptionTextToTopicCommand}" IsEnabled="{Binding HasSelectedText}">
-                                <MenuItem.Icon>
-                                    <Image Source="pack://application:,,,/Images/AdvancedProductionBreakpointAlert.png" />
-                                </MenuItem.Icon>
-                            </MenuItem>
+                    <Separator />
 
-                            <Separator />
-
-                            <MenuItem Header="Create new topic" Command="{Binding CreateTopicCommand}" IsEnabled="{Binding HasSelectedText}">
-                                <MenuItem.Icon>
-                                    <Image Source="pack://application:,,,/Images/AddComment.png" />
-                                </MenuItem.Icon>
-                            </MenuItem>
-                        </ContextMenu>
-                    </FlowDocumentScrollViewer.ContextMenu>
-                </FlowDocumentScrollViewer>
-            </DockPanel>
-        </TabItem>
-
-        <TabItem>
-            <TabItem.Header>
-                <TextBlock>
-                        <Image Height="16" Width="16" Source="pack://application:,,,/Images/EnumerationSnippet.png" />
-                        <Run Text="{Binding Words.Count, Mode=OneWay}" />
-                        <Run Text="(Distinct) Words" />
-                </TextBlock>
-            </TabItem.Header>
-            <DataGrid ItemsSource="{Binding Words}" IsReadOnly="True" AutoGenerateColumns="False" GridLinesVisibility="None" HeadersVisibility="Column">
-                <DataGrid.Columns>
-                    <DataGridTextColumn Header="Word" Binding="{Binding Token.Text}" />
-                    <DataGridTextColumn Header="Count" Binding="{Binding Count}" />
-                </DataGrid.Columns>
-            </DataGrid>
-        </TabItem>
-
-        <TabItem>
-            <TabItem.Header>
-                <TextBlock>
-                        <Image Height="16" Width="16" Source="pack://application:,,,/Images/ErrorSummary.png" />
-                        <Run Text="{Binding Phrases.Count, Mode=OneWay}" />
-                        <Run Text="Phrases" />
-                </TextBlock>
-            </TabItem.Header>
-            <DataGrid ItemsSource="{Binding Phrases}" IsReadOnly="True" AutoGenerateColumns="False" GridLinesVisibility="None" HeadersVisibility="Column">
-                <DataGrid.Columns>
-                    <DataGridTextColumn Header="Text" Binding="{Binding Text}" />
-                    <DataGridTextColumn Header="Length" Binding="{Binding Length}" />
-                </DataGrid.Columns>
-            </DataGrid>
-        </TabItem>
-
-        <TabItem>
-            <TabItem.Header>
-                <TextBlock>
-                        <Image Height="16" Width="16" Source="pack://application:,,,/Images/WebApplication.png" />
-                        <Run Text="Browser Preview" />
-                </TextBlock>
-            </TabItem.Header>
-
-            <WebBrowser
-                    x:Name="WebBrowserControl"                            
-                    />
-        </TabItem>
-    </TabControl>
+                    <MenuItem Header="Create new topic" Command="{Binding CreateTopicCommand}" IsEnabled="{Binding HasSelectedText}">
+                        <MenuItem.Icon>
+                            <Image Source="pack://application:,,,/Images/AddComment.png" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+                </ContextMenu>
+            </FlowDocumentScrollViewer.ContextMenu>
+        </FlowDocumentScrollViewer>
+    </DockPanel>
 
 </UserControl>

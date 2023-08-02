@@ -3,6 +3,7 @@ using CascadePass.TrailBot.UI.Dialogs.AddTermToTopic;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Documents;
@@ -17,8 +18,15 @@ namespace CascadePass.TrailBot.UI.Feature.Found
     {
         private TripReport tripReport;
         private FlowDocument previewDocument;
-        private string selectedPreviewText;
-        private DelegateCommand viewTripReportInWebBrowserCommand, addTextToTopicCommand, addExceptionTextCommand, createTopicCommand, copySelectedCommand;
+        private string selectedPreviewText, topicExerpts, matchTermsAreFor;
+        private bool isMatchDetailPanelVisible, isMatchTermListVisible;
+        private DelegateCommand viewTripReportInWebBrowserCommand, addTextToTopicCommand, addExceptionTextCommand, createTopicCommand, copySelectedCommand, closeMatchDetailCommand;
+        private ParameterizedDelegateCommand showSearchTermsCommand, editTopicCommand;
+
+        public MatchedTripReportViewModel()
+        {
+            this.isMatchDetailPanelVisible = true;
+        }
 
         public MatchedTripReport MatchedTripReport { get; set; }
 
@@ -70,6 +78,45 @@ namespace CascadePass.TrailBot.UI.Feature.Found
 
         public Settings Settings { get; set; }
 
+        public bool IsMatchDetailPanelVisible
+        {
+            get => this.isMatchDetailPanelVisible;
+            set
+            {
+                if (this.isMatchDetailPanelVisible != value)
+                {
+                    this.isMatchDetailPanelVisible = value;
+                    this.OnPropertyChanged(nameof(this.IsMatchDetailPanelVisible));
+                }
+            }
+        }
+
+        public bool IsMatchTermListVisible
+        {
+            get => this.isMatchTermListVisible;
+            set
+            {
+                if (this.isMatchTermListVisible != value)
+                {
+                    this.isMatchTermListVisible = value;
+                    this.OnPropertyChanged(nameof(this.IsMatchTermListVisible));
+                }
+            }
+        }
+
+        public string TopicExerpts
+        {
+            get => this.topicExerpts;
+            set
+            {
+                if (!string.Equals(this.topicExerpts, value, StringComparison.Ordinal))
+                {
+                    this.topicExerpts = value;
+                    this.OnPropertyChanged(nameof(this.TopicExerpts));
+                }
+            }
+        }
+
         public FlowDocument PreviewDocument
         {
             get
@@ -83,6 +130,8 @@ namespace CascadePass.TrailBot.UI.Feature.Found
             }
         }
 
+        #region Commands
+
         public ICommand ViewInBrowserCommand => this.viewTripReportInWebBrowserCommand ??= new(this.LaunchTripReportInBrowser);
 
         public ICommand AddTextToTopicCommand => this.addTextToTopicCommand ??= new(this.AddTextToTopicImplementation);
@@ -92,6 +141,16 @@ namespace CascadePass.TrailBot.UI.Feature.Found
         public ICommand CreateTopicCommand => this.createTopicCommand ??= new(this.CreateTopicImplementation);
 
         public ICommand CopySelectedTextCommand => this.copySelectedCommand ??= new(this.CopySelectedTextImplementation);
+
+        public ICommand CloseMatchDetailCommand => this.closeMatchDetailCommand ??= new(this.CloseMatchDetailImplementation);
+
+        public ICommand ShowSearchTermsCommand => this.showSearchTermsCommand ??= new(this.ShowMatchingSearchTermsImplementation);
+
+        public ICommand EditTopicCommand => this.editTopicCommand ??= new(this.EditTopicImplementation);
+
+        #endregion
+
+        #region Command Implementations
 
         private void LaunchTripReportInBrowser()
         {
@@ -118,6 +177,58 @@ namespace CascadePass.TrailBot.UI.Feature.Found
         {
             Clipboard.SetText(this.SelectedPreviewText);
         }
+
+        private void CloseMatchDetailImplementation()
+        {
+            this.IsMatchDetailPanelVisible = false;
+        }
+
+        private void ShowMatchingSearchTermsImplementation(object topic)
+        {
+            string topicName = (string)topic;
+
+            if (this.IsMatchTermListVisible && string.Equals(topicName, this.matchTermsAreFor, StringComparison.Ordinal))
+            {
+                this.IsMatchTermListVisible = false;
+                return;
+            }
+
+            StringBuilder result = new();
+            bool addNextLine = false;
+            foreach (string line in this.MatchedTripReport.BroaderContext.Split(new char[] { '\r', '\n' }))
+            {
+                if (this.AllTopics.Any(m => string.Equals(m.Name, line.Trim(), StringComparison.OrdinalIgnoreCase)))
+                {
+                    addNextLine = false;
+                } else if (addNextLine && !string.IsNullOrWhiteSpace(line))
+                {
+                    result.AppendLine(line);
+                }
+
+                if (string.Equals(topicName, line.Trim(), StringComparison.OrdinalIgnoreCase))
+                {
+                    addNextLine = true;
+                }
+            }
+
+            this.TopicExerpts = result.ToString().Trim();
+            this.IsMatchTermListVisible = true;
+            this.matchTermsAreFor = topicName;
+        }
+
+        private void EditTopicImplementation(object topic)
+        {
+            string topicName = (string)topic;
+
+            if (Application.Current is App tripReportReaderApplication && tripReportReaderApplication.MainWindow is MainWindow hostWindow)
+            {
+                hostWindow.CurrentContent = FeaturecreenProvider.GetTopicEditorScreen();
+                TopicEditor.TopicEditorViewModel vm = (TopicEditor.TopicEditorViewModel)hostWindow.CurrentViewModel;
+                vm.ExpandTopic(topicName);
+            }
+        }
+
+        #endregion
 
         private void AddTerm(AddTermMode mode, Topic topic)
         {
@@ -149,6 +260,7 @@ namespace CascadePass.TrailBot.UI.Feature.Found
             viewModel.Topic = topic;
             viewModel.EditMode = mode;
             viewModel.InitialTerm = this.SelectedPreviewText?.Trim();
+
             hostWindow.ShowDialog();
 
             if (viewModel.WasUpdated)
@@ -157,7 +269,7 @@ namespace CascadePass.TrailBot.UI.Feature.Found
                 {
                     this.AllTopics.Add(topic);
                 }
-                
+
                 //TODO: redraw the preview
             }
         }

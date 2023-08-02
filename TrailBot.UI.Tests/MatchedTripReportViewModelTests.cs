@@ -18,6 +18,13 @@ namespace CascadePass.TrailBot.UI.Tests
             MatchedTripReportViewModel vm = new();
         }
 
+        [TestMethod]
+        public void IsMatchDetailPanelVisible_TrueByDefault()
+        {
+            MatchedTripReportViewModel vm = new();
+            Assert.IsTrue(vm.IsMatchDetailPanelVisible);
+        }
+
         #region HasSelectedText
 
         [TestMethod]
@@ -50,6 +57,76 @@ namespace CascadePass.TrailBot.UI.Tests
         {
             MatchedTripReportViewModel vm = new() { MatchedTripReport = new(), HasBeenSeen = false };
             Assert.AreEqual(vm.FontWeight, FontWeights.DemiBold);
+        }
+
+        #endregion
+
+        #region get/set access same value
+
+        [TestMethod]
+        public void HasBeenSeen_GetSetAccessSameValue()
+        {
+            MatchedTripReportViewModel vm = new() { MatchedTripReport = new() };
+            bool originalValue = vm.HasBeenSeen;
+
+            vm.HasBeenSeen = !originalValue;
+            
+            Assert.AreEqual(!originalValue, vm.HasBeenSeen);
+        }
+
+        [TestMethod]
+        public void IsMatchDetailPanelVisible_GetSetAccessSameValue()
+        {
+            MatchedTripReportViewModel vm = new();
+            bool originalValue = vm.IsMatchDetailPanelVisible;
+
+            vm.IsMatchDetailPanelVisible = !originalValue;
+
+            Assert.AreEqual(!originalValue, vm.IsMatchDetailPanelVisible);
+        }
+
+        [TestMethod]
+        public void IsMatchTermListVisible_GetSetAccessSameValue()
+        {
+            MatchedTripReportViewModel vm = new();
+            bool originalValue = vm.IsMatchTermListVisible;
+
+            vm.IsMatchTermListVisible = !originalValue;
+
+            Assert.AreEqual(!originalValue, vm.IsMatchTermListVisible);
+        }
+
+        [TestMethod]
+        public void TopicExerpts_GetSetAccessSameValue()
+        {
+            MatchedTripReportViewModel vm = new();
+            string value = Guid.NewGuid().ToString();
+
+            vm.TopicExerpts = value;
+
+            Assert.AreEqual(value, vm.TopicExerpts);
+        }
+
+        [TestMethod]
+        public void SelectedPreviewText_GetSetAccessSameValue()
+        {
+            MatchedTripReportViewModel vm = new();
+            string value = Guid.NewGuid().ToString();
+
+            vm.SelectedPreviewText = value;
+
+            Assert.AreEqual(value, vm.SelectedPreviewText);
+        }
+
+        [TestMethod]
+        public void Report_GetSetAccessSameValue()
+        {
+            MatchedTripReportViewModel vm = new();
+            TripReport value = new();
+
+            vm.Report = value;
+
+            Assert.AreEqual(value, vm.Report);
         }
 
         #endregion
@@ -327,6 +404,20 @@ namespace CascadePass.TrailBot.UI.Tests
         }
 
         [TestMethod]
+        public void CloseMatchDetailCommand_NotNull()
+        {
+            MatchedTripReportViewModel vm = new();
+            Assert.IsNotNull(vm.CloseMatchDetailCommand);
+        }
+
+        [TestMethod]
+        public void ShowSearchTermsCommand_NotNull()
+        {
+            MatchedTripReportViewModel vm = new();
+            Assert.IsNotNull(vm.ShowSearchTermsCommand);
+        }
+
+        [TestMethod]
         public void AllCommandsAreUnique()
         {
             MatchedTripReportViewModel vm = new();
@@ -337,10 +428,86 @@ namespace CascadePass.TrailBot.UI.Tests
             commands.Add(vm.AddExceptionTextToTopicCommand);
             commands.Add(vm.CreateTopicCommand);
             commands.Add(vm.CopySelectedTextCommand);
+            commands.Add(vm.CloseMatchDetailCommand);
+            commands.Add(vm.ShowSearchTermsCommand);
 
             // The purpose of this test is to catch copy/paste errors in property definitions
         }
-        
+
+        #endregion
+
+        #region Commands: Behavior
+
+        #region ShowSearchTermsCommand
+
+        [TestMethod]
+        public void ShowSearchTermsCommand_CanShow()
+        {
+            MatchedTripReportViewModel vm = new();
+            vm.MatchedTripReport = new() { BroaderContext = "crime\r\nkeyword" };
+            vm.AllTopics = new() { new() { Name = "crime" } };
+
+            Assert.IsFalse(vm.IsMatchTermListVisible);
+
+            vm.ShowSearchTermsCommand.Execute("crime");
+            Assert.IsTrue(vm.IsMatchTermListVisible);
+            Assert.AreEqual("keyword", vm.TopicExerpts);
+        }
+
+        [TestMethod]
+        public void ShowSearchTermsCommand_CanHide()
+        {
+            MatchedTripReportViewModel vm = new();
+            vm.MatchedTripReport = new() { BroaderContext = "crime\r\nkeyword" };
+            vm.AllTopics = new() { new() { Name = "crime" } };
+
+            // This has to be called twice, because the view model uses
+            // private variables to track the state.
+            vm.ShowSearchTermsCommand.Execute("crime");
+            vm.ShowSearchTermsCommand.Execute("crime");
+
+            Assert.IsFalse(vm.IsMatchTermListVisible);
+            Assert.AreEqual("keyword", vm.TopicExerpts);
+        }
+
+        [TestMethod]
+        public void ShowSearchTermsCommand_Multiline()
+        {
+            MatchedTripReportViewModel vm = new();
+            vm.MatchedTripReport = new() { BroaderContext = "crime\r\ncredit card\r\nbroken window\r\ncalled 911" };
+            vm.AllTopics = new() { new() { Name = "crime" } };
+
+            Assert.IsFalse(vm.IsMatchTermListVisible);
+
+            vm.ShowSearchTermsCommand.Execute("crime");
+            Assert.IsTrue(vm.IsMatchTermListVisible);
+            Assert.AreEqual("credit card\r\nbroken window\r\ncalled 911", vm.TopicExerpts);
+        }
+
+        #endregion
+
+        [TestMethod]
+        public void CloseMatchDetailCommand()
+        {
+            MatchedTripReportViewModel vm = new();
+
+            vm.IsMatchDetailPanelVisible = true;
+            vm.CloseMatchDetailCommand.Execute(null);
+
+            Assert.IsFalse(vm.IsMatchDetailPanelVisible);
+        }
+
+        [TestMethod]
+        public void MyTestMethod()
+        {
+            MatchedTripReportViewModel vm = new();
+            vm.SelectedPreviewText = Guid.NewGuid().ToString();
+
+            vm.CopySelectedTextCommand.Execute(null);
+
+            Assert.AreEqual(vm.SelectedPreviewText, Clipboard.GetText());
+        }
+
         #endregion
     }
 }

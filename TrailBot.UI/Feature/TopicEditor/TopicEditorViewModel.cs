@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using OpenQA.Selenium.DevTools.V112.Runtime;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -57,6 +58,16 @@ namespace CascadePass.TrailBot.UI.Feature.TopicEditor
             }
 
             return result;
+        }
+
+        public void ExpandTopic(string name)
+        {
+            var found = this.TopicViewModels.FirstOrDefault(m => string.Equals(m.Name, name, System.StringComparison.OrdinalIgnoreCase));
+
+            if (found != null)
+            {
+                found.IsExpanded = true;
+            }
         }
 
         public void AddEmptyTopic()

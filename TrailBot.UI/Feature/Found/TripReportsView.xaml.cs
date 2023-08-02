@@ -63,33 +63,24 @@ namespace CascadePass.TrailBot.UI.Feature.Found
         {
             MatchedTripReportViewModel vm = (MatchedTripReportViewModel)state;
 
-            try
+            TripReport tr = vm.Report;
+
+            if (tr == null)
             {
-                TripReport tr = vm.Report;
-
-                if (tr == null)
+                if (File.Exists(vm.MatchedTripReport.Filename))
                 {
-                    if (File.Exists(vm.MatchedTripReport.Filename))
-                    {
-                        XmlSerializer serializer = new(typeof(WtaTripReport));
+                    XmlSerializer serializer = new(typeof(WtaTripReport));
 
-                        using StreamReader streamReader = new(vm.MatchedTripReport.Filename);
-                        tr = (TripReport)serializer.Deserialize(streamReader);
-                    }
-                    else
-                    {
-                        var provider = new WtaDataProvider() { LastTripReportRequest = DateTime.MinValue, LastGetRecentRequest = DateTime.MinValue };
-                        tr = provider.GetTripReport(vm.MatchedTripReport.SourceUri);
-                    }
-
-                    vm.Report = tr;
+                    using StreamReader streamReader = new(vm.MatchedTripReport.Filename);
+                    tr = (TripReport)serializer.Deserialize(streamReader);
+                }
+                else
+                {
+                    var provider = new WtaDataProvider() { LastTripReportRequest = DateTime.MinValue, LastGetRecentRequest = DateTime.MinValue };
+                    tr = provider.GetTripReport(vm.MatchedTripReport.SourceUri);
                 }
 
-                this.PreviewControl.NavigateTo(vm.MatchedTripReport.SourceUri);
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine(ex.Message);
+                vm.Report = tr;
             }
 
             vm.MatchedTripReport.HasBeenSeen = true;
