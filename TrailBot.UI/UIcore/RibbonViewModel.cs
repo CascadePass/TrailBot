@@ -17,12 +17,12 @@ namespace CascadePass.TrailBot.UI
         {
             if (Application.Current is App tripReportReaderApplication)
             {
+                MainWindow mainWindow = tripReportReaderApplication.MainWindow as MainWindow;
+                mainWindow.ContentChanged += this.MainWindow_ContentChanged;
+
                 this.Settings = ApplicationData.Settings;
-                //this.ReaderViewModel = tripReportReaderApplication.MainWindow.DataContext as ReaderViewModel;
                 this.WebProviderManager = ApplicationData.WebProviderManager;
             }
-
-            this.ReaderViewModel = new();
 
             this.QuickSettingsViewModel = new() {
                 Settings = this.Settings,
@@ -30,7 +30,23 @@ namespace CascadePass.TrailBot.UI
             };
         }
 
-        public ReaderViewModel ReaderViewModel { get; set; }
+        public ReaderViewModel ReaderViewModel
+        {
+            get
+            {
+                if (Application.Current is App tripReportReaderApplication)
+                {
+                    MainWindow mainWindow = tripReportReaderApplication.MainWindow as MainWindow;
+
+                    if (mainWindow.CurrentContent != null)
+                    {
+                        return mainWindow.CurrentViewModel as ReaderViewModel;
+                    }
+                }
+
+                return null;
+            }
+        }
 
         public WebProviderManager WebProviderManager { get; set; }
 
@@ -174,5 +190,11 @@ namespace CascadePass.TrailBot.UI
             {
             }
         }
+
+        private void MainWindow_ContentChanged(object sender, EventArgs e)
+        {
+            this.OnPropertyChanged(nameof(this.ReaderViewModel));
+        }
+
     }
 }

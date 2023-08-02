@@ -44,14 +44,6 @@ namespace CascadePass.TrailBot.UI.Feature.Found
             {
                 if (this.selectedMatch != value)
                 {
-                    if (this.selectedMatch != null)
-                    {
-                        //TODO: Replace this with a ribbon button
-                        // in the meantime, the user needs a way
-                        // to get this back after dismissing it.
-                        this.selectedMatch.IsMatchDetailPanelVisible = true;
-                    }
-
                     this.selectedMatch = value;
                     this.OnPropertyChanged(nameof(this.SelectedMatch));
                     this.OnPropertyChanged(nameof(this.HasSelectedMatch));

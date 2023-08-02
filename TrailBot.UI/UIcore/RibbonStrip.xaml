@@ -117,8 +117,13 @@
 
             <RibbonGroup Header="View">
                 <RibbonCheckBox
-                    Label="Show Preview"
+                    Label="Report Preview"
                     IsChecked="{Binding Settings.ShowPreviewPane}"
+                    />
+
+                <RibbonCheckBox
+                    Label="Match Details"
+                    IsChecked="{Binding ReaderViewModel.SelectedMatch.IsMatchDetailPanelVisible}"
                     />
 
                 <RibbonTextBox Label="Search" SmallImageSource="pack://application:,,,/Images/ZoomIn.png" />
