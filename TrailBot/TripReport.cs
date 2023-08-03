@@ -9,6 +9,9 @@ namespace CascadePass.TrailBot
 
         public string Url { get; set; }
         public DateTime TripDate { get; set; }
+        public DateTime PublishDate { get; set; }
+        public DateTime FoundDate { get; set; }
+        public DateTime ProcessedDate { get; set; }
         public string Title { get; set; }
         public string ReportText { get; set; }
 

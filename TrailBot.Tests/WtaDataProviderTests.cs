@@ -1,4 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using OpenQA.Selenium;
 using System;
 
 namespace CascadePass.TrailBot.Tests
@@ -68,11 +69,16 @@ namespace CascadePass.TrailBot.Tests
         }
 
 
+        [TestMethod]
+        public void ParseReportDate_Url_null()
+        {
+            Assert.AreEqual(DateTime.MinValue, WtaDataProvider.ParseReportDate((Uri)null));
+        }
 
         [TestMethod]
-        public void ParseReportDate_null()
+        public void ParseReportDate_Page_null()
         {
-            Assert.AreEqual(DateTime.MinValue, WtaDataProvider.ParseReportDate(null));
+            Assert.AreEqual(DateTime.MinValue, WtaDataProvider.ParseReportDate((WebDriver)null));
         }
 
         [TestMethod]
@@ -80,7 +86,7 @@ namespace CascadePass.TrailBot.Tests
         {
             Assert.AreEqual(
                 new(2023, 05, 19),
-                WtaDataProvider.ParseReportDate(new("https://www.wta.org/go-hiking/trip-reports/trip_report.2023-05-19.0501766105"))
+                WtaDataProvider.ParseReportDate(new Uri("https://www.wta.org/go-hiking/trip-reports/trip_report.2023-05-19.0501766105"))
                 );
         }
     }
