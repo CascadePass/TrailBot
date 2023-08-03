@@ -212,7 +212,8 @@ namespace CascadePass.TrailBot
             report.Title = this.ParseReportTitle(webDriver);
             report.Region = this.ParseReportRegion(webDriver);
             report.Author = this.ParseReportAuthor(webDriver);
-            report.TripDate = WtaDataProvider.ParseReportDate(uri);
+            report.TripDate = WtaDataProvider.ParseReportDate(webDriver);
+            report.PublishDate = WtaDataProvider.ParseReportDate(uri);
             report.Trails = this.ParseReportTrails(webDriver);
             report.TrailConditions = this.ParseReportConditions(webDriver);
             report.Feature = this.ParseReportFeature(webDriver);
@@ -275,6 +276,24 @@ namespace CascadePass.TrailBot
             }
 
             return default;
+        }
+
+        public static DateTime ParseReportDate(IWebDriver webDriver)
+        {
+            IWebElement reportHeaderSection = webDriver.FindElement(By.Id("trip-report-heading"));
+            string tripDate = reportHeaderSection?.FindElement(By.ClassName("documentFirstHeading"))?.Text;
+
+            if (tripDate.Contains("—"))
+            {
+                tripDate = tripDate.Substring(1 + tripDate.LastIndexOf("—")).Trim();
+            }
+
+            if (DateTime.TryParse(tripDate, out DateTime result))
+            {
+                return result;
+            }
+
+            return DateTime.MinValue;
         }
 
         private string ParseReportTitle(IWebDriver webDriver)

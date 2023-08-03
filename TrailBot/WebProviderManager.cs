@@ -305,6 +305,7 @@ namespace CascadePass.TrailBot
                 this.Found.Add(matchedTripReport);
             }
 
+            tripReport.ProcessedDate = DateTime.Now;
             this.SaveTripReport(matchedTripReport, tripReport, dataProvider);
 
             this.OnMatchFound(this, new() { MatchedTripReport = matchedTripReport });
