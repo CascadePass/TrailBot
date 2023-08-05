@@ -9,6 +9,8 @@ namespace CascadePass.TrailBot
 {
     public class WtaDataProvider : WebDataProvider
     {
+        #region Properties
+
         public override SupportedTripReportSource TripReportSource => SupportedTripReportSource.WashingtonTrailsAssociation;
 
         public override string SourceName => "WTA";
@@ -24,6 +26,10 @@ namespace CascadePass.TrailBot
 
         [XmlIgnore]
         public TimeSpan AgeOfLastRecentReportsRequest => DateTime.Now - this.LastGetRecentRequest;
+
+        #endregion
+
+        #region Methods
 
         #region GetTripReport
 
@@ -226,14 +232,16 @@ namespace CascadePass.TrailBot
             report.Trails = WtaDataProvider.ParseReportTrails(webDriver);
             report.TrailConditions = WtaDataProvider.ParseReportConditions(webDriver);
             report.Feature = WtaDataProvider.ParseReportFeature(webDriver);
-            report.HikeType = WtaDataProvider.FindHikeType(report);
 
-            report.RoadConditions = WtaDataProvider.FindHikeCondition(report, "ROAD");
-            report.Bugs = WtaDataProvider.FindHikeCondition(report, "BUGS");
-            report.Snow = WtaDataProvider.FindHikeCondition(report, "SNOW");
+            report.HikeType = WtaDataProvider.FindHikeType(report);
+            report.RoadConditions = WtaDataProvider.FindRoadConditions(report);
+            report.Bugs = WtaDataProvider.FindBugConditions(report);
+            report.Snow = WtaDataProvider.FindSnowConditions(report);
 
             return report;
         }
+
+        #region Parse the page
 
         public static bool IsPageNotFound(IWebDriver webDriver)
         {
@@ -478,9 +486,26 @@ namespace CascadePass.TrailBot
             return found;
         }
 
+        #endregion
+
         public static string FindHikeType(WtaTripReport tripReport)
         {
             return WtaDataProvider.FindHikeCondition(tripReport, "TYPE OF HIKE");
+        }
+
+        public static string FindRoadConditions(WtaTripReport tripReport)
+        {
+            return WtaDataProvider.FindHikeCondition(tripReport, "ROAD");
+        }
+
+        public static string FindBugConditions(WtaTripReport tripReport)
+        {
+            return WtaDataProvider.FindHikeCondition(tripReport, "BUGS");
+        }
+
+        public static string FindSnowConditions(WtaTripReport tripReport)
+        {
+            return WtaDataProvider.FindHikeCondition(tripReport, "SNOW");
         }
 
         public static string FindHikeCondition(WtaTripReport tripReport, string conditionLabel)
@@ -503,6 +528,8 @@ namespace CascadePass.TrailBot
 
             return null;
         }
+
+        #endregion
 
         #endregion
     }

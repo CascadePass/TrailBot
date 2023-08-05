@@ -262,6 +262,147 @@ namespace CascadePass.TrailBot.Tests
 
         #endregion
 
+        #region FindRoadConditions
+
+        [TestMethod]
+        public void FindRoadConditions_null()
+        {
+            var result = WtaDataProvider.FindRoadConditions(null);
+            Assert.IsNull(result);
+        }
+
+        [TestMethod]
+        public void FindRoadConditions_EmptyTripReport()
+        {
+            var result = WtaDataProvider.FindRoadConditions(new());
+            Assert.IsNull(result);
+        }
+
+        [TestMethod]
+        public void FindRoadConditions_null_TrailConditions()
+        {
+            var result = WtaDataProvider.FindRoadConditions(new() { TrailConditions = null });
+            Assert.IsNull(result);
+        }
+
+        [TestMethod]
+        public void FindRoadConditions_CorrectResult()
+        {
+            string expectedValue = Guid.NewGuid().ToString();
+            WtaTripReport report = new();
+            report.TrailConditions.Add(new() { Title = "ROAD", Description = expectedValue });
+            var result = WtaDataProvider.FindRoadConditions(report);
+
+            Assert.AreEqual(expectedValue, result);
+        }
+
+        [TestMethod]
+        public void FindRoadConditions_CorrectResult_CaseInsensitive()
+        {
+            string expectedValue = Guid.NewGuid().ToString();
+            WtaTripReport report = new();
+            report.TrailConditions.Add(new() { Title = "Road", Description = expectedValue });
+            var result = WtaDataProvider.FindRoadConditions(report);
+
+            Assert.AreEqual(expectedValue, result);
+        }
+
+        #endregion
+
+        #region FindBugConditions
+
+        [TestMethod]
+        public void FindBugConditions_null()
+        {
+            var result = WtaDataProvider.FindBugConditions(null);
+            Assert.IsNull(result);
+        }
+
+        [TestMethod]
+        public void FindBugConditions_EmptyTripReport()
+        {
+            var result = WtaDataProvider.FindBugConditions(new());
+            Assert.IsNull(result);
+        }
+
+        [TestMethod]
+        public void FindBugConditions_null_TrailConditions()
+        {
+            var result = WtaDataProvider.FindBugConditions(new() { TrailConditions = null });
+            Assert.IsNull(result);
+        }
+
+        [TestMethod]
+        public void FindBugConditions_CorrectResult()
+        {
+            string expectedValue = Guid.NewGuid().ToString();
+            WtaTripReport report = new();
+            report.TrailConditions.Add(new() { Title = "BUGS", Description = expectedValue });
+            var result = WtaDataProvider.FindBugConditions(report);
+
+            Assert.AreEqual(expectedValue, result);
+        }
+
+        [TestMethod]
+        public void FindBugConditions_CorrectResult_CaseInsensitive()
+        {
+            string expectedValue = Guid.NewGuid().ToString();
+            WtaTripReport report = new();
+            report.TrailConditions.Add(new() { Title = "Bugs", Description = expectedValue });
+            var result = WtaDataProvider.FindBugConditions(report);
+
+            Assert.AreEqual(expectedValue, result);
+        }
+
+        #endregion
+
+        #region FindBugConditions
+
+        [TestMethod]
+        public void FindSnowConditions_null()
+        {
+            var result = WtaDataProvider.FindSnowConditions(null);
+            Assert.IsNull(result);
+        }
+
+        [TestMethod]
+        public void FindSnowConditions_EmptyTripReport()
+        {
+            var result = WtaDataProvider.FindSnowConditions(new());
+            Assert.IsNull(result);
+        }
+
+        [TestMethod]
+        public void FindSnowConditions_null_TrailConditions()
+        {
+            var result = WtaDataProvider.FindSnowConditions(new() { TrailConditions = null });
+            Assert.IsNull(result);
+        }
+
+        [TestMethod]
+        public void FindSnowConditions_CorrectResult()
+        {
+            string expectedValue = Guid.NewGuid().ToString();
+            WtaTripReport report = new();
+            report.TrailConditions.Add(new() { Title = "SNOW", Description = expectedValue });
+            var result = WtaDataProvider.FindSnowConditions(report);
+
+            Assert.AreEqual(expectedValue, result);
+        }
+
+        [TestMethod]
+        public void FindSnowConditions_CorrectResult_CaseInsensitive()
+        {
+            string expectedValue = Guid.NewGuid().ToString();
+            WtaTripReport report = new();
+            report.TrailConditions.Add(new() { Title = "Snow", Description = expectedValue });
+            var result = WtaDataProvider.FindSnowConditions(report);
+
+            Assert.AreEqual(expectedValue, result);
+        }
+
+        #endregion
+
         #region FindHikeCondition
 
         [TestMethod]
