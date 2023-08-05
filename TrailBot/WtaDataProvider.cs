@@ -65,7 +65,7 @@ namespace CascadePass.TrailBot
                 return null;
             }
 
-            WtaTripReport report = this.ParseTripReport(webDriver, uri);
+            WtaTripReport report = WtaDataProvider.ParseTripReport(webDriver, uri);
 
             this.OnTripReportCompleted(this, new TripReportCompletedEventArgs() { TripReport = report });
 
@@ -204,30 +204,48 @@ namespace CascadePass.TrailBot
 
         #region Get the info from the page
 
-        public WtaTripReport ParseTripReport(IWebDriver webDriver, Uri uri)
+        public static WtaTripReport ParseTripReport(IWebDriver webDriver, Uri uri)
         {
+            #region Sanity check
+
+            if (webDriver == null || uri == null)
+            {
+                return null;
+            }
+
+            #endregion
+
             WtaTripReport report = new() { Url = uri.ToString() };
 
-            report.ReportText = this.ParseReportText(webDriver);
-            report.Title = this.ParseReportTitle(webDriver);
-            report.Region = this.ParseReportRegion(webDriver);
-            report.Author = this.ParseReportAuthor(webDriver);
+            report.ReportText = WtaDataProvider.ParseReportText(webDriver);
+            report.Title = WtaDataProvider.ParseReportTitle(webDriver);
+            report.Region = WtaDataProvider.ParseReportRegion(webDriver);
+            report.Author = WtaDataProvider.ParseReportAuthor(webDriver);
             report.TripDate = WtaDataProvider.ParseReportDate(webDriver);
             report.PublishDate = WtaDataProvider.ParseReportDate(uri);
-            report.Trails = this.ParseReportTrails(webDriver);
-            report.TrailConditions = this.ParseReportConditions(webDriver);
-            report.Feature = this.ParseReportFeature(webDriver);
-            report.HikeType = this.FindHikeType(report);
+            report.Trails = WtaDataProvider.ParseReportTrails(webDriver);
+            report.TrailConditions = WtaDataProvider.ParseReportConditions(webDriver);
+            report.Feature = WtaDataProvider.ParseReportFeature(webDriver);
+            report.HikeType = WtaDataProvider.FindHikeType(report);
 
-            report.RoadConditions = this.FindHikeCondition(report, "ROAD");
-            report.Bugs = this.FindHikeCondition(report, "BUGS");
-            report.Snow = this.FindHikeCondition(report, "SNOW");
+            report.RoadConditions = WtaDataProvider.FindHikeCondition(report, "ROAD");
+            report.Bugs = WtaDataProvider.FindHikeCondition(report, "BUGS");
+            report.Snow = WtaDataProvider.FindHikeCondition(report, "SNOW");
 
             return report;
         }
 
         public static bool IsPageNotFound(IWebDriver webDriver)
         {
+            #region Sanity check
+
+            if (webDriver == null)
+            {
+                return false;
+            }
+
+            #endregion
+
             try
             {
                 IWebElement reportBody = webDriver.FindElement(By.ClassName("documentFirstHeading"));
@@ -245,8 +263,17 @@ namespace CascadePass.TrailBot
             }
         }
 
-        private string ParseReportText(IWebDriver webDriver)
+        public static string ParseReportText(IWebDriver webDriver)
         {
+            #region Sanity check
+
+            if (webDriver == null)
+            {
+                return null;
+            }
+
+            #endregion
+
             IWebElement reportBody = webDriver.FindElement(By.Id("tripreport-body-text"));
             string bodyText = reportBody?.Text;
 
@@ -255,10 +282,14 @@ namespace CascadePass.TrailBot
 
         public static DateTime ParseReportDate(Uri uri)
         {
+            #region Sanity check
+
             if (uri == null)
             {
                 return DateTime.MinValue;
             }
+
+            #endregion
 
             if (uri.LocalPath.Contains("."))
             {
@@ -280,6 +311,15 @@ namespace CascadePass.TrailBot
 
         public static DateTime ParseReportDate(IWebDriver webDriver)
         {
+            #region Sanity check
+
+            if (webDriver == null)
+            {
+                return DateTime.MinValue;
+            }
+
+            #endregion
+
             IWebElement reportHeaderSection = webDriver.FindElement(By.Id("trip-report-heading"));
             string tripDate = reportHeaderSection?.FindElement(By.ClassName("documentFirstHeading"))?.Text;
 
@@ -293,11 +333,20 @@ namespace CascadePass.TrailBot
                 return result;
             }
 
-            return DateTime.MinValue;
+            return default;
         }
 
-        private string ParseReportTitle(IWebDriver webDriver)
+        public static string ParseReportTitle(IWebDriver webDriver)
         {
+            #region Sanity check
+
+            if (webDriver == null)
+            {
+                return null;
+            }
+
+            #endregion
+
             IWebElement reportHeaderSection = webDriver.FindElement(By.Id("trip-report-heading"));
             string title = reportHeaderSection?.FindElement(By.ClassName("documentFirstHeading"))?.Text;
 
@@ -309,16 +358,34 @@ namespace CascadePass.TrailBot
             return title;
         }
 
-        private string ParseReportRegion(IWebDriver webDriver)
+        public static string ParseReportRegion(IWebDriver webDriver)
         {
+            #region Sanity check
+
+            if (webDriver == null)
+            {
+                return null;
+            }
+
+            #endregion
+
             IWebElement reportHeaderSection = webDriver.FindElement(By.Id("trip-report-heading"));
             string region = reportHeaderSection?.FindElement(By.Id("hike-region")).Text;
 
             return CultureInfo.InvariantCulture.TextInfo.ToTitleCase(region.ToLower()); ;
         }
 
-        private string ParseReportAuthor(IWebDriver webDriver)
+        public static string ParseReportAuthor(IWebDriver webDriver)
         {
+            #region Sanity check
+
+            if (webDriver == null)
+            {
+                return null;
+            }
+
+            #endregion
+
             IWebElement creatorInfo = webDriver.FindElement(By.ClassName("CreatorInfo"));
             IWebElement bylineText = creatorInfo?.FindElement(By.ClassName("wta-icon-headline__text"));
             string author = bylineText?.Text;
@@ -326,8 +393,17 @@ namespace CascadePass.TrailBot
             return author;
         }
 
-        private List<string> ParseReportTrails(IWebDriver webDriver)
+        public static List<string> ParseReportTrails(IWebDriver webDriver)
         {
+            #region Sanity check
+
+            if (webDriver == null)
+            {
+                return null;
+            }
+
+            #endregion
+
             List<string> found = new();
             IWebElement trailsLinks = webDriver.FindElement(By.ClassName("related-hike-links"));
 
@@ -339,8 +415,17 @@ namespace CascadePass.TrailBot
             return found;
         }
 
-        private List<WtaTrailCondition> ParseReportConditions(IWebDriver webDriver)
+        public static List<WtaTrailCondition> ParseReportConditions(IWebDriver webDriver)
         {
+            #region Sanity check
+
+            if (webDriver == null)
+            {
+                return null;
+            }
+
+            #endregion
+
             char[] breaks = new char[] { '\r', '\n' };
             List<WtaTrailCondition> found = new();
             IWebElement trailConditions = webDriver.FindElement(By.Id("trip-conditions"));
@@ -364,8 +449,17 @@ namespace CascadePass.TrailBot
             return found;
         }
 
-        private List<string> ParseReportFeature(IWebDriver webDriver)
+        public static List<string> ParseReportFeature(IWebDriver webDriver)
         {
+            #region Sanity check
+
+            if (webDriver == null)
+            {
+                return null;
+            }
+
+            #endregion
+
             List<string> found = new();
 
             try
@@ -384,20 +478,22 @@ namespace CascadePass.TrailBot
             return found;
         }
 
-        private string FindHikeType(WtaTripReport tripReport)
+        public static string FindHikeType(WtaTripReport tripReport)
         {
-            var hikeType = tripReport.TrailConditions?.FirstOrDefault(m => string.Equals(m.Title, "TYPE OF HIKE", StringComparison.OrdinalIgnoreCase));
-
-            if (hikeType != null)
-            {
-                return hikeType.Description;
-            }
-
-            return null;
+            return WtaDataProvider.FindHikeCondition(tripReport, "TYPE OF HIKE");
         }
 
-        private string FindHikeCondition(WtaTripReport tripReport, string conditionLabel)
+        public static string FindHikeCondition(WtaTripReport tripReport, string conditionLabel)
         {
+            #region Sanity check
+
+            if (tripReport == null || string.IsNullOrWhiteSpace(conditionLabel))
+            {
+                return null;
+            }
+
+            #endregion
+
             var result = tripReport.TrailConditions?.FirstOrDefault(m => string.Equals(m.Title, conditionLabel, StringComparison.OrdinalIgnoreCase));
 
             if (result != null)
