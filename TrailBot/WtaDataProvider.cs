@@ -7,6 +7,10 @@ using System.Globalization;
 
 namespace CascadePass.TrailBot
 {
+    /// <summary>
+    /// A <see cref="WebDataProvider"/> that collects trip reports from
+    /// Washington Trails Association.
+    /// </summary>
     public class WtaDataProvider : WebDataProvider
     {
         #region Properties
@@ -15,15 +19,47 @@ namespace CascadePass.TrailBot
 
         public override string SourceName => "WTA";
 
+        /// <summary>
+        /// Gets or sets the last <see cref="DateTime"/> a request for a
+        /// trip report was made.
+        /// </summary>
+        /// <remarks>
+        /// This is used "for politeness" to avoid sending too much traffic
+        /// and potentially overwhelming the server.
+        /// </remarks>
         [XmlAttribute]
         public DateTime LastTripReportRequest { get; set; }
 
+        /// <summary>
+        /// Gets or sets the last <see cref="DateTime"/> a request for a
+        /// list of recent trip reports was made.
+        /// </summary>
+        /// <remarks>
+        /// This is used "for politeness" to avoid sending too much traffic
+        /// and potentially overwhelming the server.
+        /// </remarks>
         [XmlAttribute]
         public DateTime LastGetRecentRequest { get; set; }
 
+        /// <summary>
+        /// Gets a <see cref="TimeSpan"/> describing how much time has passed
+        /// since requesting a trip report.
+        /// </summary>
+        /// <remarks>
+        /// This is used "for politeness" to avoid sending too much traffic
+        /// and potentially overwhelming the server.
+        /// </remarks>
         [XmlIgnore]
         public TimeSpan AgeOfLastTripReportRequest => DateTime.Now - this.LastTripReportRequest;
 
+        /// <summary>
+        /// Gets a <see cref="TimeSpan"/> describing how much time has passed
+        /// since requesting the list of recent trip reports.
+        /// </summary>
+        /// <remarks>
+        /// This is used "for politeness" to avoid sending too much traffic
+        /// and potentially overwhelming the server.
+        /// </remarks>
         [XmlIgnore]
         public TimeSpan AgeOfLastRecentReportsRequest => DateTime.Now - this.LastGetRecentRequest;
 
@@ -210,6 +246,12 @@ namespace CascadePass.TrailBot
 
         #region Get the info from the page
 
+        /// <summary>
+        /// Parses a trip report after it has been requested and rendered.
+        /// </summary>
+        /// <param name="webDriver">An <see cref="IWebDriver"/> that has loaded a WTA trip report.</param>
+        /// <param name="uri">The <see cref="Uri"/> of the trip report.</param>
+        /// <returns>A <see cref="WtaTripReport"/> with the information from the page.</returns>
         public static WtaTripReport ParseTripReport(IWebDriver webDriver, Uri uri)
         {
             #region Sanity check
@@ -243,6 +285,11 @@ namespace CascadePass.TrailBot
 
         #region Parse the page
 
+        /// <summary>
+        /// Tests the page to see if it is WTA's 404 page.
+        /// </summary>
+        /// <param name="webDriver">An <see cref="IWebDriver"/>.</param>
+        /// <returns>True if the <see cref="IWebDriver"/> is on WTA's 404 page.</returns>
         public static bool IsPageNotFound(IWebDriver webDriver)
         {
             #region Sanity check
@@ -488,6 +535,10 @@ namespace CascadePass.TrailBot
 
         #endregion
 
+        #region Find within Conditions
+
+        #region Helper methods
+
         public static string FindHikeType(WtaTripReport tripReport)
         {
             return WtaDataProvider.FindHikeCondition(tripReport, "TYPE OF HIKE");
@@ -507,6 +558,8 @@ namespace CascadePass.TrailBot
         {
             return WtaDataProvider.FindHikeCondition(tripReport, "SNOW");
         }
+
+        #endregion
 
         public static string FindHikeCondition(WtaTripReport tripReport, string conditionLabel)
         {
@@ -528,6 +581,8 @@ namespace CascadePass.TrailBot
 
             return null;
         }
+
+        #endregion
 
         #endregion
 

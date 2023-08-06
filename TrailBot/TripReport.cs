@@ -15,16 +15,17 @@ namespace CascadePass.TrailBot
         public string Title { get; set; }
         public string ReportText { get; set; }
 
+        /// <summary>
+        /// Gets the text of a trip report for search and matching purposes.
+        /// </summary>
+        /// <returns>A string containing the trip report.</returns>
         public virtual string GetSearchableReportText()
         {
             StringBuilder stringBuilder = new();
 
-            if (true)
+            if (!string.IsNullOrEmpty(this.Title))
             {
-                if (!string.IsNullOrEmpty(this.Title))
-                {
-                    stringBuilder.AppendLine(this.Title);
-                }
+                stringBuilder.AppendLine(this.Title);
             }
 
             if (!string.IsNullOrEmpty(this.ReportText))
