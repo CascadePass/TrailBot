@@ -1,20 +1,36 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CascadePass.TrailBot.UI
 {
+    /// <summary>
+    /// References to data shared across the entire application, as well
+    /// as code to load and save required data.
+    /// </summary>
     public static class ApplicationData
     {
+        /// <summary>
+        /// Gets or sets the <see cref="Settings"/> being used.
+        /// </summary>
         public static Settings Settings { get; set; }
 
+        /// <summary>
+        /// Gets or sets a reference to the <see cref="WebProviderManager"/>.
+        /// </summary>
         public static WebProviderManager WebProviderManager { get; set; }
 
+        /// <summary>
+        /// Gets or sets a value indicating that the <see cref="Settings"/>
+        /// object was just created, rather than having been loaded from
+        /// the file system.
+        /// </summary>
         public static bool WasSettingsMissing { get; set; }
 
+        /// <summary>
+        /// Loads the <see cref="ApplicationData"/> from xml files.
+        /// </summary>
+        /// <param name="settingsFilename">The name of the settings file to use.</param>
+        /// <returns>True if successful, false otherwise.</returns>
         public static bool Load(string settingsFilename)
         {
             ApplicationData.Settings = FileStore.DeserializeFromXmlFile<Settings>(settingsFilename);
@@ -38,6 +54,10 @@ namespace CascadePass.TrailBot.UI
             return !ApplicationData.WasSettingsMissing;
         }
 
+        /// <summary>
+        /// Saves the <see cref="ApplicationData"/> to disc.
+        /// </summary>
+        /// <param name="settingsFilename">The name of the settings file to use.</param>
         public static void Save(string settingsFilename)
         {
             FileStore.SerializeToXmlFile(ApplicationData.Settings, settingsFilename);

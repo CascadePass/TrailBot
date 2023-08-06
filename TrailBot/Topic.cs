@@ -7,6 +7,15 @@ using System.Xml.Serialization;
 
 namespace CascadePass.TrailBot
 {
+    /// <summary>
+    /// Represents something a user is interested in, defined by key words
+    /// and phrases.
+    /// </summary>
+    /// <remarks>
+    /// TrailBot was created to find trip reports that describe a crime,
+    /// since it's already reading TRs it was expanded to be able to
+    /// match arbitrary topics.
+    /// </remarks>
     public class Topic
     {
         private string matchAny, matchAnyUnless;
@@ -14,9 +23,17 @@ namespace CascadePass.TrailBot
 
         private static char[] punctuation;
 
+        #region Properties
+
+        /// <summary>
+        /// Gets an array of characters that will begin or end an <see cref="Exerpt"/>
+        /// when a piece of text matches a <see cref="Topic"/>.
+        /// </summary>
         public static char[] ClauseBoundaries => Topic.punctuation ??= new char[] { '\r', '\n', '\t', '.', '!', '?', '(', ')', ',', '-', ';', '"' };
 
-
+        /// <summary>
+        /// Gets or sets the name of the topic.
+        /// </summary>
         [XmlAttribute("name")]
         public string Name { get; set; }
 
@@ -59,6 +76,8 @@ namespace CascadePass.TrailBot
         public int AnyCount => this.anyPhrases?.Count ?? 0;
 
         public int UnlessCount => this.anyUnlessPhrases?.Count ?? 0;
+
+        #endregion
 
         public static List<Phrase> ParseSearchTerms(string text)
         {
