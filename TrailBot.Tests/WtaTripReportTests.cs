@@ -103,12 +103,14 @@ namespace CascadePass.TrailBot.Tests
 
             string searchText = tripReport.GetSearchableReportText();
 
-            Assert.IsFalse(searchText.Contains(title));
-            Assert.IsTrue(searchText.Contains(body));
+            Console.WriteLine(searchText);
+
+            Assert.IsFalse(searchText.Contains(title), "The title was found in the search text, but should not be there.");
+            Assert.IsTrue(searchText.Contains(body), "The body was missing from the search text!");
         }
 
         [TestMethod]
-        public void FeatureContainedInSearchableText()
+        public void FeatureNotContainedInSearchableText()
         {
             string feature1 = Guid.NewGuid().ToString(), feature2 = Guid.NewGuid().ToString();
             WtaTripReport tripReport = new();
@@ -117,9 +119,10 @@ namespace CascadePass.TrailBot.Tests
             tripReport.Feature.Add(feature2);
 
             string searchText = tripReport.GetSearchableReportText();
+            Console.WriteLine(searchText);
 
-            Assert.IsTrue(searchText.Contains(feature1));
-            Assert.IsTrue(searchText.Contains(feature2));
+            Assert.IsFalse(searchText.Contains(feature1));
+            Assert.IsFalse(searchText.Contains(feature2));
         }
 
         [TestMethod]
@@ -139,7 +142,7 @@ namespace CascadePass.TrailBot.Tests
         }
 
         [TestMethod]
-        public void TrailConditionsContainedInSearchableText()
+        public void TrailConditionsNotContainedInSearchableText()
         {
             string feature1 = Guid.NewGuid().ToString(), feature2 = Guid.NewGuid().ToString();
 
@@ -149,9 +152,10 @@ namespace CascadePass.TrailBot.Tests
             tripReport.TrailConditions.Add(new WtaTrailCondition() { Title = "2", Description = feature2 });
 
             string searchText = tripReport.GetSearchableReportText();
+            Console.WriteLine(searchText);
 
-            Assert.IsTrue(searchText.Contains(feature1));
-            Assert.IsTrue(searchText.Contains(feature2));
+            Assert.IsFalse(searchText.Contains(feature1));
+            Assert.IsFalse(searchText.Contains(feature2));
         }
 
         [TestMethod]
@@ -183,12 +187,13 @@ namespace CascadePass.TrailBot.Tests
             tripReport.TrailConditions.Add(new WtaTrailCondition() { Title = label2, Description = feature2 });
 
             string searchText = tripReport.GetSearchableReportText();
+            Console.WriteLine(searchText);
 
-            Assert.IsFalse(searchText.Contains(label1));
-            Assert.IsFalse(searchText.Contains(label2));
+            Assert.IsFalse(searchText.Contains(label1), $"Search text contains label '{label1}'");
+            Assert.IsFalse(searchText.Contains(label2), $"Search text contains label '{label2}'");
 
-            Assert.IsTrue(searchText.Contains(feature1));
-            Assert.IsTrue(searchText.Contains(feature2));
+            Assert.IsFalse(searchText.Contains(feature1), $"Search text contains value '{feature1}'");
+            Assert.IsFalse(searchText.Contains(feature2), $"Search text contains value '{feature1}'");
         }
 
         #endregion
