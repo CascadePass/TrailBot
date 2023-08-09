@@ -274,6 +274,7 @@ namespace CascadePass.TrailBot
             report.Trails = WtaDataProvider.ParseReportTrails(webDriver);
             report.TrailConditions = WtaDataProvider.ParseReportConditions(webDriver);
             report.Feature = WtaDataProvider.ParseReportFeature(webDriver);
+            report.ImageUrls = WtaDataProvider.ParseReportImages(webDriver);
 
             report.HikeType = WtaDataProvider.FindHikeType(report);
             report.RoadConditions = WtaDataProvider.FindRoadConditions(report);
@@ -524,6 +525,43 @@ namespace CascadePass.TrailBot
                 foreach (var ele in tripHighlights?.FindElements(By.ClassName("wta-icon")))
                 {
                     found.Add(ele.Text);
+                }
+            }
+            catch (NoSuchElementException)
+            {
+            }
+
+            return found;
+        }
+
+        public static List<string> ParseReportImages(IWebDriver webDriver)
+        {
+            #region Sanity check
+
+            if (webDriver == null)
+            {
+                return null;
+            }
+
+            #endregion
+
+            List<string> found = new();
+
+            try
+            {
+                IWebElement reportBody = webDriver.FindElement(By.Id("report-wrapper"));
+
+                foreach (var ele in reportBody?.FindElements(By.TagName("img")))
+                {
+                    string source = ele.GetAttribute("src");
+
+                    if (
+                        Uri.TryCreate(source, UriKind.Absolute, out Uri uri) &&
+                        source.Contains("/site_images/trip-reports/")
+                        )
+                    {
+                        found.Add(source);
+                    }
                 }
             }
             catch (NoSuchElementException)
