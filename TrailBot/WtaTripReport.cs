@@ -116,22 +116,6 @@ namespace CascadePass.TrailBot
         {
             StringBuilder stringBuilder = new();
 
-            foreach (string feature in this.Feature)
-            {
-                if (!string.IsNullOrEmpty(feature))
-                {
-                    stringBuilder.AppendLine(feature);
-                }
-            }
-
-            foreach (var condition in this.TrailConditions)
-            {
-                if (!string.IsNullOrEmpty(condition.Description))
-                {
-                    stringBuilder.AppendLine(condition.Description);
-                }
-            }
-
             if (!string.IsNullOrEmpty(this.ReportText))
             {
                 stringBuilder.AppendLine(this.ReportText);
