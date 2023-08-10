@@ -1,6 +1,10 @@
-﻿using System.Collections.ObjectModel;
+﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Text;
+using System.Text.RegularExpressions;
 using System.Windows.Data;
 
 namespace CascadePass.TrailBot.UI.Feature.Found
@@ -110,7 +114,45 @@ namespace CascadePass.TrailBot.UI.Feature.Found
                 MatchedTripReport = item,
                 AllTopics = ApplicationData.WebProviderManager.Topics,
                 Settings = ApplicationData.Settings,
+                FormattedExerpts = ReaderViewModel.GetExerpts(item),
             };
+        }
+
+        private static Dictionary<string, string> GetExerpts(MatchedTripReport matchedTripReport)
+        {
+            Dictionary<string, string> result = new();
+            StringBuilder exerpts = new();
+
+            StringBuilder topicAppender = new();
+            string key = null;
+            foreach (string rawLine in (matchedTripReport.BroaderContext).Split(new char[] { '\r', '\n' }))
+            {
+                string line = rawLine.Trim();
+
+                if (ApplicationData.WebProviderManager.Topics.Any(m => string.Equals(m.Name, line, System.StringComparison.OrdinalIgnoreCase)))
+                {
+                    if (!string.IsNullOrEmpty(key) && !result.ContainsKey(key))
+                    {
+                        result.Add(key, topicAppender.ToString().Trim());
+                    }
+
+                    key = line;
+                    topicAppender.Clear();
+                }
+                else if (!string.IsNullOrWhiteSpace(line))
+                {
+                    topicAppender.Append("• ");
+                    topicAppender.Append(line);
+                    topicAppender.Append(" ");
+                }
+            }
+
+            if (!string.IsNullOrEmpty(key) && !result.ContainsKey(key))
+            {
+                result.Add(key, topicAppender.ToString().Trim());
+            }
+
+            return result;
         }
 
         private void WebProviderManager_FoundMatch(object sender, MatchingTripReportEventArgs e)

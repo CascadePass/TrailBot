@@ -117,6 +117,10 @@ namespace CascadePass.TrailBot.UI.Feature.Found
             }
         }
 
+
+        [XmlIgnore]
+        public Dictionary<string, string> FormattedExerpts { get; set; }
+
         public FlowDocument PreviewDocument
         {
             get

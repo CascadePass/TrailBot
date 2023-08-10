@@ -40,7 +40,40 @@
                 <Style TargetType="{x:Type DataGridRow}">
                     <Setter Property="FontWeight" Value="{Binding FontWeight}" />
                     <Setter Property="ToolTipService.ShowOnDisabled" Value="True"/>
-                    <Setter Property="ToolTip" Value="{Binding MatchedTripReport.BroaderContext}" />
+                    <Setter Property="ToolTip">
+                        <Setter.Value>
+                            <Border BorderThickness="0.5" BorderBrush="Gray" CornerRadius="5" Padding="5,0,5,5" MaxWidth="600">
+                                <StackPanel>
+                                    <TextBlock FontSize="{DynamicResource Font.Huge}" FontWeight="Bold">
+                                        <Run Text="{Binding MatchedTripReport.Title}" />
+                                        <Run Text="{Binding MatchedTripReport.TripDate, StringFormat=d}" />
+                                    </TextBlock>
+
+                                    <TextBlock FontSize="{DynamicResource Font.Large}" FontWeight="SemiBold">
+                                        <Run Text="{Binding MatchedTripReport.HikeType}" />
+                                        <Run Text="-" />
+                                        <Run Text="{Binding MatchedTripReport.Region}" />
+                                    </TextBlock>
+
+                                    <TextBlock FontSize="{DynamicResource Font.Normal}" FontStyle="Italic" Foreground="Red" Text="{Binding MatchedTripReport.Matches}" />
+
+                                    <!--Blank line as separator-->
+                                    <TextBlock FontSize="{DynamicResource Font.Normal}" />
+
+                                    <ItemsControl ItemsSource="{Binding FormattedExerpts}">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <TextBlock FontSize="{DynamicResource Font.Normal}" TextWrapping="Wrap">
+                                                    <Run FontWeight="Bold" Text="{Binding Key, Mode=OneWay}" />
+                                                    <Run FontWeight="Light" FontStyle="Italic" Foreground="Green" Text="{Binding Value, Mode=OneWay}" />
+                                                </TextBlock>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </StackPanel>
+                            </Border>
+                        </Setter.Value>
+                    </Setter>
                 </Style>
             </DataGrid.Resources>
         </DataGrid>
