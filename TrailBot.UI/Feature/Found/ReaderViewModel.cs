@@ -13,6 +13,7 @@ namespace CascadePass.TrailBot.UI.Feature.Found
     {
         private WebProviderManager webProviderManager;
         private MatchedTripReportViewModel selectedMatch;
+        private Settings settings;
 
         public ReaderViewModel()
         {
@@ -20,7 +21,19 @@ namespace CascadePass.TrailBot.UI.Feature.Found
             BindingOperations.EnableCollectionSynchronization(this.MatchedTripReports, new object());
         }
 
-        public Settings Settings { get; set; }
+        public Settings Settings {
+            get => this.settings;
+            set
+            {
+                if (this.settings != value)
+                {
+                    this.Unsubscribe(this.settings);
+                    this.settings = value;
+                    this.OnPropertyChanged(nameof(this.Settings));
+                    this.Subscribe(this.settings);
+                }
+            }
+        }
 
         public ObservableCollection<MatchedTripReportViewModel> MatchedTripReports { get; set; }
 
@@ -153,6 +166,32 @@ namespace CascadePass.TrailBot.UI.Feature.Found
             }
 
             return result;
+        }
+
+        private void Subscribe(object o)
+        {
+            if (o == null)
+            {
+                return;
+            }
+
+            if (o is Settings settingsObject)
+            {
+                settingsObject.PropertyChanged += this.Settings_PropertyChanged;
+            }
+        }
+
+        private void Unsubscribe(object o)
+        {
+            if (o == null)
+            {
+                return;
+            }
+
+            if (o is Settings settingsObject)
+            {
+                settingsObject.PropertyChanged -= this.Settings_PropertyChanged;
+            }
         }
 
         private void WebProviderManager_FoundMatch(object sender, MatchingTripReportEventArgs e)
