@@ -15,6 +15,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TrailBot.Tests", "TrailBot.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TrailBot.UI.Tests", "TrailBot.UI.Tests\TrailBot.UI.Tests.csproj", "{CFDC50B1-E1FB-4546-8175-35F58610945A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TrailBot.DataAccess", "TrailBot.DataAccess\TrailBot.DataAccess.csproj", "{AB68C993-C6F1-4878-9C79-0B7FB24E209F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TrailBot.DataAccess.Tests", "TrailBot.DataAccess.Tests\TrailBot.DataAccess.Tests.csproj", "{0CBC05EA-12B9-4B7C-9C3C-5C0CD0960600}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,6 +49,14 @@ Global
 		{CFDC50B1-E1FB-4546-8175-35F58610945A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CFDC50B1-E1FB-4546-8175-35F58610945A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CFDC50B1-E1FB-4546-8175-35F58610945A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AB68C993-C6F1-4878-9C79-0B7FB24E209F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AB68C993-C6F1-4878-9C79-0B7FB24E209F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AB68C993-C6F1-4878-9C79-0B7FB24E209F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AB68C993-C6F1-4878-9C79-0B7FB24E209F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0CBC05EA-12B9-4B7C-9C3C-5C0CD0960600}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0CBC05EA-12B9-4B7C-9C3C-5C0CD0960600}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0CBC05EA-12B9-4B7C-9C3C-5C0CD0960600}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0CBC05EA-12B9-4B7C-9C3C-5C0CD0960600}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
