@@ -2,29 +2,18 @@
 using CascadePass.TrailBot.DataAccess.DTO;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
-using System.Collections.Generic;
-using System.IO;
 
 namespace TrailBot.DataAccess.Tests.IntegrationTests
 {
     [TestClass]
     public class UrlTests : SqliteIntegrationTestClass
     {
-        private static readonly List<long> urlIDs;
-        private static readonly List<string> generatedUrls;
-
         #region Constructor
 
         public UrlTests()
         {
             this.DatabaseFilename = "C:\\Users\\User\\Documents\\TrailBot\\TrailBot-test.db";
             Database.ConnectionString = $"Data Source={this.DatabaseFilename}";
-        }
-
-        static UrlTests()
-        {
-            UrlTests.urlIDs = new();
-            UrlTests.generatedUrls = new();
         }
 
         #endregion
@@ -51,85 +40,261 @@ namespace TrailBot.DataAccess.Tests.IntegrationTests
 
         #endregion
 
+        #region AddUrl
+
+        #region Use implicitly managed connection
+
         [TestMethod]
-        public void AddUrl_ByDTO_AddressOnly()
+        public void AddUrl_AddressOnly()
         {
             this.AssertRequirements();
             Database.QueryProvider = new SqliteQueryProvider();
 
-            string address = $"http://{Guid.NewGuid()}";
+            string address = $"https://UrlIntegrationTest.net/{Guid.NewGuid()}";
 
             Console.WriteLine(address);
 
             var url = Url.Create(address);
             long id = Database.AddUrl(url);
 
-            this.AddGeneratedUrl(id, address);
-
             Console.WriteLine(id);
 
             Assert.IsTrue(id > 0);
+
+            var validate = Database.GetUrl(id);
+            Assert.IsNotNull(validate);
+
+            this.AssertSameUrl(url, validate);
+
+            Database.DeleteUrl(id);
         }
 
         [TestMethod]
-        public void AddUrl_ByDTO_AddressAndFoundDate()
+        public void AddUrl_AddressAndFoundDate()
         {
             this.AssertRequirements();
             Database.QueryProvider = new SqliteQueryProvider();
 
-            string address = $"http://{Guid.NewGuid()}";
+            string address = $"https://UrlIntegrationTest.net/{Guid.NewGuid()}";
 
             Console.WriteLine(address);
 
-            var url = Url.Create(address, DateTime.UtcNow);
+            var url = Url.Create(address, DateTime.Now);
             long id = Database.AddUrl(url);
-
-            this.AddGeneratedUrl(id, address);
 
             Console.WriteLine(id);
 
             Assert.IsTrue(id > 0);
+
+            var validate = Database.GetUrl(id);
+            Assert.IsNotNull(validate);
+
+            this.AssertSameUrl(url, validate);
+
+            Database.DeleteUrl(id);
         }
 
         [TestMethod]
-        public void AddUrl_ByDTO_AddressAndFoundAndCollectedDates()
+        public void AddUrl_AddressAndFoundAndCollectedDates()
         {
             this.AssertRequirements();
             Database.QueryProvider = new SqliteQueryProvider();
 
-            string address = $"http://{Guid.NewGuid()}";
+            string address = $"https://UrlIntegrationTest.net/{Guid.NewGuid()}";
 
             Console.WriteLine(address);
 
-            var url = Url.Create(address, DateTime.UtcNow, DateTime.UtcNow, null);
+            var url = Url.Create(address, DateTime.Now, DateTime.Now, null);
             long id = Database.AddUrl(url);
-
-            this.AddGeneratedUrl(id, address);
 
             Console.WriteLine(id);
 
             Assert.IsTrue(id > 0);
+
+            var validate = Database.GetUrl(id);
+            Assert.IsNotNull(validate);
+
+            this.AssertSameUrl(url, validate);
+
+            Database.DeleteUrl(id);
         }
 
         [TestMethod]
-        public void AddUrl_ByDTO_AddressAndFoundAndLockedDates()
+        public void AddUrl_AddressAndFoundAndLockedDates()
         {
             this.AssertRequirements();
             Database.QueryProvider = new SqliteQueryProvider();
 
-            string address = $"http://{Guid.NewGuid()}";
+            string address = $"https://UrlIntegrationTest.net/{Guid.NewGuid()}";
 
             Console.WriteLine(address);
 
-            var url = Url.Create(address, DateTime.UtcNow, null, DateTime.UtcNow);
+            var url = Url.Create(address, DateTime.Now, null, DateTime.Now);
             long id = Database.AddUrl(url);
-
-            this.AddGeneratedUrl(id, address);
 
             Console.WriteLine(id);
 
             Assert.IsTrue(id > 0);
+
+            var validate = Database.GetUrl(id);
+            Assert.IsNotNull(validate);
+
+            this.AssertSameUrl(url, validate);
+
+            Database.DeleteUrl(id);
         }
+
+        #endregion
+
+        #region Shared connection
+
+        #region AddUrl still behaves as normal
+
+        [TestMethod]
+        public void AddUrl_SharedConnection_AddressOnly()
+        {
+            this.AssertRequirements();
+            Database.QueryProvider = new SqliteQueryProvider();
+
+            string address = $"https://UrlIntegrationTest.net/{Guid.NewGuid()}";
+
+            Console.WriteLine(address);
+
+            using var connection = Database.GetConnection();
+            var url = Url.Create(address);
+            long id = Database.AddUrl(url, connection);
+
+            Console.WriteLine(id);
+
+            Assert.IsTrue(id > 0);
+
+            var validate = Database.GetUrl(id);
+            Assert.IsNotNull(validate);
+
+            this.AssertSameUrl(url, validate);
+
+            Database.DeleteUrl(id);
+        }
+
+        [TestMethod]
+        public void AddUrl_SharedConnection_AddressAndFoundDate()
+        {
+            this.AssertRequirements();
+            Database.QueryProvider = new SqliteQueryProvider();
+
+            string address = $"https://UrlIntegrationTest.net/{Guid.NewGuid()}";
+
+            Console.WriteLine(address);
+
+            using var connection = Database.GetConnection();
+            var url = Url.Create(address, DateTime.Now);
+            long id = Database.AddUrl(url, connection);
+
+            Console.WriteLine(id);
+
+            Assert.IsTrue(id > 0);
+
+            var validate = Database.GetUrl(id);
+            Assert.IsNotNull(validate);
+
+            this.AssertSameUrl(url, validate);
+
+            Database.DeleteUrl(id);
+        }
+
+        [TestMethod]
+        public void AddUrl_SharedConnection_AddressAndFoundAndCollectedDates()
+        {
+            this.AssertRequirements();
+            Database.QueryProvider = new SqliteQueryProvider();
+
+            string address = $"https://UrlIntegrationTest.net/{Guid.NewGuid()}";
+
+            Console.WriteLine(address);
+
+            using var connection = Database.GetConnection();
+            var url = Url.Create(address, DateTime.Now, DateTime.Now, null);
+            long id = Database.AddUrl(url, connection);
+
+            Console.WriteLine(id);
+
+            Assert.IsTrue(id > 0);
+
+            var validate = Database.GetUrl(id);
+            Assert.IsNotNull(validate);
+
+            this.AssertSameUrl(url, validate);
+
+            Database.DeleteUrl(id);
+        }
+
+        [TestMethod]
+        public void AddUrl_SharedConnection_AddressAndFoundAndLockedDates()
+        {
+            this.AssertRequirements();
+            Database.QueryProvider = new SqliteQueryProvider();
+
+            string address = $"https://UrlIntegrationTest.net/{Guid.NewGuid()}";
+
+            Console.WriteLine(address);
+
+            using var connection = Database.GetConnection();
+            var url = Url.Create(address, DateTime.Now, null, DateTime.Now);
+            long id = Database.AddUrl(url, connection);
+
+            Console.WriteLine(id);
+
+            Assert.IsTrue(id > 0);
+
+            var validate = Database.GetUrl(id);
+            Assert.IsNotNull(validate);
+
+            this.AssertSameUrl(url, validate);
+
+            Database.DeleteUrl(id);
+        }
+
+        #endregion
+
+        #region Connection handled properly
+
+        [TestMethod]
+        public void AddUrl_SharedConnection_NotClosed()
+        {
+            this.AssertRequirements();
+            Database.QueryProvider = new SqliteQueryProvider();
+
+            string address = $"https://UrlIntegrationTest.net/{Guid.NewGuid()}";
+
+            Console.WriteLine(address);
+
+            using var connection = Database.GetConnection();
+            var originalConnectionState = connection.State;
+
+            Console.WriteLine($"Connection started {connection.State}");
+
+            var url = Url.Create(address);
+            long id = Database.AddUrl(url, connection);
+
+            Console.WriteLine($"Generated ID={id}");
+            Console.WriteLine($"Connection is {connection.State} after AddUrl call");
+
+            Assert.IsTrue(id > 0);
+            Assert.AreEqual(originalConnectionState, connection.State);
+
+            var validate = Database.GetUrl(id);
+            Assert.IsNotNull(validate);
+
+            this.AssertSameUrl(url, validate);
+
+            Database.DeleteUrl(id);
+        }
+
+        #endregion
+
+        #endregion
+
+        #endregion
 
         [TestMethod]
         public void GetUrl_ByAddress()
@@ -137,15 +302,18 @@ namespace TrailBot.DataAccess.Tests.IntegrationTests
             this.AssertRequirements();
             Database.QueryProvider = new SqliteQueryProvider();
 
-            Console.WriteLine($"Searching for {UrlTests.generatedUrls[0]}");
-            Url url = Database.GetUrl(UrlTests.generatedUrls[0]);
+            string address = $"https://UrlIntegrationTest.net/{Guid.NewGuid()}";
+            var created = Url.Create(address);
+            Database.AddUrl(created);
+
+            Console.WriteLine($"Searching for {created.Address}");
+            Url url = Database.GetUrl(created.Address);
 
             Assert.IsNotNull(url);
 
-            Console.WriteLine(UrlTests.generatedUrls[0]);
-            Console.WriteLine(url.Address);
+            Assert.AreEqual(address, url.Address);
 
-            Assert.AreEqual(UrlTests.generatedUrls[0], url.Address);
+            Database.DeleteUrl(url.ID);
         }
 
         [TestMethod]
@@ -154,15 +322,20 @@ namespace TrailBot.DataAccess.Tests.IntegrationTests
             this.AssertRequirements();
             Database.QueryProvider = new SqliteQueryProvider();
 
-            Console.WriteLine($"Searching for {UrlTests.urlIDs[0]}");
-            Url url = Database.GetUrl(UrlTests.urlIDs[0]);
+            string address = $"https://UrlIntegrationTest.net/{Guid.NewGuid()}";
+            var created = Url.Create(address);
+            Database.AddUrl(created);
+
+            Console.WriteLine($"Searching for {created.ID}");
+            Url url = Database.GetUrl(created.ID);
 
             Assert.IsNotNull(url);
 
-            Console.WriteLine(UrlTests.generatedUrls[0]);
-            Console.WriteLine(url.Address);
+            Assert.AreEqual(address, url.Address);
+            Assert.AreEqual(created.ID, url.ID);
 
-            Assert.AreEqual(UrlTests.generatedUrls[0], url.Address);
+            Database.DeleteUrl(url.ID);
+
         }
 
         [TestMethod]
@@ -172,8 +345,15 @@ namespace TrailBot.DataAccess.Tests.IntegrationTests
             Database.QueryProvider = new SqliteQueryProvider();
             DateTime now = DateTime.Now;
 
-            Console.WriteLine($"Searching for {UrlTests.generatedUrls[0]}");
-            Url url = Database.GetUrl(UrlTests.generatedUrls[0]);
+            string address = $"https://UrlIntegrationTest.net/{Guid.NewGuid()}";
+
+            Console.WriteLine(address);
+
+            var originalCreated = Url.Create(address);
+            long id = Database.AddUrl(originalCreated);
+
+            Console.WriteLine($"Searching for {originalCreated.Address}");
+            Url url = Database.GetUrl(originalCreated.Address);
 
             Assert.IsNotNull(url);
 
@@ -215,7 +395,22 @@ namespace TrailBot.DataAccess.Tests.IntegrationTests
             this.AssertRequirements();
             Database.QueryProvider = new SqliteQueryProvider();
 
-            Database.UpdateUrl(UrlTests.urlIDs[0], DateTime.Now.AddDays(1), null);
+            string address = $"https://UrlIntegrationTest.net/{Guid.NewGuid()}";
+
+            Console.WriteLine(address);
+
+            var originalCreated = Url.Create(address);
+            long id = Database.AddUrl(originalCreated);
+
+            var collectedDate = DateTime.Now.AddDays(1);
+
+            Database.UpdateUrl(originalCreated.ID, collectedDate, null);
+
+            var validate = Database.GetUrl(originalCreated.ID);
+            Assert.IsNotNull(validate);
+
+            Assert.IsTrue(this.AreDatesSame(collectedDate, validate.Collected));
+            Assert.IsNull(validate.IntentLocked);
         }
 
         [TestMethod]
@@ -224,7 +419,21 @@ namespace TrailBot.DataAccess.Tests.IntegrationTests
             this.AssertRequirements();
             Database.QueryProvider = new SqliteQueryProvider();
 
-            Database.UpdateUrl(UrlTests.urlIDs[0], null, DateTime.Now.AddDays(1));
+            string address = $"https://UrlIntegrationTest.net/{Guid.NewGuid()}";
+            Console.WriteLine(address);
+
+            var originalCreated = Url.Create(address);
+            long id = Database.AddUrl(originalCreated);
+
+            var intentLockedDate = DateTime.Now.AddDays(1);
+
+            Database.UpdateUrl(originalCreated.ID, null, intentLockedDate);
+
+            var validate = Database.GetUrl(originalCreated.ID);
+            Assert.IsNotNull(validate);
+
+            Assert.IsTrue(this.AreDatesSame(intentLockedDate, validate.IntentLocked));
+            Assert.IsNull(validate.Collected);
         }
 
         [TestMethod]
@@ -233,7 +442,22 @@ namespace TrailBot.DataAccess.Tests.IntegrationTests
             this.AssertRequirements();
             Database.QueryProvider = new SqliteQueryProvider();
 
-            Database.UpdateUrl(UrlTests.urlIDs[0], DateTime.Now.AddDays(2), DateTime.Now.AddDays(2));
+            string address = $"https://UrlIntegrationTest.net/{Guid.NewGuid()}";
+            Console.WriteLine(address);
+
+            var originalCreated = Url.Create(address);
+            long id = Database.AddUrl(originalCreated);
+
+            var collectedDate = DateTime.Now.AddDays(2);
+            var intentLockedDate = DateTime.Now.AddDays(3);
+
+            Database.UpdateUrl(originalCreated.ID, collectedDate, intentLockedDate);
+
+            var validate = Database.GetUrl(originalCreated.ID);
+            Assert.IsNotNull(validate);
+
+            Assert.IsTrue(this.AreDatesSame(intentLockedDate, validate.IntentLocked));
+            Assert.IsTrue(this.AreDatesSame(collectedDate, validate.Collected));
         }
 
         [TestMethod]
@@ -242,7 +466,20 @@ namespace TrailBot.DataAccess.Tests.IntegrationTests
             this.AssertRequirements();
             Database.QueryProvider = new SqliteQueryProvider();
 
-            Database.UpdateUrl(UrlTests.urlIDs[0], null, null);
+            string address = $"https://UrlIntegrationTest.net/{Guid.NewGuid()}";
+            Console.WriteLine(address);
+
+            var originalCreated = Url.Create(address);
+            long id = Database.AddUrl(originalCreated);
+
+            Database.UpdateUrl(originalCreated.ID, null, null);
+
+            var validate = Database.GetUrl(originalCreated.ID);
+            Assert.IsNotNull(validate);
+            Assert.IsNull(validate.Collected);
+            Assert.IsNull(validate.IntentLocked);
+
+            Database.DeleteUrl(originalCreated.ID);
         }
 
         [TestMethod]
@@ -251,11 +488,17 @@ namespace TrailBot.DataAccess.Tests.IntegrationTests
             this.AssertRequirements();
             Database.QueryProvider = new SqliteQueryProvider();
 
-            Console.WriteLine($"Database.CheckUrlExistance({UrlTests.generatedUrls[0]})");
-            var result = Database.CheckUrlExistance(UrlTests.generatedUrls[0]);
+            string address = $"https://UrlIntegrationTest.net/{Guid.NewGuid()}";
+            var originalCreated = Url.Create(address);
+            long id = Database.AddUrl(originalCreated);
+
+            Console.WriteLine($"Database.CheckUrlExistance({address})");
+            var result = Database.CheckUrlExistance(address);
 
             Console.WriteLine(result);
             Assert.IsTrue(result);
+
+            Database.DeleteUrl(id);
         }
 
         [TestMethod]
@@ -264,79 +507,101 @@ namespace TrailBot.DataAccess.Tests.IntegrationTests
             this.AssertRequirements();
             Database.QueryProvider = new SqliteQueryProvider();
 
-            Console.WriteLine($"Database.CheckUrlExistance({UrlTests.generatedUrls[0]}/not/found)");
-            var result = Database.CheckUrlExistance($"{UrlTests.generatedUrls[0]}/not/found");
+            string badAddress = $"https://negative.test/CheckUrlExistance_False/{Guid.NewGuid()}/not/found";
+
+            Console.WriteLine($"Database.CheckUrlExistance({badAddress})");
+            var result = Database.CheckUrlExistance(badAddress);
 
             Console.WriteLine(result);
             Assert.IsFalse(result);
         }
 
         [TestMethod]
-        public void zDeleteUrl_ByID()
+        public void DeleteUrl_ByID()
         {
             this.AssertRequirements();
-
-            if (UrlTests.urlIDs.Count == 0)
-            {
-                Assert.Inconclusive("Need more URL data to test against.");
-            }
-
             Database.QueryProvider = new SqliteQueryProvider();
 
-            var resultCount = Database.DeleteUrl(UrlTests.urlIDs[0]);
+            string address = $"https://UrlIntegrationTest.net/{Guid.NewGuid()}";
+            var originalCreated = Url.Create(address);
+            long id = Database.AddUrl(originalCreated);
+
+            var resultCount = Database.DeleteUrl(id);
 
             Console.WriteLine($"Deleted {resultCount} rows");
 
             // Verify that it's actually been deleted
-            var verifySearchByID = Database.GetUrl(UrlTests.urlIDs[0]);
-            var verifySearchByUrl = Database.GetUrl(UrlTests.generatedUrls[0]);
+            var verifySearchByID = Database.GetUrl(id);
+            var verifySearchByUrl = Database.GetUrl(originalCreated.Address);
 
             Assert.IsNull(verifySearchByID);
             Assert.IsNull(verifySearchByUrl);
 
-            Console.WriteLine($"{UrlTests.generatedUrls[0]} (UrlIntegrationTests.urlIDs[0]) not found in database.");
-
-            // Remove for future tests
-            UrlTests.urlIDs.RemoveAt(0);
-            UrlTests.generatedUrls.RemoveAt(0);
+            Console.WriteLine($"{id} not found in database.");
         }
 
         [TestMethod]
-        public void zDeleteUrl_ByDTO()
+        public void DeleteUrl_ByDTO()
         {
             this.AssertRequirements();
-
-            if (UrlTests.urlIDs.Count == 0)
-            {
-                Assert.Inconclusive("Need more URL data to test against.");
-            }
-
             Database.QueryProvider = new SqliteQueryProvider();
 
-            var urlDto = Database.GetUrl(UrlTests.urlIDs[0]);
+            string address = $"https://UrlIntegrationTest.net/{Guid.NewGuid()}";
+            var originalCreated = Url.Create(address);
+            long id = Database.AddUrl(originalCreated);
+
+            var urlDto = Database.GetUrl(id);
 
             var resultCount = Database.DeleteUrl(urlDto);
 
             Console.WriteLine($"Deleted {resultCount} rows");
 
             // Verify that it's actually been deleted
-            var verifySearchByID = Database.GetUrl(UrlTests.urlIDs[0]);
-            var verifySearchByUrl = Database.GetUrl(UrlTests.generatedUrls[0]);
+            var verifySearchByID = Database.GetUrl(id);
+            var verifySearchByUrl = Database.GetUrl(originalCreated.Address);
 
             Assert.IsNull(verifySearchByID);
             Assert.IsNull(verifySearchByUrl);
 
-            Console.WriteLine($"{UrlTests.generatedUrls[0]} (UrlIntegrationTests.urlIDs[0]) not found in database.");
-
-            // Remove for future tests
-            UrlTests.urlIDs.RemoveAt(0);
-            UrlTests.generatedUrls.RemoveAt(0);
+            Console.WriteLine($"{id} not found in database.");
         }
 
-        private void AddGeneratedUrl(long id, string address)
+        #region Private utility methods
+
+        private Url GetRandomUrl()
         {
-            UrlTests.urlIDs.Add(id);
-            UrlTests.generatedUrls.Add(address);
+            return this.GetRandomUrl(0);
         }
+
+        private Url GetRandomUrl(int id)
+        {
+            Random random = new();
+
+            return new()
+            {
+                ID = id,
+                Address = $"https://UrlIntegrationTest.net/{Guid.NewGuid()}",
+                Found = this.GetRandomDateTime(),
+                Collected = this.GetRandomDateTime(),
+                IntentLocked = this.GetRandomDateTime(),
+            };
+        }
+
+        private void AssertSameUrl(Url url1, Url url2)
+        {
+            Assert.AreEqual(url1.ID, url2.ID, "ID doesn't match");
+            Assert.AreEqual(url1.Address, url2.Address, "Name doesn't match");
+
+            // Found gets a default value of "now"
+            if (url1.Found.HasValue && url2.Found.HasValue)
+            {
+                Assert.IsTrue(this.AreDatesSame(url1.Found, url2.Found), $"Found doesn't match: '{url1.Found}' vs '{url2.Found}'");
+            }
+
+            Assert.IsTrue(this.AreDatesSame(url1.Collected, url2.Collected), $"Collected doesn't match: '{url1.Collected}' vs '{url2.Collected}'");
+            Assert.IsTrue(this.AreDatesSame(url1.IntentLocked, url2.IntentLocked), $"IntentLocked doesn't match: '{url1.IntentLocked}' vs '{url2.IntentLocked}'");
+        }
+
+        #endregion
     }
 }

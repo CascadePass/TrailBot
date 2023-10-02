@@ -2,7 +2,6 @@
 using System;
 using System.Data.Common;
 using System.Data.SQLite;
-using System.Threading;
 
 namespace CascadePass.TrailBot.DataAccess
 {
@@ -214,6 +213,29 @@ Select last_insert_rowid();";
             selectCommand.Parameters.AddWithValue("@Url", url);
 
             return selectCommand;
+        }
+
+        public DbCommand LockUrlsForCollection()
+        {
+            string sql = @"
+Create Temp Table LockedID ( UrlID integer );
+
+Insert Into LockedID ( UrlID )
+Select UrlID
+From Url
+Where Collected Is Null
+Limit @UrlCount;
+
+Update Url Set IntentLockedDate = strftime('%s', current_timestamp) Where UrlID In (Select UrlID From LockedID);
+
+Select u.* From Url u Join LockedID l On u.UrlID = l.UrlID;
+
+Drop Table LockedID
+";
+
+            SQLiteCommand complexCommand = new(sql);
+
+            return complexCommand;
         }
 
         #endregion
@@ -1571,6 +1593,179 @@ Select last_insert_rowid();";
             SQLiteCommand selectCommand = new(sql);
 
             selectCommand.Parameters.AddWithValue("@ID", id);
+
+            return selectCommand;
+        }
+
+        #endregion
+
+        #region ImageUrl
+
+        /// <summary>
+        /// Creates a <see cref="DbCommand"/> to add a imageUrl object to the database.
+        /// </summary>
+        /// <param name="imageUrl">A <see cref="ImageUrl"/> <see cref="DataTransferObject"/>.</param>
+        /// <returns>A <see cref="DbCommand"/>.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when imageUrl is null.</exception>
+        /// <exception cref="ArgumentException">Thrown when imageUrl.Address is null, empty, or white space.</exception>
+        public DbCommand AddImageUrl(ImageUrl imageUrl)
+        {
+            #region Sanity checks
+
+            if (imageUrl == null)
+            {
+                throw new ArgumentNullException(nameof(imageUrl));
+            }
+
+            if (imageUrl.Address == null)
+            {
+                throw new ArgumentException("Address cannot be null.", nameof(imageUrl));
+            }
+
+            if (string.IsNullOrWhiteSpace(imageUrl.Address))
+            {
+                throw new ArgumentException($"Address cannot be null.", nameof(imageUrl));
+            }
+
+            if (imageUrl.ID != 0)
+            {
+                throw new ArgumentException($"{nameof(imageUrl)}.ID has a value of {imageUrl.ID} and can't be added to the database.", nameof(imageUrl));
+            }
+
+            #endregion
+
+            string sql = @"
+Insert Into ImageUrl (Url, ImageWidth, ImageHeight, FileSize, Comments)
+Values (@ImageUrl, @ImageWidth, @ImageHeight, @FileSize, @Comments)
+Where Not Exists (Select * From ImageUrl ix Where ix.Url = @ImageUrl);
+
+Select last_insert_rowid();";
+
+            SQLiteCommand insertCommand = new(sql);
+
+            insertCommand.Parameters.AddWithValue("@ImageUrl", imageUrl.Address);
+            insertCommand.Parameters.AddWithValue("@ImageWidth", imageUrl.ImageWidth);
+            insertCommand.Parameters.AddWithValue("@ImageHeight", imageUrl.ImageHeight);
+            insertCommand.Parameters.AddWithValue("@FileSize", imageUrl.FileSize);
+            insertCommand.Parameters.AddWithValue("@Comments", imageUrl.Comments);
+
+            return insertCommand;
+        }
+
+        public DbCommand AddImageUrl(string imageUrl)
+        {
+            #region Sanity checks
+
+            if (imageUrl == null)
+            {
+                throw new ArgumentNullException(nameof(imageUrl));
+            }
+
+            if (string.IsNullOrWhiteSpace(imageUrl))
+            {
+                throw new ArgumentException($"Address cannot be null.", nameof(imageUrl));
+            }
+
+            #endregion
+
+            string sql = @"
+Insert Into ImageUrl (Url)
+Values (@ImageUrl);
+
+Select last_insert_rowid();";
+
+            SQLiteCommand insertCommand = new(sql);
+
+            insertCommand.Parameters.AddWithValue("@ImageUrl", imageUrl);
+
+            return insertCommand;
+        }
+
+        /// <summary>
+        /// Creates a <see cref="DbCommand"/> to remove a imageUrl from the database.
+        /// </summary>
+        /// <param name="imageUrl">A <see cref="ImageUrl"/> <see cref="DataTransferObject"/> containing the ID of the ImageUrl to delete.</param>
+        /// <returns>A <see cref="DbCommand"/>.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when imageUrl is null.</exception>
+        public DbCommand DeleteImageUrl(ImageUrl imageUrl)
+        {
+            #region Sanity checks
+
+            if (imageUrl is null)
+            {
+                throw new ArgumentNullException(nameof(imageUrl));
+            }
+
+            #endregion
+
+            return this.DeleteImageUrl(imageUrl.ID);
+        }
+
+        /// <summary>
+        /// Creates a <see cref="DbCommand"/> to remove a imageUrl from the database.
+        /// </summary>
+        /// <param name="id">The ID of the imageUrl in the database.</param>
+        /// <returns>A <see cref="DbCommand"/>.</returns>
+        /// <exception cref="ArgumentOutOfRangeException">Thrown when id is negative or zero.</exception>
+        public DbCommand DeleteImageUrl(long id)
+        {
+            #region Sanity checks
+
+            if (id < 1)
+            {
+                throw new ArgumentOutOfRangeException(nameof(id), "Value must be greater than zero.");
+            }
+
+            #endregion
+
+            string sql = @"Delete From ImageUrl Where ImageID = @ID";
+
+            SQLiteCommand deleteCommand = new(sql);
+
+            deleteCommand.Parameters.AddWithValue("@ID", id);
+
+            return deleteCommand;
+        }
+
+        /// <summary>
+        /// Creates a <see cref="DbCommand"/> to fetch a imageUrl from the database.
+        /// </summary>
+        /// <param name="id">The ID of the imageUrl in the database.</param>
+        /// <returns>A <see cref="DbCommand"/>.</returns>
+        /// <exception cref="ArgumentOutOfRangeException">Thrown when id is negative or zero.</exception>
+        public DbCommand GetImageUrl(long id)
+        {
+            #region Sanity checks
+
+            if (id < 1)
+            {
+                throw new ArgumentOutOfRangeException(nameof(id), "Value must be positive and greater than zero.");
+            }
+
+            #endregion
+
+            string sql = @"Select * From ImageUrl Where ImageID = @ID";
+
+            SQLiteCommand selectCommand = new(sql);
+
+            selectCommand.Parameters.AddWithValue("@ID", id);
+
+            return selectCommand;
+        }
+
+        public DbCommand GetImagesForTripReport(long tripReportID)
+        {
+            string sql = @"
+Select img.*
+From
+    ImageUrl img Join
+    TripReportImage tri On img.ImageID = tri.ImageID
+Where
+    tri.TripReportID = @TripReportID
+";
+
+            SQLiteCommand selectCommand = new(sql);
+            selectCommand.Parameters.AddWithValue("@TripReportID", tripReportID);
 
             return selectCommand;
         }

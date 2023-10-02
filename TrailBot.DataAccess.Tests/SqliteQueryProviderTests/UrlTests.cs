@@ -623,5 +623,39 @@ namespace TrailBot.DataAccess.Tests.SqliteQueryProviderTests
         }
 
         #endregion
+
+        #region LockUrlsForCollection
+
+        [TestMethod]
+        public void LockUrlsForCollection_ResultIsNotNull()
+        {
+            SqliteQueryProvider queryProvider = new();
+            var result = queryProvider.LockUrlsForCollection();
+
+            Assert.IsNotNull(result);
+        }
+
+        [TestMethod]
+        public void LockUrlsForCollection_ResultIsCorrectType()
+        {
+            SqliteQueryProvider queryProvider = new();
+            var result = queryProvider.LockUrlsForCollection();
+
+            Console.WriteLine(result.GetType().FullName);
+            Assert.IsTrue(result.GetType().Name == "SQLiteCommand");
+        }
+
+        [TestMethod]
+        public void LockUrlsForCollection_CommandText()
+        {
+            SqliteQueryProvider queryProvider = new();
+            var result = queryProvider.LockUrlsForCollection();
+
+            Console.WriteLine(result.CommandText);
+            Assert.IsTrue(result.CommandText.Trim().ToUpper().Contains("UPDATE URL"));
+            Assert.IsTrue(result.CommandText.Trim().ToUpper().Contains("CREATE TEMP TABLE"));
+        }
+
+        #endregion
     }
 }

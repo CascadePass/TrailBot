@@ -14,6 +14,8 @@ namespace CascadePass.TrailBot.DataAccess.DTO
 
         public DateTime? IntentLocked { get; set; }
 
+        #region Static creation methods
+
         public static Url Create(string address)
         {
             return new() { Address = address };
@@ -38,5 +40,7 @@ namespace CascadePass.TrailBot.DataAccess.DTO
         //{
         //    return new() { Address = address, Found = found, Collected = collected, IntentLocked = intentLocked, ID = id };
         //}
+
+        #endregion
     }
 }

@@ -235,9 +235,8 @@ namespace TrailBot.DataAccess.Tests.IntegrationTests
             Assert.AreEqual(provider1.State, provider2.State, "State doesn't match");
             Assert.AreEqual(provider1.Browser, provider2.Browser, "Browser doesn't match");
             Assert.AreEqual(provider1.ProviderXml, provider2.ProviderXml, "ProviderXml doesn't match");
-            //TODO: Finish implementing this
-            //Assert.IsTrue(this.AreDatesSame(provider1.LastTripReportRequest, provider2.LastTripReportRequest));
-            //Assert.IsTrue(this.AreDatesSame(provider1.LastGetRecentRequest, provider2.LastGetRecentRequest));
+            Assert.IsTrue(this.AreDatesSame(provider1.LastTripReportRequest, provider2.LastTripReportRequest));
+            Assert.IsTrue(this.AreDatesSame(provider1.LastGetRecentRequest, provider2.LastGetRecentRequest));
         }
 
         #endregion

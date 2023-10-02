@@ -161,6 +161,7 @@ namespace CascadePass.TrailBot.DataAccess
                 if (lookup != null)
                 {
                     tripReport.Url.ID = lookup.ID;
+                    Database.UpdateUrl(tripReport.Url);
                 }
                 else
                 {

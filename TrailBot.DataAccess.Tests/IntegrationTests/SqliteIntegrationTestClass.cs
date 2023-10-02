@@ -41,6 +41,37 @@ namespace TrailBot.DataAccess.Tests.IntegrationTests
             return true;
         }
 
+        internal bool AreDatesSame(DateTime? dateTime1, DateTime? dateTime2)
+        {
+            if (dateTime1.HasValue && !dateTime2.HasValue)
+            {
+                return false;
+            }
+
+            if (dateTime2.HasValue && !dateTime1.HasValue)
+            {
+                return false;
+            }
+
+            if (!dateTime1.HasValue && !dateTime2.HasValue)
+            {
+                // Otherwise there will be null reference exceptions below
+                return true;
+            }
+
+            if (dateTime1.Value.Date != dateTime2.Value.Date)
+            {
+                return false;
+            }
+
+            if ((int)dateTime1.Value.Date.TimeOfDay.TotalSeconds != (int)dateTime2.Value.Date.TimeOfDay.TotalSeconds)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
         internal DateTime GetRandomDateTime()
         {
             Random random = new();
