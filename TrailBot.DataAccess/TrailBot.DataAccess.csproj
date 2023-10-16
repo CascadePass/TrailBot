@@ -79,6 +79,7 @@
     <Compile Include="DTO\TopicText.cs" />
     <Compile Include="DTO\Url.cs" />
     <Compile Include="DTO\WtaTripReport.cs" />
+    <Compile Include="DTO\WtaTripReportImage.cs" />
     <Compile Include="ITrailBotQueryProvider.cs" />
     <Compile Include="ObjectRelationalMapper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

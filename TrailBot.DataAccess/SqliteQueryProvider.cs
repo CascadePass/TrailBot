@@ -1663,7 +1663,7 @@ Select last_insert_rowid();";
 
             if (string.IsNullOrWhiteSpace(imageUrl))
             {
-                throw new ArgumentException($"Address cannot be null.", nameof(imageUrl));
+                throw new ArgumentException($"Address cannot be null or whitespace.", nameof(imageUrl));
             }
 
             #endregion
@@ -1679,6 +1679,49 @@ Select last_insert_rowid();";
             insertCommand.Parameters.AddWithValue("@ImageUrl", imageUrl);
 
             return insertCommand;
+        }
+
+        public DbCommand UpdateImageUrl(ImageUrl imageUrl)
+        {
+            #region Sanity checks
+
+            if (imageUrl is null)
+            {
+                throw new ArgumentNullException(nameof(imageUrl));
+            }
+
+            if (string.IsNullOrWhiteSpace(imageUrl.Address))
+            {
+                throw new ArgumentException($"{nameof(imageUrl)}.Address can't be null, empty, or whitespace.", nameof(imageUrl));
+            }
+
+            if (imageUrl.ID <= 0)
+            {
+                throw new ArgumentOutOfRangeException($"{nameof(imageUrl)}.ID must be a non zero, positive value.", nameof(imageUrl));
+            }
+
+            #endregion
+
+            string sql = @"
+Update ImageUrl Set
+    Url = @ImageUrl,
+    ImageWidth = Coalesce(@ImageWidth, ImageWidth),
+    ImageHeight = Coalesce(@ImageHeight, ImageHeight),
+    FileSize = Coalesce(@FileSize, FileSize),
+    Comments = Coalesce(@Comments, Comments)
+Where ImageUrlID = @ID
+";
+
+            SQLiteCommand updateCommand = new(sql);
+
+            updateCommand.Parameters.AddWithValue("@ID", imageUrl.ID);
+            updateCommand.Parameters.AddWithValue("@ImageUrl", imageUrl.Address);
+            updateCommand.Parameters.AddWithValue("@ImageWidth", imageUrl.ImageWidth);
+            updateCommand.Parameters.AddWithValue("@ImageHeight", imageUrl.ImageHeight);
+            updateCommand.Parameters.AddWithValue("@FileSize", imageUrl.FileSize);
+            updateCommand.Parameters.AddWithValue("@Comments", imageUrl.Comments);
+
+            return updateCommand;
         }
 
         /// <summary>
@@ -1755,6 +1798,15 @@ Select last_insert_rowid();";
 
         public DbCommand GetImagesForTripReport(long tripReportID)
         {
+            #region Sanity checks
+
+            if (tripReportID < 1)
+            {
+                throw new ArgumentOutOfRangeException(nameof(tripReportID), "Value must be positive and greater than zero.");
+            }
+
+            #endregion
+
             string sql = @"
 Select img.*
 From

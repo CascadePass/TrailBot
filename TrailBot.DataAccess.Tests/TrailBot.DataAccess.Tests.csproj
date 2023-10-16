@@ -57,6 +57,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DatabaseTests.cs" />
+    <Compile Include="DtoTests\ImageUrlTests.cs" />
     <Compile Include="DtoTests\MatchedTripReportTextTests.cs" />
     <Compile Include="DtoTests\MatchedTripReportTopicTests.cs" />
     <Compile Include="DtoTests\MatchTextTests.cs" />
@@ -64,6 +65,7 @@
     <Compile Include="DtoTests\ProviderTests.cs" />
     <Compile Include="DtoTests\UnixDateTests.cs" />
     <Compile Include="DtoTests\UrlTests.cs" />
+    <Compile Include="DtoTests\WtaTripReportImageTests.cs" />
     <Compile Include="IntegrationTests\MatchedTripReportTextTests.cs" />
     <Compile Include="IntegrationTests\MatchedTripReportTopicTests.cs" />
     <Compile Include="IntegrationTests\MatchTextTests.cs" />
@@ -74,6 +76,7 @@
     <Compile Include="IntegrationTests\UrlTests.cs" />
     <Compile Include="IntegrationTests\WtaTripReportTests.cs" />
     <Compile Include="ObjectRelationalMapperTests.cs" />
+    <Compile Include="SqliteQueryProviderTests\ImageUrlTests.cs" />
     <Compile Include="SqliteQueryProviderTests\MatchedTripReportTextTests.cs" />
     <Compile Include="SqliteQueryProviderTests\MatchedTripReportTopicTests.cs" />
     <Compile Include="SqliteQueryProviderTests\MatchTextTests.cs" />
@@ -95,6 +98,10 @@
     <ProjectReference Include="..\TrailBot.DataAccess\TrailBot.DataAccess.csproj">
       <Project>{ab68c993-c6f1-4878-9c79-0b7fb24e209f}</Project>
       <Name>TrailBot.DataAccess</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TrailBot.TextAnalysis\TrailBot.TextAnalysis.csproj">
+      <Project>{6833993A-6A7E-4C63-BA86-03CE769106BA}</Project>
+      <Name>TrailBot.TextAnalysis</Name>
     </ProjectReference>
     <ProjectReference Include="..\TrailBot\TrailBot.csproj">
       <Project>{A76CEE83-015B-4277-813B-D9AECB538DB1}</Project>
