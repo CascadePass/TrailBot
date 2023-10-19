@@ -206,5 +206,64 @@ namespace CascadePass.TrailBot.DataAccess
 
             return matchDetails;
         }
+
+        public static ImageUrl GetImageUrl(DbDataReader dataReader)
+        {
+            #region Sanity checks
+
+            if (dataReader == null)
+            {
+                throw new ArgumentNullException(nameof(dataReader));
+            }
+
+            #endregion
+
+            ImageUrl image = new();
+
+            image.ID = dataReader.GetInt64(dataReader.GetOrdinal("ImageID"));
+            image.Address = dataReader.GetString(dataReader.GetOrdinal("Url"));
+
+            if (!dataReader.IsDBNull(dataReader.GetOrdinal("ImageWidth")))
+            {
+                image.ImageWidth = dataReader.GetInt64(dataReader.GetOrdinal("ImageWidth"));
+            }
+
+            if (!dataReader.IsDBNull(dataReader.GetOrdinal("ImageHeight")))
+            {
+                image.ImageHeight = dataReader.GetInt64(dataReader.GetOrdinal("ImageHeight"));
+            }
+
+            if (!dataReader.IsDBNull(dataReader.GetOrdinal("FileSize")))
+            {
+                image.FileSize = dataReader.GetInt64(dataReader.GetOrdinal("FileSize"));
+            }
+
+            if (!dataReader.IsDBNull(dataReader.GetOrdinal("Comments")))
+            {
+                image.Comments = dataReader.GetString(dataReader.GetOrdinal("Comments"));
+            }
+
+            return image;
+        }
+
+        public static WtaTripReportImage GetWtaTripReportImage(DbDataReader dataReader)
+        {
+            #region Sanity checks
+
+            if (dataReader == null)
+            {
+                throw new ArgumentNullException(nameof(dataReader));
+            }
+
+            #endregion
+
+            WtaTripReportImage imageAssociation = new();
+
+            imageAssociation.ID = dataReader.GetInt64(dataReader.GetOrdinal("TripReportImageID"));
+            imageAssociation.WtaTripReportID = dataReader.GetInt64(dataReader.GetOrdinal("TripReportID"));
+            imageAssociation.ImageID = dataReader.GetInt64(dataReader.GetOrdinal("ImageID"));
+
+            return imageAssociation;
+        }
     }
 }

@@ -66,6 +66,7 @@
     <Compile Include="DtoTests\UnixDateTests.cs" />
     <Compile Include="DtoTests\UrlTests.cs" />
     <Compile Include="DtoTests\WtaTripReportImageTests.cs" />
+    <Compile Include="IntegrationTests\ImageUrlTests.cs" />
     <Compile Include="IntegrationTests\MatchedTripReportTextTests.cs" />
     <Compile Include="IntegrationTests\MatchedTripReportTopicTests.cs" />
     <Compile Include="IntegrationTests\MatchTextTests.cs" />
@@ -74,6 +75,7 @@
     <Compile Include="IntegrationTests\TopicTests.cs" />
     <Compile Include="IntegrationTests\TopicTextTests.cs" />
     <Compile Include="IntegrationTests\UrlTests.cs" />
+    <Compile Include="IntegrationTests\WtaTripReportImageTests.cs" />
     <Compile Include="IntegrationTests\WtaTripReportTests.cs" />
     <Compile Include="ObjectRelationalMapperTests.cs" />
     <Compile Include="SqliteQueryProviderTests\ImageUrlTests.cs" />
@@ -86,6 +88,7 @@
     <Compile Include="SqliteQueryProviderTests\TopicTests.cs" />
     <Compile Include="SqliteQueryProviderTests\TopicTextTests.cs" />
     <Compile Include="SqliteQueryProviderTests\UrlTests.cs" />
+    <Compile Include="SqliteQueryProviderTests\WtaTripReportImageTests.cs" />
     <Compile Include="SqliteQueryProviderTests\WtaTripReportTests.cs" />
     <Compile Include="IntegrationTests\SqliteIntegrationTestClass.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

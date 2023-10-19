@@ -6,6 +6,8 @@ namespace CascadePass.TrailBot.DataAccess
 {
     public interface ITrailBotQueryProvider
     {
+        DbCommand AddImageUrl(ImageUrl imageUrl);
+        DbCommand AddImageUrl(string imageUrl);
         DbCommand AddMatchedTripReportText(long tripReportID, long textID);
         DbCommand AddMatchedTripReportText(MatchedTripReportText matchDetails);
         DbCommand AddMatchedTripReportText(WtaTripReport tripReport, MatchText text);
@@ -19,6 +21,10 @@ namespace CascadePass.TrailBot.DataAccess
         DbCommand AddTopicText(TopicText topicText);
         DbCommand AddUrl(Url url);
         DbCommand AddWtaTripReport(WtaTripReport tripReport);
+        DbCommand AddWtaTripReportImage(long wtaTripReportID, long imageID);
+        DbCommand AddWtaTripReportImage(WtaTripReportImage tripReportImage);
+        DbCommand DeleteImageUrl(ImageUrl imageUrl);
+        DbCommand DeleteImageUrl(long id);
         DbCommand DeleteMatchedTripReportText(long id);
         DbCommand DeleteMatchedTripReportText(MatchedTripReportText matchDetails);
         DbCommand DeleteMatchedTripReportTopic(long id);
@@ -37,6 +43,10 @@ namespace CascadePass.TrailBot.DataAccess
         DbCommand DeleteUrl(Url url);
         DbCommand DeleteWtaTripReport(long id);
         DbCommand DeleteWtaTripReport(WtaTripReport tripReport);
+        DbCommand DeleteWtaTripReportImage(long id);
+        DbCommand DeleteWtaTripReportImage(WtaTripReportImage tripReportImage);
+        DbCommand GetImagesForTripReport(long tripReportID);
+        DbCommand GetImageUrl(long id);
         DbCommand GetMatchedTripReportText(long id);
         DbCommand GetMatchedTripReportTopic(long id);
         DbCommand GetMatchText(long id);
@@ -51,7 +61,10 @@ namespace CascadePass.TrailBot.DataAccess
         DbCommand GetUrl(long id);
         DbCommand GetUrl(string url);
         DbCommand GetWtaTripReport(long id);
+        DbCommand GetWtaTripReportImage(long id);
         DbCommand IncrementProviderStatistics(long id, long? additionalRequests, long? additionalFailedRequests, long? additionalMatches, long? additionalSleepMS);
+        DbCommand LockUrlsForCollection();
+        DbCommand UpdateImageUrl(ImageUrl imageUrl);
         DbCommand UpdateMatchText(long id, long? falseParentID, string text);
         DbCommand UpdateMatchText(long id, string text);
         DbCommand UpdateMatchText(MatchText matchText);

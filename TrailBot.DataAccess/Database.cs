@@ -620,6 +620,120 @@ namespace CascadePass.TrailBot.DataAccess
 
         #endregion
 
+        #region ImageUrl
+
+        public static long AddImageUrl(ImageUrl imageUrl)
+        {
+            using DbCommand query = Database.QueryProvider.AddImageUrl(imageUrl);
+            return imageUrl.ID = (long)Database.ExecuteScalar(query);
+        }
+
+        public static long AddImageUrl(string imageUrl)
+        {
+            using DbCommand query = Database.QueryProvider.AddImageUrl(imageUrl);
+            return (long)Database.ExecuteScalar(query);
+        }
+
+        public static long UpdateImageUrl(ImageUrl imageUrl)
+        {
+            using DbCommand query = Database.QueryProvider.UpdateImageUrl(imageUrl);
+            return (long)Database.ExecuteNonQuery(query);
+        }
+
+        public static long DeleteImageUrl(ImageUrl imageUrl)
+        {
+            using DbCommand query = Database.QueryProvider.DeleteImageUrl(imageUrl);
+            return (long)Database.ExecuteNonQuery(query);
+        }
+
+        public static long DeleteImageUrl(long imageUrlID)
+        {
+            using DbCommand query = Database.QueryProvider.DeleteImageUrl(imageUrlID);
+            return (long)Database.ExecuteNonQuery(query);
+        }
+
+        public static ImageUrl GetImageUrl(long id) 
+        {
+            using DbCommand query = Database.QueryProvider.GetImageUrl(id);
+            using DbDataReader reader = Database.ExecuteReader(query);
+
+            ImageUrl result = null;
+
+            if (reader.Read())
+            {
+                result = ObjectRelationalMapper.GetImageUrl(reader);
+            }
+
+            query.Connection.Close();
+
+            return result;
+        }
+
+        public static List<ImageUrl> GetImagesForTripReport(long id)
+        {
+            using DbCommand query = Database.QueryProvider.GetImagesForTripReport(id);
+            using DbDataReader reader = Database.ExecuteReader(query);
+
+            List<ImageUrl> result = new();
+
+            while (reader.Read())
+            {
+                var provider = ObjectRelationalMapper.GetImageUrl(reader);
+                result.Add(provider);
+            }
+
+            query.Connection.Close();
+
+            return result;
+        }
+
+        #endregion
+
+        #region WtaTripReportImage
+
+        public static long AddWtaTripReportImage(WtaTripReportImage imageAssociation)
+        {
+            using DbCommand query = Database.QueryProvider.AddWtaTripReportImage(imageAssociation);
+            return imageAssociation.ID = (long)Database.ExecuteScalar(query);
+        }
+
+        public static long AddWtaTripReportImage(long wtaTripReportID, long imageID)
+        {
+            using DbCommand query = Database.QueryProvider.AddWtaTripReportImage(wtaTripReportID, imageID);
+            return (long)Database.ExecuteScalar(query);
+        }
+
+        public static long DeleteWtaTripReportImage(WtaTripReportImage imageAssociation)
+        {
+            using DbCommand query = Database.QueryProvider.DeleteWtaTripReportImage(imageAssociation);
+            return (long)Database.ExecuteNonQuery(query);
+        }
+
+        public static long DeleteWtaTripReportImage(long wtaTripReportImageID)
+        {
+            using DbCommand query = Database.QueryProvider.DeleteWtaTripReportImage(wtaTripReportImageID);
+            return (long)Database.ExecuteNonQuery(query);
+        }
+
+        public static WtaTripReportImage GetWtaTripReportImage(long id)
+        {
+            using DbCommand query = Database.QueryProvider.GetWtaTripReportImage(id);
+            using DbDataReader reader = Database.ExecuteReader(query);
+
+            WtaTripReportImage result = null;
+
+            if (reader.Read())
+            {
+                result = ObjectRelationalMapper.GetWtaTripReportImage(reader);
+            }
+
+            query.Connection.Close();
+
+            return result;
+        }
+
+        #endregion
+
         #region ADO.NET abstraction methods
 
         #region Get Connection

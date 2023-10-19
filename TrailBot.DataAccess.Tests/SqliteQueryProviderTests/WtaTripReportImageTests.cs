@@ -1,83 +1,78 @@
-﻿using CascadePass.TrailBot.DataAccess;
-using CascadePass.TrailBot.DataAccess.DTO;
+﻿using CascadePass.TrailBot.DataAccess.DTO;
+using CascadePass.TrailBot.DataAccess;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
+using System.Collections.Generic;
 using System.Data.Common;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace TrailBot.DataAccess.Tests.SqliteQueryProviderTests
 {
     [TestClass]
-    public class ImageUrlTests
+    public class WtaTripReportImageTests
     {
-        #region AddImageUrl
+        #region AddWtaTripReportImage
 
-        #region By url (string)
+        #region By IDs
 
-        #region Validation (Address can't be blank)
+        #region Validation
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
-        public void AddImageUrl_Null()
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void AddWtaTripReportImage_ByID_TripReportID_0()
         {
             SqliteQueryProvider queryProvider = new();
-            queryProvider.AddImageUrl((string)null);
+            queryProvider.AddWtaTripReportImage(0, 1);
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentException))]
-        public void AddImageUrl_Url_EmptyString()
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void AddWtaTripReportImage_ByID_ImageID_0()
         {
             SqliteQueryProvider queryProvider = new();
-            queryProvider.AddImageUrl(string.Empty);
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentException))]
-        public void AddImageUrl_Url_WhiteSpace()
-        {
-            SqliteQueryProvider queryProvider = new();
-            queryProvider.AddImageUrl(" ");
+            queryProvider.AddWtaTripReportImage(2, 0);
         }
 
         #endregion
 
         [TestMethod]
-        public void AddImageUrl_ByString_ResultIsNotNull()
+        public void AddWtaTripReportImage_ByID_ResultIsNotNull()
         {
             SqliteQueryProvider queryProvider = new();
-            var result = queryProvider.AddImageUrl($"https://test/{Guid.NewGuid()}");
+            var result = queryProvider.AddWtaTripReportImage(1, 2);
 
             Assert.IsNotNull(result);
         }
 
         [TestMethod]
-        public void AddImageUrl_ByString_ResultIsCorrectType()
+        public void AddWtaTripReportImage_ByID_ResultIsCorrectType()
         {
             SqliteQueryProvider queryProvider = new();
-            var result = queryProvider.AddImageUrl($"https://test/{Guid.NewGuid().ToString()}");
+            var result = queryProvider.AddWtaTripReportImage(2, 3);
 
             Console.WriteLine(result.GetType().FullName);
             Assert.IsTrue(result.GetType().Name == "SQLiteCommand");
         }
 
         [TestMethod]
-        public void AddImageUrl_ByString_CommandText()
+        public void AddWtaTripReportImage_ByID_CommandText()
         {
             SqliteQueryProvider queryProvider = new();
-            var result = queryProvider.AddImageUrl($"https://test/{Guid.NewGuid().ToString()}");
+            var result = queryProvider.AddWtaTripReportImage(3, 4);
 
             Console.WriteLine(result.CommandText);
-            Assert.IsTrue(result.CommandText.Trim().ToUpper().StartsWith("INSERT INTO IMAGEURL"));
-            Assert.IsTrue(result.CommandText.Trim().ToUpper().Contains("VALUES"));
+            Assert.IsTrue(result.CommandText.Trim().ToUpper().StartsWith("INSERT INTO TRIPREPORTIMAGE"));
+            Assert.IsTrue(result.CommandText.Trim().ToUpper().Contains("SELECT"));
             Assert.IsTrue(result.CommandText.Trim().ToUpper().Contains("SELECT LAST_INSERT_ROWID();"));
         }
 
         [TestMethod]
-        public void AddImageUrl_ByString_QueryIsParameterized()
+        public void AddWtaTripReportImage_ByID_QueryIsParameterized()
         {
-            string text = $"https://test/{Guid.NewGuid()}";
             SqliteQueryProvider queryProvider = new();
-            var result = queryProvider.AddImageUrl(text);
+            var result = queryProvider.AddWtaTripReportImage(5, 6);
 
             Console.WriteLine(result.CommandText);
 
@@ -87,11 +82,11 @@ namespace TrailBot.DataAccess.Tests.SqliteQueryProviderTests
             }
 
             // None of the input values should appear in the text
-            Assert.IsFalse(result.CommandText.Trim().ToUpper().Contains(text.ToUpper()));
+            Assert.IsFalse(result.CommandText.Trim().ToUpper().Contains("6"));
 
             // Instead, there should be parameters with these values
-            Assert.IsTrue(result.Parameters.Contains("@ImageUrl"));
-            Assert.AreEqual(text, result.Parameters["@ImageUrl"].Value);
+            Assert.IsTrue(result.Parameters.Contains("@ImageID"));
+            Assert.AreEqual(6L, result.Parameters["@ImageID"].Value);
         }
 
         #endregion
@@ -100,89 +95,84 @@ namespace TrailBot.DataAccess.Tests.SqliteQueryProviderTests
 
         #region Validation
 
-        #region Address can't be blank
-
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
-        public void AddImageUrl_By_DTO_Null()
+        public void AddWtaTripReportImage_By_DTO_Null()
         {
             SqliteQueryProvider queryProvider = new();
-            queryProvider.AddImageUrl((ImageUrl)null);
+            queryProvider.AddWtaTripReportImage((WtaTripReportImage)null);
         }
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentException))]
-        public void AddImageUrl_By_DTO_Url_Null()
+        public void AddWtaTripReportImage_By_DTO_TripReportID_Zero()
         {
             SqliteQueryProvider queryProvider = new();
-            queryProvider.AddImageUrl(new ImageUrl() { Address = null });
+            queryProvider.AddWtaTripReportImage(new WtaTripReportImage() { WtaTripReportID = 0, ImageID = 12 });
         }
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentException))]
-        public void AddImageUrl_By_DTO_Url_EmptyString()
+        public void AddWtaTripReportImage_By_DTO_ImageID_Zero()
         {
             SqliteQueryProvider queryProvider = new();
-            queryProvider.AddImageUrl(new ImageUrl() { Address = string.Empty });
+            queryProvider.AddWtaTripReportImage(new WtaTripReportImage() { WtaTripReportID = 100, ImageID = 0 });
         }
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentException))]
-        public void AddImageUrl_By_DTO_Url_WhiteSpace()
+        public void AddWtaTripReportImage_By_DTO_ID_Positive()
         {
             SqliteQueryProvider queryProvider = new();
-            queryProvider.AddImageUrl(new ImageUrl() { Address = " " });
+            queryProvider.AddWtaTripReportImage(new WtaTripReportImage() { ID = 1, WtaTripReportID = 100, ImageID = 10 });
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException))]
+        public void AddWtaTripReportImage_By_DTO_ID_Negative()
+        {
+            SqliteQueryProvider queryProvider = new();
+            queryProvider.AddWtaTripReportImage(new WtaTripReportImage() { ID = -1, WtaTripReportID = 100, ImageID = 10 });
         }
 
         #endregion
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentException))]
-        public void AddImageUrl_By_DTO_HasID()
+        public void AddWtaTripReportImage_By_DTO_ResultIsNotNull()
         {
             SqliteQueryProvider queryProvider = new();
-            queryProvider.AddImageUrl(new ImageUrl() { ID = 25, Address = "test" });
-        }
-
-        #endregion
-
-        [TestMethod]
-        public void AddImageUrl_By_DTO_ResultIsNotNull()
-        {
-            SqliteQueryProvider queryProvider = new();
-            var result = queryProvider.AddImageUrl(new ImageUrl() { Address = Guid.NewGuid().ToString() });
+            var result = queryProvider.AddWtaTripReportImage(new WtaTripReportImage() { WtaTripReportID = 1, ImageID = 2 });
 
             Assert.IsNotNull(result);
         }
 
         [TestMethod]
-        public void AddImageUrl_By_DTO_ResultIsCorrectType()
+        public void AddWtaTripReportImage_By_DTO_ResultIsCorrectType()
         {
             SqliteQueryProvider queryProvider = new();
-            var result = queryProvider.AddImageUrl(new ImageUrl() { Address = Guid.NewGuid().ToString() });
+            var result = queryProvider.AddWtaTripReportImage(new WtaTripReportImage() { WtaTripReportID = 1, ImageID = 2 });
 
             Console.WriteLine(result.GetType().FullName);
             Assert.IsTrue(result.GetType().Name == "SQLiteCommand");
         }
 
         [TestMethod]
-        public void AddImageUrl_By_DTO_CommandText()
+        public void AddWtaTripReportImage_By_DTO_CommandText()
         {
             SqliteQueryProvider queryProvider = new();
-            var result = queryProvider.AddImageUrl(new ImageUrl() { Address = Guid.NewGuid().ToString() });
+            var result = queryProvider.AddWtaTripReportImage(new WtaTripReportImage() { WtaTripReportID = 1, ImageID = 2 });
 
             Console.WriteLine(result.CommandText);
-            Assert.IsTrue(result.CommandText.Trim().ToUpper().StartsWith("INSERT INTO IMAGEURL"));
+            Assert.IsTrue(result.CommandText.Trim().ToUpper().StartsWith("INSERT INTO TRIPREPORTIMAGE"));
             Assert.IsTrue(result.CommandText.Trim().ToUpper().Contains("SELECT"));
             Assert.IsTrue(result.CommandText.Trim().ToUpper().Contains("SELECT LAST_INSERT_ROWID();"));
         }
 
         [TestMethod]
-        public void AddImageUrl_By_DTO_QueryIsParameterized()
+        public void AddWtaTripReportImage_By_DTO_QueryIsParameterized()
         {
-            string text = Guid.NewGuid().ToString();
             SqliteQueryProvider queryProvider = new();
-            var result = queryProvider.AddImageUrl(new ImageUrl() { Address = text });
+            var result = queryProvider.AddWtaTripReportImage(new WtaTripReportImage() { WtaTripReportID = 1, ImageID = 2 });
 
             Console.WriteLine(result.CommandText);
 
@@ -192,139 +182,18 @@ namespace TrailBot.DataAccess.Tests.SqliteQueryProviderTests
             }
 
             // None of the input values should appear in the text
-            Assert.IsFalse(result.CommandText.Trim().ToUpper().Contains(text.ToUpper()));
+            Assert.IsFalse(result.CommandText.Trim().ToUpper().Contains("2"));
 
             // Instead, there should be parameters with these values
-            Assert.IsTrue(result.Parameters.Contains("@ImageUrl"));
-            Assert.AreEqual(text, result.Parameters["@ImageUrl"].Value);
+            Assert.IsTrue(result.Parameters.Contains("@ImageID"));
+            Assert.AreEqual(2L, result.Parameters["@ImageID"].Value);
         }
 
         #endregion
 
         #endregion
 
-        #region UpdateImageUrl
-
-        #region Validation
-
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
-        public void UpdateImageUrl_ByDTO_Null()
-        {
-            SqliteQueryProvider queryProvider = new();
-            queryProvider.UpdateImageUrl(null);
-        }
-
-        #region (ID must be in range)
-
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentOutOfRangeException))]
-        public void UpdateImageUrl_ByID_Zero()
-        {
-            SqliteQueryProvider queryProvider = new();
-            queryProvider.UpdateImageUrl(new() { ID = 0, Address = $"https://test/{Guid.NewGuid()}" });
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentOutOfRangeException))]
-        public void UpdateImageUrl_ByID_Negative()
-        {
-            SqliteQueryProvider queryProvider = new();
-            queryProvider.UpdateImageUrl(new() { ID = -25, Address = $"https://test/{Guid.NewGuid()}"});
-        }
-
-        #endregion
-
-        #region Name
-
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentException))]
-        public void UpdateImageUrl_ByID_Address_Null()
-        {
-            SqliteQueryProvider queryProvider = new();
-            queryProvider.UpdateImageUrl(new() { ID = 125, Address = null });
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentException))]
-        public void UpdateImageUrl_ByID_Address_Empty()
-        {
-            SqliteQueryProvider queryProvider = new();
-            queryProvider.UpdateImageUrl(new() { ID = 125, Address = string.Empty });
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentException))]
-        public void UpdateImageUrl_ByID_Address_Space()
-        {
-            SqliteQueryProvider queryProvider = new();
-            queryProvider.UpdateImageUrl(new() { ID = 125, Address = " " });
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentException))]
-        public void UpdateImageUrl_ByID_Address_NewLines()
-        {
-            SqliteQueryProvider queryProvider = new();
-            queryProvider.UpdateImageUrl(new() { ID = 125, Address = "\r\n\r\n" });
-        }
-
-        #endregion
-
-        #endregion
-
-        #region Correctness
-
-        [TestMethod]
-        public void UpdateImageUrl_ByID_ResultIsNotNull()
-        {
-            SqliteQueryProvider queryProvider = new();
-            var result = queryProvider.UpdateImageUrl(new() { ID = 225, Address = $"https://test/{Guid.NewGuid()}" });
-
-            Assert.IsNotNull(result);
-        }
-
-        [TestMethod]
-        public void UpdateImageUrl_ByID_ResultIsCorrectType()
-        {
-            SqliteQueryProvider queryProvider = new();
-            var result = queryProvider.UpdateImageUrl(new() { ID = 75, Address = $"https://test/{Guid.NewGuid()}" });
-
-            Console.WriteLine(result.GetType().FullName);
-            Assert.IsTrue(result.GetType().Name == "SQLiteCommand");
-        }
-
-        [TestMethod]
-        public void UpdateImageUrl_ByID_CommandText()
-        {
-            SqliteQueryProvider queryProvider = new();
-            var result = queryProvider.UpdateImageUrl(new() { ID = 5, Address = $"https://test/{Guid.NewGuid()}" });
-
-            Console.WriteLine(result.CommandText);
-            Assert.IsTrue(result.CommandText.Trim().ToUpper().StartsWith("UPDATE IMAGEURL"));
-        }
-
-        [TestMethod]
-        public void UpdateImageUrl_ByID_QueryIsParameterized()
-        {
-            SqliteQueryProvider queryProvider = new();
-            var result = queryProvider.UpdateImageUrl(new() { ID = 25, Address = $"https://test/{Guid.NewGuid()}" });
-
-            Console.WriteLine(result.CommandText);
-
-            foreach (DbParameter parameter in result.Parameters)
-            {
-                Console.WriteLine(parameter.ParameterName + "\t" + parameter.Value);
-            }
-
-            Assert.IsTrue(result.Parameters.Contains("@ID"));
-        }
-
-        #endregion
-
-        #endregion
-
-        #region DeleteImageUrl
+        #region DeleteWtaTripReportImage
 
         #region By ID
 
@@ -332,56 +201,56 @@ namespace TrailBot.DataAccess.Tests.SqliteQueryProviderTests
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentOutOfRangeException))]
-        public void DeleteImageUrl_ByID_Zero()
+        public void DeleteWtaTripReportImage_ByID_Zero()
         {
             SqliteQueryProvider queryProvider = new();
-            queryProvider.DeleteImageUrl(0);
+            queryProvider.DeleteWtaTripReportImage(0);
         }
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentOutOfRangeException))]
-        public void DeleteImageUrl_ByID_Negative()
+        public void DeleteWtaTripReportImage_ByID_Negative()
         {
             SqliteQueryProvider queryProvider = new();
-            queryProvider.DeleteImageUrl(-25);
+            queryProvider.DeleteWtaTripReportImage(-25);
         }
 
         #endregion
 
         [TestMethod]
-        public void DeleteImageUrl_ByID_ResultIsNotNull()
+        public void DeleteWtaTripReportImage_ByID_ResultIsNotNull()
         {
             SqliteQueryProvider queryProvider = new();
-            var result = queryProvider.DeleteImageUrl(100);
+            var result = queryProvider.DeleteWtaTripReportImage(100);
 
             Assert.IsNotNull(result);
         }
 
         [TestMethod]
-        public void DeleteImageUrl_ByID_ResultIsCorrectType()
+        public void DeleteWtaTripReportImage_ByID_ResultIsCorrectType()
         {
             SqliteQueryProvider queryProvider = new();
-            var result = queryProvider.DeleteImageUrl(100);
+            var result = queryProvider.DeleteWtaTripReportImage(100);
 
             Console.WriteLine(result.GetType().FullName);
             Assert.IsTrue(result.GetType().Name == "SQLiteCommand");
         }
 
         [TestMethod]
-        public void DeleteImageUrl_ByID_CommandText()
+        public void DeleteWtaTripReportImage_ByID_CommandText()
         {
             SqliteQueryProvider queryProvider = new();
-            var result = queryProvider.DeleteImageUrl(100);
+            var result = queryProvider.DeleteWtaTripReportImage(100);
 
             Console.WriteLine(result.CommandText);
-            Assert.IsTrue(result.CommandText.Trim().ToUpper().StartsWith("DELETE FROM IMAGEURL"));
+            Assert.IsTrue(result.CommandText.Trim().ToUpper().StartsWith("DELETE FROM TRIPREPORTIMAGE"));
         }
 
         [TestMethod]
-        public void DeleteImageUrl_ByID_QueryIsParameterized()
+        public void DeleteWtaTripReportImage_ByID_QueryIsParameterized()
         {
             SqliteQueryProvider queryProvider = new();
-            var result = queryProvider.DeleteImageUrl(int.MaxValue);
+            var result = queryProvider.DeleteWtaTripReportImage(int.MaxValue);
 
             Console.WriteLine(result.CommandText);
 
@@ -402,64 +271,64 @@ namespace TrailBot.DataAccess.Tests.SqliteQueryProviderTests
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
-        public void DeleteImageUrl_ByDTO_Null()
+        public void DeleteWtaTripReportImage_ByDTO_Null()
         {
             SqliteQueryProvider queryProvider = new();
-            queryProvider.DeleteImageUrl(null);
+            queryProvider.DeleteWtaTripReportImage(null);
         }
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentOutOfRangeException))]
-        public void DeleteImageUrl_ByDTO_Zero()
+        public void DeleteWtaTripReportImage_ByDTO_Zero()
         {
             SqliteQueryProvider queryProvider = new();
-            queryProvider.DeleteImageUrl(new ImageUrl() { ID = 0 });
+            queryProvider.DeleteWtaTripReportImage(new WtaTripReportImage() { ID = 0 });
         }
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentOutOfRangeException))]
-        public void DeleteImageUrl_ByDTO_Negative()
+        public void DeleteWtaTripReportImage_ByDTO_Negative()
         {
             SqliteQueryProvider queryProvider = new();
-            queryProvider.DeleteImageUrl(new ImageUrl() { ID = -25 });
+            queryProvider.DeleteWtaTripReportImage(new WtaTripReportImage() { ID = -25 });
         }
 
         #endregion
 
         [TestMethod]
-        public void DeleteImageUrl_ByDTO_ResultIsNotNull()
+        public void DeleteWtaTripReportImage_ByDTO_ResultIsNotNull()
         {
             SqliteQueryProvider queryProvider = new();
-            var result = queryProvider.DeleteImageUrl(new ImageUrl() { ID = 1 });
+            var result = queryProvider.DeleteWtaTripReportImage(new WtaTripReportImage() { ID = 1 });
 
             Assert.IsNotNull(result);
         }
 
         [TestMethod]
-        public void DeleteImageUrl_ByDTO_ResultIsCorrectType()
+        public void DeleteWtaTripReportImage_ByDTO_ResultIsCorrectType()
         {
             SqliteQueryProvider queryProvider = new();
-            var result = queryProvider.DeleteImageUrl(new ImageUrl() { ID = 80 });
+            var result = queryProvider.DeleteWtaTripReportImage(new WtaTripReportImage() { ID = 80 });
 
             Console.WriteLine(result.GetType().FullName);
             Assert.IsTrue(result.GetType().Name == "SQLiteCommand");
         }
 
         [TestMethod]
-        public void DeleteImageUrl_ByDTO_CommandText()
+        public void DeleteWtaTripReportImage_ByDTO_CommandText()
         {
             SqliteQueryProvider queryProvider = new();
-            var result = queryProvider.DeleteImageUrl(new ImageUrl() { ID = 100 });
+            var result = queryProvider.DeleteWtaTripReportImage(new WtaTripReportImage() { ID = 100 });
 
             Console.WriteLine(result.CommandText);
-            Assert.IsTrue(result.CommandText.Trim().ToUpper().StartsWith("DELETE FROM IMAGEURL"));
+            Assert.IsTrue(result.CommandText.Trim().ToUpper().StartsWith("DELETE FROM TRIPREPORTIMAGE"));
         }
 
         [TestMethod]
-        public void DeleteImageUrl_ByDTO_QueryIsParameterized()
+        public void DeleteWtaTripReportImage_ByDTO_QueryIsParameterized()
         {
             SqliteQueryProvider queryProvider = new();
-            var result = queryProvider.DeleteImageUrl(new ImageUrl() { ID = 25000 });
+            var result = queryProvider.DeleteWtaTripReportImage(new WtaTripReportImage() { ID = 25000 });
 
             Console.WriteLine(result.CommandText);
 
@@ -476,63 +345,63 @@ namespace TrailBot.DataAccess.Tests.SqliteQueryProviderTests
 
         #endregion
 
-        #region GetImageUrl
+        #region GetWtaTripReportImage
 
         #region ID must be in range
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentOutOfRangeException))]
-        public void GetImageUrlZero()
+        public void GetWtaTripReportImageZero()
         {
             SqliteQueryProvider queryProvider = new();
-            queryProvider.GetImageUrl(0);
+            queryProvider.GetWtaTripReportImage(0);
         }
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentOutOfRangeException))]
-        public void GetImageUrlNegative()
+        public void GetWtaTripReportImageNegative()
         {
             SqliteQueryProvider queryProvider = new();
-            queryProvider.GetImageUrl(-25);
+            queryProvider.GetWtaTripReportImage(-25);
         }
 
         #endregion
 
         [TestMethod]
-        public void GetImageUrlResultIsNotNull()
+        public void GetWtaTripReportImageResultIsNotNull()
         {
             SqliteQueryProvider queryProvider = new();
-            var result = queryProvider.GetImageUrl(100);
+            var result = queryProvider.GetWtaTripReportImage(100);
 
             Assert.IsNotNull(result);
         }
 
         [TestMethod]
-        public void GetImageUrlResultIsCorrectType()
+        public void GetWtaTripReportImageResultIsCorrectType()
         {
             SqliteQueryProvider queryProvider = new();
-            var result = queryProvider.GetImageUrl(100);
+            var result = queryProvider.GetWtaTripReportImage(100);
 
             Console.WriteLine(result.GetType().FullName);
             Assert.IsTrue(result.GetType().Name == "SQLiteCommand");
         }
 
         [TestMethod]
-        public void GetImageUrlCommandText()
+        public void GetWtaTripReportImageCommandText()
         {
             SqliteQueryProvider queryProvider = new();
-            var result = queryProvider.GetImageUrl(100);
+            var result = queryProvider.GetWtaTripReportImage(100);
 
             Console.WriteLine(result.CommandText);
             Assert.IsTrue(result.CommandText.Trim().ToUpper().StartsWith("SELECT"));
-            Assert.IsTrue(result.CommandText.Trim().ToUpper().Contains("FROM IMAGEURL"));
+            Assert.IsTrue(result.CommandText.Trim().ToUpper().Contains("FROM TRIPREPORTIMAGE"));
         }
 
         [TestMethod]
-        public void GetImageUrlQueryIsParameterized()
+        public void GetWtaTripReportImageQueryIsParameterized()
         {
             SqliteQueryProvider queryProvider = new();
-            var result = queryProvider.GetImageUrl(int.MaxValue);
+            var result = queryProvider.GetWtaTripReportImage(int.MaxValue);
 
             Console.WriteLine(result.CommandText);
 

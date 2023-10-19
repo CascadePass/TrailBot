@@ -73,5 +73,19 @@ namespace TrailBot.DataAccess.Tests
         {
             ObjectRelationalMapper.GetMatchedTripReportTopic(null);
         }
+
+        [ExpectedException(typeof(ArgumentNullException))]
+        [TestMethod]
+        public void GetImageUrl_null()
+        {
+            ObjectRelationalMapper.GetImageUrl(null);
+        }
+
+        [ExpectedException(typeof(ArgumentNullException))]
+        [TestMethod]
+        public void GetWtaTripReportImage_null()
+        {
+            ObjectRelationalMapper.GetWtaTripReportImage(null);
+        }
     }
 }

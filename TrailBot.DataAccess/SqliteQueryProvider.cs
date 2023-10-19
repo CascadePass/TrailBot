@@ -1636,7 +1636,7 @@ Select last_insert_rowid();";
 
             string sql = @"
 Insert Into ImageUrl (Url, ImageWidth, ImageHeight, FileSize, Comments)
-Values (@ImageUrl, @ImageWidth, @ImageHeight, @FileSize, @Comments)
+Select @ImageUrl, @ImageWidth, @ImageHeight, @FileSize, @Comments
 Where Not Exists (Select * From ImageUrl ix Where ix.Url = @ImageUrl);
 
 Select last_insert_rowid();";
@@ -1705,11 +1705,11 @@ Select last_insert_rowid();";
             string sql = @"
 Update ImageUrl Set
     Url = @ImageUrl,
-    ImageWidth = Coalesce(@ImageWidth, ImageWidth),
-    ImageHeight = Coalesce(@ImageHeight, ImageHeight),
-    FileSize = Coalesce(@FileSize, FileSize),
-    Comments = Coalesce(@Comments, Comments)
-Where ImageUrlID = @ID
+    ImageWidth = @ImageWidth,
+    ImageHeight = @ImageHeight,
+    FileSize = @FileSize,
+    Comments = @Comments
+Where ImageID = @ID
 ";
 
             SQLiteCommand updateCommand = new(sql);
@@ -1818,6 +1818,149 @@ Where
 
             SQLiteCommand selectCommand = new(sql);
             selectCommand.Parameters.AddWithValue("@TripReportID", tripReportID);
+
+            return selectCommand;
+        }
+
+        #endregion
+
+        #region WtaTripReportImage
+
+        /// <summary>
+        /// Creates a <see cref="DbCommand"/> to add a tripReportImage object to the database.
+        /// </summary>
+        /// <param name="tripReportImage">A <see cref="WtaTripReportImage"/> <see cref="DataTransferObject"/>.</param>
+        /// <returns>A <see cref="DbCommand"/>.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when tripReportImage is null.</exception>
+        /// <exception cref="ArgumentException">Thrown when tripReportImage.Address is null, empty, or white space.</exception>
+        public DbCommand AddWtaTripReportImage(WtaTripReportImage tripReportImage)
+        {
+            #region Sanity checks
+
+            if (tripReportImage == null)
+            {
+                throw new ArgumentNullException(nameof(tripReportImage));
+            }
+
+            if (tripReportImage.WtaTripReportID <= 0)
+            {
+                throw new ArgumentException("WtaTripReportID must be a positive integer, it is a foreign key.", nameof(tripReportImage));
+            }
+
+            if (tripReportImage.ImageID <= 0)
+            {
+                throw new ArgumentException($"WtaTripReportID must be a positive integer, it is a foreign key.", nameof(tripReportImage));
+            }
+
+            if (tripReportImage.ID != 0)
+            {
+                throw new ArgumentException($"{nameof(tripReportImage)}.ID has a value of {tripReportImage.ID} and can't be added to the database.", nameof(tripReportImage));
+            }
+
+            #endregion
+
+            return this.AddWtaTripReportImage(tripReportImage.WtaTripReportID, tripReportImage.ImageID);
+        }
+         
+        public DbCommand AddWtaTripReportImage(long wtaTripReportID, long imageID)
+        {
+            #region Sanity checks
+
+            if (wtaTripReportID <= 0)
+            {
+                throw new ArgumentOutOfRangeException("WtaTripReportID must be a positive integer, it is a foreign key.", nameof(wtaTripReportID));
+            }
+
+            if (imageID <= 0)
+            {
+                throw new ArgumentOutOfRangeException($"WtaTripReportID must be a positive integer, it is a foreign key.", nameof(imageID));
+            }
+
+            #endregion
+
+            string sql = @"
+Insert Into TripReportImage (TripReportID, ImageID)
+Select @TripReportID, @ImageID
+Where Not Exists (Select * From TripReportImage ix Where ix.TripReportID = @TripReportID And ix.ImageID = @ImageID);
+
+Select last_insert_rowid();";
+
+            SQLiteCommand insertCommand = new(sql);
+
+            insertCommand.Parameters.AddWithValue("@TripReportID", wtaTripReportID);
+            insertCommand.Parameters.AddWithValue("@ImageID", imageID);
+
+            return insertCommand;
+        }
+
+        /// <summary>
+        /// Creates a <see cref="DbCommand"/> to remove a tripReportImage from the database.
+        /// </summary>
+        /// <param name="tripReportImage">A <see cref="WtaTripReportImage"/> <see cref="DataTransferObject"/> containing the ID of the WtaTripReportImage to delete.</param>
+        /// <returns>A <see cref="DbCommand"/>.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when tripReportImage is null.</exception>
+        public DbCommand DeleteWtaTripReportImage(WtaTripReportImage tripReportImage)
+        {
+            #region Sanity checks
+
+            if (tripReportImage is null)
+            {
+                throw new ArgumentNullException(nameof(tripReportImage));
+            }
+
+            #endregion
+
+            return this.DeleteWtaTripReportImage(tripReportImage.ID);
+        }
+
+        /// <summary>
+        /// Creates a <see cref="DbCommand"/> to remove a tripReportImage from the database.
+        /// </summary>
+        /// <param name="id">The ID of the tripReportImage in the database.</param>
+        /// <returns>A <see cref="DbCommand"/>.</returns>
+        /// <exception cref="ArgumentOutOfRangeException">Thrown when id is negative or zero.</exception>
+        public DbCommand DeleteWtaTripReportImage(long id)
+        {
+            #region Sanity checks
+
+            if (id < 1)
+            {
+                throw new ArgumentOutOfRangeException(nameof(id), "Value must be greater than zero.");
+            }
+
+            #endregion
+
+            string sql = @"Delete From TripReportImage Where TripReportImageID = @ID";
+
+            SQLiteCommand deleteCommand = new(sql);
+
+            deleteCommand.Parameters.AddWithValue("@ID", id);
+
+            return deleteCommand;
+        }
+
+        /// <summary>
+        /// Creates a <see cref="DbCommand"/> to fetch a tripReportImage from the database.
+        /// </summary>
+        /// <param name="id">The ID of the tripReportImage in the database.</param>
+        /// <returns>A <see cref="DbCommand"/>.</returns>
+        /// <exception cref="ArgumentOutOfRangeException">Thrown when id is negative or zero.</exception>
+        public DbCommand GetWtaTripReportImage(long id)
+        {
+            #region Sanity checks
+
+            if (id < 1)
+            {
+                throw new ArgumentOutOfRangeException(nameof(id), "Value must be positive and greater than zero.");
+            }
+
+            #endregion
+
+            string sql = @"Select * From TripReportImage Where TripReportImageID = @ID";
+
+            SQLiteCommand selectCommand = new(sql);
+
+            selectCommand.Parameters.AddWithValue("@ID", id);
 
             return selectCommand;
         }
