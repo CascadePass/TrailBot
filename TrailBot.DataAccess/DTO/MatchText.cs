@@ -1,6 +1,6 @@
 ﻿namespace CascadePass.TrailBot.DataAccess.DTO
 {
-    public class MatchText
+    public class MatchText : DataTransferObject
     {
         public long ID { get; set; }
 

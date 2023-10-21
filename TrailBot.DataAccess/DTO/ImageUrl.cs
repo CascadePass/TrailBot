@@ -1,6 +1,6 @@
 ﻿namespace CascadePass.TrailBot.DataAccess.DTO
 {
-    public class ImageUrl
+    public class ImageUrl : DataTransferObject
     {
         public long ID { get; set; }
 

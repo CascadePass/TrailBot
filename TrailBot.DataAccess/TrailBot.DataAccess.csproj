@@ -72,6 +72,8 @@
     <Compile Include="Database.cs" />
     <Compile Include="DTO\DataTransferObject.cs" />
     <Compile Include="DTO\ImageUrl.cs" />
+    <Compile Include="DTO\MatchedTripReportText.cs" />
+    <Compile Include="DTO\MatchedTripReportTopic.cs" />
     <Compile Include="DTO\MatchText.cs" />
     <Compile Include="DTO\Provider.cs" />
     <Compile Include="DTO\ProviderStatistics.cs" />

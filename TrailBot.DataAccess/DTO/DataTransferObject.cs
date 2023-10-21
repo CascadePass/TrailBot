@@ -4,6 +4,8 @@ namespace CascadePass.TrailBot.DataAccess.DTO
 {
     public abstract class DataTransferObject
     {
+        #region Methods
+
         public static long ToUnixDate(DateTime? possibleValue, DateTime defaultValue)
         {
             if (possibleValue.HasValue)
@@ -26,5 +28,7 @@ namespace CascadePass.TrailBot.DataAccess.DTO
 
             return dateTime;
         }
+
+        #endregion
     }
 }

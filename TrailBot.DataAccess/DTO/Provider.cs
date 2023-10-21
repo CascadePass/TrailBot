@@ -2,7 +2,7 @@
 
 namespace CascadePass.TrailBot.DataAccess.DTO
 {
-    public class Provider
+    public class Provider : DataTransferObject
     {
         public long ID { get; set; }
 
