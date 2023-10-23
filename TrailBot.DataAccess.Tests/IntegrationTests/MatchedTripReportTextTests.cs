@@ -26,7 +26,7 @@ namespace TrailBot.DataAccess.Tests.IntegrationTests
 
             var matchedText = this.GetRandomMatchedTripReportText();
 
-            Database.AddMatchedTripReportText(matchedText);
+            Database.Add(matchedText);
 
             // Was it actually saved?
             var validate = Database.GetMatchedTripReportText(matchedText.ID);
@@ -47,7 +47,7 @@ namespace TrailBot.DataAccess.Tests.IntegrationTests
             // Create a trip report to delete
             MatchedTripReportText matchedText = this.GetRandomMatchedTripReportText();
 
-            var addRowCount = Database.AddMatchedTripReportText(matchedText);
+            var addRowCount = Database.Add(matchedText);
             Console.WriteLine($"Added {addRowCount} matchedText rows.");
 
             if (addRowCount == 0)
@@ -73,7 +73,7 @@ namespace TrailBot.DataAccess.Tests.IntegrationTests
             // Create a trip report to delete
             MatchedTripReportText matchedText = this.GetRandomMatchedTripReportText();
 
-            var addRowCount = Database.AddMatchedTripReportText(matchedText);
+            var addRowCount = Database.Add(matchedText);
             Console.WriteLine($"Added {addRowCount} matchedText rows.");
 
             if (addRowCount == 0)
@@ -82,7 +82,7 @@ namespace TrailBot.DataAccess.Tests.IntegrationTests
             }
 
             // Now delete it
-            Database.DeleteMatchedTripReportText(matchedText);
+            Database.Delete(matchedText);
 
             // Make sure it's really been deleted
             // (no longer exists, can't be loaded by ID)
@@ -99,7 +99,7 @@ namespace TrailBot.DataAccess.Tests.IntegrationTests
             var matchedText = this.GetRandomMatchedTripReportText();
 
             // Save, to be able to load it
-            Database.AddMatchedTripReportText(matchedText);
+            Database.Add(matchedText);
 
             // Make sure it loads
             var validate = Database.GetMatchedTripReportText(matchedText.ID);

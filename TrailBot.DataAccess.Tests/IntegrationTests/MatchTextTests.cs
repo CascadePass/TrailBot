@@ -28,7 +28,7 @@ namespace TrailBot.DataAccess.Tests.IntegrationTests
 
             var matchText = this.GetRandomMatchText();
 
-            Database.AddMatchText(matchText);
+            Database.Add(matchText);
 
             // Was it actually saved?
             var validate = Database.GetMatchText(matchText.ID);
@@ -51,11 +51,11 @@ namespace TrailBot.DataAccess.Tests.IntegrationTests
                 updatedValues = this.GetRandomMatchText();
 
             // Add some values to the database
-            Database.AddMatchText(original);
+            Database.Add(original);
 
             // Update those values to other random ones
             updatedValues.ID = original.ID;
-            Database.UpdateMatchText(updatedValues);
+            Database.Update(updatedValues);
 
             // See what's actually stored
             MatchText storedInTable = Database.GetMatchText(updatedValues.ID);
@@ -76,7 +76,7 @@ namespace TrailBot.DataAccess.Tests.IntegrationTests
             // Create a trip report to delete
             MatchText matchText = this.GetRandomMatchText();
 
-            Database.AddMatchText(matchText);
+            Database.Add(matchText);
 
             // Now delete it
             Database.DeleteMatchText(matchText.ID);
@@ -96,10 +96,10 @@ namespace TrailBot.DataAccess.Tests.IntegrationTests
             // Create a trip report to delete
             MatchText matchText = this.GetRandomMatchText();
 
-            Database.AddMatchText(matchText);
+            Database.Add(matchText);
 
             // Now delete it
-            Database.DeleteMatchText(matchText);
+            Database.Delete(matchText);
 
             // Make sure it's really been deleted
             // (no longer exists, can't be loaded by ID)
@@ -116,7 +116,7 @@ namespace TrailBot.DataAccess.Tests.IntegrationTests
             var matchText = this.GetRandomMatchText();
 
             // Save, to be able to load it
-            Database.AddMatchText(matchText);
+            Database.Add(matchText);
 
             // Make sure it loads
             var validate = Database.GetMatchText(matchText.ID);
@@ -140,10 +140,10 @@ namespace TrailBot.DataAccess.Tests.IntegrationTests
                 childText = this.GetRandomMatchText();
 
             // Save, to be able to load it
-            Database.AddMatchText(parentText);
+            Database.Add(parentText);
 
             childText.ParentID = parentText.ID;
-            Database.AddMatchText(childText);
+            Database.Add(childText);
 
             // Make sure it loads
             var validate = Database.GetMatchText(childText.ID);
@@ -164,7 +164,7 @@ namespace TrailBot.DataAccess.Tests.IntegrationTests
             Database.QueryProvider = new SqliteQueryProvider();
 
             Topic topic = new() { Name = Guid.NewGuid().ToString() };
-            Database.AddTopic(topic);
+            Database.Add(topic);
 
             Console.WriteLine($"Created topic {topic.ID}: {topic.Name}");
 
@@ -173,7 +173,7 @@ namespace TrailBot.DataAccess.Tests.IntegrationTests
             {
                 MatchText randomValue = new() { Text = Guid.NewGuid().ToString() };
                 topicMatchText.Add(randomValue);
-                Database.AddMatchText(randomValue);
+                Database.Add(randomValue);
 
                 TopicText topicTextMapping = new()
                 {
@@ -181,7 +181,7 @@ namespace TrailBot.DataAccess.Tests.IntegrationTests
                     TextID = randomValue.ID,
                 };
 
-                Database.AddTopicText(topicTextMapping);
+                Database.Add(topicTextMapping);
             }
 
             var perTopicListFromDatabase = Database.GetMatchTextByTopic(topic.ID);

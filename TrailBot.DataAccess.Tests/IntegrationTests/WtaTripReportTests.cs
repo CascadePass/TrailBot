@@ -29,7 +29,7 @@ namespace TrailBot.DataAccess.Tests.IntegrationTests
 
             WtaTripReport tripReport = this.GetRandomTripReport();
 
-            Database.AddWtaTripReport(tripReport);
+            Database.Add(tripReport);
 
             // Was it actually saved?
             var validate = Database.GetWtaTripReport(tripReport.ID);
@@ -48,12 +48,12 @@ namespace TrailBot.DataAccess.Tests.IntegrationTests
             Database.QueryProvider = new SqliteQueryProvider();
 
             Url testUrl = new() { Address = $"https://test.com/test/url/{Guid.NewGuid()}" };
-            Database.AddUrl(testUrl);
+            Database.Add(testUrl);
 
             WtaTripReport tripReport = this.GetRandomTripReport();
             tripReport.Url = testUrl;
 
-            Database.AddWtaTripReport(tripReport);
+            Database.Add(tripReport);
 
             // Was it actually saved?
             var validate = Database.GetWtaTripReport(tripReport.ID);
@@ -72,12 +72,12 @@ namespace TrailBot.DataAccess.Tests.IntegrationTests
             Database.QueryProvider = new SqliteQueryProvider();
 
             Url testUrl = new() { Address = $"https://test.com/test/url/{Guid.NewGuid()}" };
-            Database.AddUrl(testUrl);
+            Database.Add(testUrl);
 
             WtaTripReport tripReport = this.GetRandomTripReport();
             tripReport.Url.Address = testUrl.Address;
 
-            Database.AddWtaTripReport(tripReport);
+            Database.Add(tripReport);
 
             // Was it actually saved?
             var validate = Database.GetWtaTripReport(tripReport.ID);
@@ -100,12 +100,12 @@ namespace TrailBot.DataAccess.Tests.IntegrationTests
                 updatedValuesTR = this.GetRandomTripReport();
 
             // Add some values to the database
-            Database.AddWtaTripReport(originalTR);
+            Database.Add(originalTR);
 
             // Update those values to other random ones
             updatedValuesTR.ID = originalTR.ID;
             updatedValuesTR.Url = originalTR.Url;
-            Database.UpdateWtaTripReport(updatedValuesTR);
+            Database.Update(updatedValuesTR);
 
             // See what's actually stored
             WtaTripReport storedInTableTR = Database.GetWtaTripReport(updatedValuesTR.ID);
@@ -127,12 +127,12 @@ namespace TrailBot.DataAccess.Tests.IntegrationTests
                 updatedValuesTR = this.GetRandomTripReport();
 
             // Add some values to the database
-            Database.AddWtaTripReport(originalTR);
+            Database.Add(originalTR);
 
             // Update those values to other random ones
             updatedValuesTR.ID = originalTR.ID;
             updatedValuesTR.Url.ID = originalTR.Url.ID;
-            Database.UpdateWtaTripReport(updatedValuesTR);
+            Database.Update(updatedValuesTR);
 
             // See what's actually stored
             WtaTripReport storedInTableTR = Database.GetWtaTripReport(updatedValuesTR.ID);
@@ -154,12 +154,12 @@ namespace TrailBot.DataAccess.Tests.IntegrationTests
                 updatedValuesTR = this.GetRandomTripReport();
 
             // Add some values to the database
-            Database.AddWtaTripReport(originalTR);
+            Database.Add(originalTR);
 
             // Update those values to other random ones
             updatedValuesTR.ID = originalTR.ID;
             updatedValuesTR.Url.ID = 0;
-            Database.UpdateWtaTripReport(updatedValuesTR);
+            Database.Update(updatedValuesTR);
 
             // See what's actually stored
             WtaTripReport storedInTableTR = Database.GetWtaTripReport(updatedValuesTR.ID);
@@ -184,7 +184,7 @@ namespace TrailBot.DataAccess.Tests.IntegrationTests
             // Create a trip report to delete
             WtaTripReport tripReport = this.GetRandomTripReport();
 
-            Database.AddWtaTripReport(tripReport);
+            Database.Add(tripReport);
 
             // Now delete it
             Database.DeleteWtaTripReport(tripReport.ID);
@@ -204,10 +204,10 @@ namespace TrailBot.DataAccess.Tests.IntegrationTests
             // Create a trip report to delete
             WtaTripReport tripReport = this.GetRandomTripReport();
 
-            Database.AddWtaTripReport(tripReport);
+            Database.Add(tripReport);
 
             // Now delete it
-            Database.DeleteWtaTripReport(tripReport);
+            Database.Delete(tripReport);
 
             // Make sure it's really been deleted
             // (no longer exists, can't be loaded by ID)
@@ -224,7 +224,7 @@ namespace TrailBot.DataAccess.Tests.IntegrationTests
             WtaTripReport tripReport = this.GetRandomTripReport();
 
             // Save, to be able to load it
-            Database.AddWtaTripReport(tripReport);
+            Database.Add(tripReport);
 
             // Make sure it loads
             var validate = Database.GetWtaTripReport(tripReport.ID);

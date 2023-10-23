@@ -28,7 +28,7 @@ namespace TrailBot.DataAccess.Tests.IntegrationTests
 
             var imageUrl = this.GetRandomImageUrl();
 
-            Database.AddImageUrl(imageUrl);
+            Database.Add(imageUrl);
 
             // Was it actually saved?
             var validate = Database.GetImageUrl(imageUrl.ID);
@@ -67,14 +67,14 @@ namespace TrailBot.DataAccess.Tests.IntegrationTests
 
             var imageUrl = new ImageUrl() { Address = $"https://integrationTest/imageUrl/{Guid.NewGuid()}", };
 
-            Database.AddImageUrl(imageUrl);
+            Database.Add(imageUrl);
 
             imageUrl.ImageWidth = new Random().Next(800, 8000);
             imageUrl.ImageHeight = new Random().Next(800, 8000);
             imageUrl.FileSize = new Random().Next(100000, int.MaxValue);
             imageUrl.Comments = Guid.NewGuid().ToString();
 
-            Database.UpdateImageUrl(imageUrl);
+            Database.Update(imageUrl);
 
             // Was it actually saved?
             var validate2 = Database.GetImageUrl(imageUrl.ID);
@@ -93,14 +93,14 @@ namespace TrailBot.DataAccess.Tests.IntegrationTests
 
             var imageUrl = this.GetRandomImageUrl();
 
-            Database.AddImageUrl(imageUrl);
+            Database.Add(imageUrl);
 
             imageUrl.ImageWidth = null;
             imageUrl.ImageHeight = null;
             imageUrl.FileSize = null;
             imageUrl.Comments = null;
 
-            Database.UpdateImageUrl(imageUrl);
+            Database.Update(imageUrl);
 
             // Was it actually saved?
             var validate2 = Database.GetImageUrl(imageUrl.ID);
@@ -119,8 +119,8 @@ namespace TrailBot.DataAccess.Tests.IntegrationTests
 
             var imageUrl = this.GetRandomImageUrl();
 
-            Database.AddImageUrl(imageUrl);
-            Database.DeleteImageUrl(imageUrl);
+            Database.Add(imageUrl);
+            Database.Delete(imageUrl);
         }
 
         [TestMethod]
@@ -130,7 +130,7 @@ namespace TrailBot.DataAccess.Tests.IntegrationTests
 
             var imageUrl = this.GetRandomImageUrl();
 
-            Database.AddImageUrl(imageUrl);
+            Database.Add(imageUrl);
             Database.DeleteImageUrl(imageUrl.ID);
         }
 
@@ -147,16 +147,16 @@ namespace TrailBot.DataAccess.Tests.IntegrationTests
             this.AssertRequirements();
 
             var url = new Url() { Address = $"https://GetImagesForTripReport/{Guid.NewGuid()}/" };
-            Database.AddUrl(url);
+            Database.Add(url);
 
             var tripReport = new WtaTripReport() { Url = url };
-            Database.AddWtaTripReport(tripReport);
+            Database.Add(tripReport);
 
             List<ImageUrl> images = new();
             for (int i = 0; i < 10; i++)
             {
                 var imageUrl = this.GetRandomImageUrl();
-                Database.AddImageUrl(imageUrl);
+                Database.Add(imageUrl);
                 Database.AddWtaTripReportImage(tripReport.ID, imageUrl.ID);
 
                 images.Add(imageUrl);
@@ -173,8 +173,8 @@ namespace TrailBot.DataAccess.Tests.IntegrationTests
                 Database.DeleteImageUrl(image.ID);
             }
 
-            Database.DeleteWtaTripReport(tripReport);
-            Database.DeleteUrl(url);
+            Database.Delete(tripReport);
+            Database.Delete(url);
         }
 
         #region Private utility methods

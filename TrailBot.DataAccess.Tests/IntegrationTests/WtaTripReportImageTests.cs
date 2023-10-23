@@ -26,7 +26,7 @@ namespace TrailBot.DataAccess.Tests.IntegrationTests
 
             var imageAssociation = this.GetRandomWtaTripReportImage();
 
-            Database.AddWtaTripReportImage(imageAssociation);
+            Database.Add(imageAssociation);
 
             // Was it actually saved?
             var validate = Database.GetWtaTripReportImage(imageAssociation.ID);
@@ -64,7 +64,7 @@ namespace TrailBot.DataAccess.Tests.IntegrationTests
 
             var imageAssociation = this.GetRandomWtaTripReportImage();
 
-            Database.AddWtaTripReportImage(imageAssociation);
+            Database.Add(imageAssociation);
 
             // Was it actually saved?
             var validate = Database.GetWtaTripReportImage(imageAssociation.ID);
@@ -73,7 +73,7 @@ namespace TrailBot.DataAccess.Tests.IntegrationTests
             this.AssertSameWtaTripReportImage(imageAssociation, validate);
 
             // Cleanup
-            Database.DeleteWtaTripReportImage(imageAssociation);
+            Database.Delete(imageAssociation);
         }
 
         [TestMethod]
@@ -83,7 +83,7 @@ namespace TrailBot.DataAccess.Tests.IntegrationTests
 
             var imageAssociation = this.GetRandomWtaTripReportImage();
 
-            Database.AddWtaTripReportImage(imageAssociation);
+            Database.Add(imageAssociation);
 
             // Was it actually saved?
             var validate = Database.GetWtaTripReportImage(imageAssociation.ID);

@@ -35,17 +35,17 @@ namespace CascadePass.TrailBot.DataAccess
 
         #region Url
 
-        public static long AddUrl(Url url)
+        public static long Add(Url url)
         {
             using DbConnection connection = Database.GetConnection();
 
-            var result = Database.AddUrl(url, connection);
+            var result = Database.Add(url, connection);
 
             connection.Close();
             return result;
         }
 
-        public static long AddUrl(Url url, DbConnection connection)
+        public static long Add(Url url, DbConnection connection)
         {
             using DbCommand query = Database.QueryProvider.AddUrl(url);
             return url.ID = (long)Database.ExecuteScalar(query, connection);
@@ -57,7 +57,7 @@ namespace CascadePass.TrailBot.DataAccess
             return Database.ExecuteNonQuery(query);
         }
 
-        public static long UpdateUrl(Url url)
+        public static long Update(Url url)
         {
             using DbCommand query = Database.QueryProvider.UpdateUrl(url);
             return Database.ExecuteNonQuery(query);
@@ -69,7 +69,7 @@ namespace CascadePass.TrailBot.DataAccess
             return Database.ExecuteNonQuery(query);
         }
 
-        public static long DeleteUrl(Url url)
+        public static long Delete(Url url)
         {
             #region Sanity checks
 
@@ -131,7 +131,7 @@ namespace CascadePass.TrailBot.DataAccess
 
         #region WtaTripReport
 
-        public static long AddWtaTripReport(WtaTripReport tripReport)
+        public static long Add(WtaTripReport tripReport)
         {
             #region Sanity checks
 
@@ -161,11 +161,11 @@ namespace CascadePass.TrailBot.DataAccess
                 if (lookup != null)
                 {
                     tripReport.Url.ID = lookup.ID;
-                    Database.UpdateUrl(tripReport.Url);
+                    Database.Update(tripReport.Url);
                 }
                 else
                 {
-                    tripReport.Url.ID = Database.AddUrl(tripReport.Url, connection);
+                    tripReport.Url.ID = Database.Add(tripReport.Url, connection);
                 }
             }
 
@@ -173,7 +173,7 @@ namespace CascadePass.TrailBot.DataAccess
             return tripReport.ID = (long)Database.ExecuteScalar(query, connection);
         }
 
-        public static long UpdateWtaTripReport(WtaTripReport tripReport)
+        public static long Update(WtaTripReport tripReport)
         {
             #region Sanity checks
 
@@ -191,18 +191,18 @@ namespace CascadePass.TrailBot.DataAccess
 
             if (tripReport.Url.ID == 0)
             {
-                Database.AddUrl(tripReport.Url);
+                Database.Add(tripReport.Url);
             }
             else
             {
-                Database.UpdateUrl(tripReport.Url);
+                Database.Update(tripReport.Url);
             }
 
             using DbCommand query = Database.QueryProvider.UpdateWtaTripReport(tripReport);
             return Database.ExecuteNonQuery(query);
         }
 
-        public static long DeleteWtaTripReport(WtaTripReport tripReport)
+        public static long Delete(WtaTripReport tripReport)
         {
             using DbCommand query = Database.QueryProvider.DeleteWtaTripReport(tripReport);
             return Database.ExecuteNonQuery(query);
@@ -235,19 +235,19 @@ namespace CascadePass.TrailBot.DataAccess
 
         #region Topic
 
-        public static long AddTopic(Topic topic)
+        public static long Add(Topic topic)
         {
             using DbCommand query = Database.QueryProvider.AddTopic(topic);
             return topic.ID = (long)Database.ExecuteScalar(query);
         }
 
-        public static long UpdateTopic(Topic topic)
+        public static long Update(Topic topic)
         {
             using DbCommand query = Database.QueryProvider.UpdateTopic(topic);
             return (long)Database.ExecuteNonQuery(query);
         }
 
-        public static long DeleteTopic(Topic topic)
+        public static long Delete(Topic topic)
         {
             using DbCommand query = Database.QueryProvider.DeleteTopic(topic);
             return (long)Database.ExecuteNonQuery(query);
@@ -298,19 +298,19 @@ namespace CascadePass.TrailBot.DataAccess
 
         #region MatchText
 
-        public static long AddMatchText(MatchText matchText)
+        public static long Add(MatchText matchText)
         {
             using DbCommand query = Database.QueryProvider.AddMatchText(matchText);
             return matchText.ID = (long)Database.ExecuteScalar(query);
         }
 
-        public static long UpdateMatchText(MatchText matchText)
+        public static long Update(MatchText matchText)
         {
             using DbCommand query = Database.QueryProvider.UpdateMatchText(matchText);
             return (long)Database.ExecuteNonQuery(query);
         }
 
-        public static long DeleteMatchText(MatchText matchText)
+        public static long Delete(MatchText matchText)
         {
             using DbCommand query = Database.QueryProvider.DeleteMatchText(matchText);
             return (long)Database.ExecuteNonQuery(query);
@@ -361,19 +361,19 @@ namespace CascadePass.TrailBot.DataAccess
 
         #region TopicText
 
-        public static long AddTopicText(TopicText topicText)
+        public static long Add(TopicText topicText)
         {
             using DbCommand query = Database.QueryProvider.AddTopicText(topicText);
             return topicText.ID = (long)Database.ExecuteScalar(query);
         }
 
-        public static long UpdateTopicText(TopicText topicText)
+        public static long Update(TopicText topicText)
         {
             using DbCommand query = Database.QueryProvider.UpdateTopicText(topicText);
             return (long)Database.ExecuteNonQuery(query);
         }
 
-        public static long DeleteTopicText(TopicText topicText)
+        public static long Delete(TopicText topicText)
         {
             using DbCommand query = Database.QueryProvider.DeleteTopicText(topicText);
             return (long)Database.ExecuteNonQuery(query);
@@ -424,19 +424,19 @@ namespace CascadePass.TrailBot.DataAccess
 
         #region Provider
 
-        public static long AddProvider(Provider provider)
+        public static long Add(Provider provider)
         {
             using DbCommand query = Database.QueryProvider.AddProvider(provider);
             return provider.ID = (long)Database.ExecuteScalar(query);
         }
 
-        public static long UpdateProvider(Provider provider)
+        public static long Update(Provider provider)
         {
             using DbCommand query = Database.QueryProvider.UpdateProvider(provider);
             return (long)Database.ExecuteNonQuery(query);
         }
 
-        public static long DeleteProvider(Provider provider)
+        public static long Delete(Provider provider)
         {
             using DbCommand query = Database.QueryProvider.DeleteProvider(provider);
             return (long)Database.ExecuteNonQuery(query);
@@ -487,13 +487,13 @@ namespace CascadePass.TrailBot.DataAccess
 
         #region ProviderStatistics
 
-        public static long AddProviderStatistics(ProviderStatistics statistics)
+        public static long Add(ProviderStatistics statistics)
         {
             using DbCommand query = Database.QueryProvider.AddProviderStatistics(statistics);
             return statistics.ID = (long)Database.ExecuteScalar(query);
         }
 
-        public static long UpdateProviderStatistics(ProviderStatistics statistics)
+        public static long Update(ProviderStatistics statistics)
         {
             using DbCommand query = Database.QueryProvider.UpdateProviderStatistics(statistics);
             return (long)Database.ExecuteNonQuery(query);
@@ -505,7 +505,7 @@ namespace CascadePass.TrailBot.DataAccess
             return (long)Database.ExecuteNonQuery(query);
         }
 
-        public static long DeleteProviderStatistics(ProviderStatistics statistics)
+        public static long Delete(ProviderStatistics statistics)
         {
             using DbCommand query = Database.QueryProvider.DeleteProviderStatistics(statistics);
             return (long)Database.ExecuteNonQuery(query);
@@ -538,13 +538,13 @@ namespace CascadePass.TrailBot.DataAccess
 
         #region MatchedTripReportText
 
-        public static long AddMatchedTripReportText(MatchedTripReportText matchedText)
+        public static long Add(MatchedTripReportText matchedText)
         {
             using DbCommand query = Database.QueryProvider.AddMatchedTripReportText(matchedText);
             return matchedText.ID = (long)Database.ExecuteScalar(query);
         }
 
-        public static long DeleteMatchedTripReportText(MatchedTripReportText matchedText)
+        public static long Delete(MatchedTripReportText matchedText)
         {
             using DbCommand query = Database.QueryProvider.DeleteMatchedTripReportText(matchedText);
             return (long)Database.ExecuteNonQuery(query);
@@ -577,19 +577,19 @@ namespace CascadePass.TrailBot.DataAccess
 
         #region MatchedTripReportTopic
 
-        public static long AddMatchedTripReportTopic(MatchedTripReportTopic matchedTopic)
+        public static long Add(MatchedTripReportTopic matchedTopic)
         {
             using DbCommand query = Database.QueryProvider.AddMatchedTripReportTopic(matchedTopic);
             return matchedTopic.ID = (long)Database.ExecuteScalar(query);
         }
 
-        public static long AddMatchedTripReportTopic(WtaTripReport tripReport, Topic topic, string exerpt)
+        public static long Add(WtaTripReport tripReport, Topic topic, string exerpt)
         {
             using DbCommand query = Database.QueryProvider.AddMatchedTripReportTopic(tripReport, topic, exerpt);
             return (long)Database.ExecuteScalar(query);
         }
 
-        public static long DeleteMatchedTripReportTopic(MatchedTripReportTopic matchedTopic)
+        public static long Delete(MatchedTripReportTopic matchedTopic)
         {
             using DbCommand query = Database.QueryProvider.DeleteMatchedTripReportTopic(matchedTopic);
             return (long)Database.ExecuteNonQuery(query);
@@ -622,7 +622,7 @@ namespace CascadePass.TrailBot.DataAccess
 
         #region ImageUrl
 
-        public static long AddImageUrl(ImageUrl imageUrl)
+        public static long Add(ImageUrl imageUrl)
         {
             using DbCommand query = Database.QueryProvider.AddImageUrl(imageUrl);
             return imageUrl.ID = (long)Database.ExecuteScalar(query);
@@ -634,13 +634,13 @@ namespace CascadePass.TrailBot.DataAccess
             return (long)Database.ExecuteScalar(query);
         }
 
-        public static long UpdateImageUrl(ImageUrl imageUrl)
+        public static long Update(ImageUrl imageUrl)
         {
             using DbCommand query = Database.QueryProvider.UpdateImageUrl(imageUrl);
             return (long)Database.ExecuteNonQuery(query);
         }
 
-        public static long DeleteImageUrl(ImageUrl imageUrl)
+        public static long Delete(ImageUrl imageUrl)
         {
             using DbCommand query = Database.QueryProvider.DeleteImageUrl(imageUrl);
             return (long)Database.ExecuteNonQuery(query);
@@ -691,7 +691,7 @@ namespace CascadePass.TrailBot.DataAccess
 
         #region WtaTripReportImage
 
-        public static long AddWtaTripReportImage(WtaTripReportImage imageAssociation)
+        public static long Add(WtaTripReportImage imageAssociation)
         {
             using DbCommand query = Database.QueryProvider.AddWtaTripReportImage(imageAssociation);
             return imageAssociation.ID = (long)Database.ExecuteScalar(query);
@@ -703,7 +703,7 @@ namespace CascadePass.TrailBot.DataAccess
             return (long)Database.ExecuteScalar(query);
         }
 
-        public static long DeleteWtaTripReportImage(WtaTripReportImage imageAssociation)
+        public static long Delete(WtaTripReportImage imageAssociation)
         {
             using DbCommand query = Database.QueryProvider.DeleteWtaTripReportImage(imageAssociation);
             return (long)Database.ExecuteNonQuery(query);

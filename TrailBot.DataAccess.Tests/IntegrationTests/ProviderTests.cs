@@ -28,7 +28,7 @@ namespace TrailBot.DataAccess.Tests.IntegrationTests
 
             var provider = this.GetRandomProvider();
 
-            Database.AddProvider(provider);
+            Database.Add(provider);
 
             // Was it actually saved?
             var validate = Database.GetProvider(provider.ID);
@@ -51,7 +51,7 @@ namespace TrailBot.DataAccess.Tests.IntegrationTests
             provider.LastTripReportRequest = null;
             provider.LastGetRecentRequest = null;
 
-            Database.AddProvider(provider);
+            Database.Add(provider);
 
             // Was it actually saved?
             var validate = Database.GetProvider(provider.ID);
@@ -74,11 +74,11 @@ namespace TrailBot.DataAccess.Tests.IntegrationTests
                 updatedValues = this.GetRandomProvider();
 
             // Add some values to the database
-            Database.AddProvider(original);
+            Database.Add(original);
 
             // Update those values to other random ones
             updatedValues.ID = original.ID;
-            Database.UpdateProvider(updatedValues);
+            Database.Update(updatedValues);
 
             // See what's actually stored
             Provider storedInTable = Database.GetProvider(updatedValues.ID);
@@ -99,7 +99,7 @@ namespace TrailBot.DataAccess.Tests.IntegrationTests
             // Create a trip report to delete
             Provider provider = this.GetRandomProvider();
 
-            var addRowCount = Database.AddProvider(provider);
+            var addRowCount = Database.Add(provider);
             Console.WriteLine($"Added {addRowCount} provider rows.");
 
             if (addRowCount == 0)
@@ -125,7 +125,7 @@ namespace TrailBot.DataAccess.Tests.IntegrationTests
             // Create a trip report to delete
             Provider provider = this.GetRandomProvider();
 
-            var addRowCount = Database.AddProvider(provider);
+            var addRowCount = Database.Add(provider);
             Console.WriteLine($"Added {addRowCount} provider rows.");
 
             if (addRowCount == 0)
@@ -134,7 +134,7 @@ namespace TrailBot.DataAccess.Tests.IntegrationTests
             }
 
             // Now delete it
-            Database.DeleteProvider(provider);
+            Database.Delete(provider);
 
             // Make sure it's really been deleted
             // (no longer exists, can't be loaded by ID)
@@ -151,7 +151,7 @@ namespace TrailBot.DataAccess.Tests.IntegrationTests
             var provider = this.GetRandomProvider();
 
             // Save, to be able to load it
-            Database.AddProvider(provider);
+            Database.Add(provider);
 
             // Make sure it loads
             var validate = Database.GetProvider(provider.ID);
@@ -178,7 +178,7 @@ namespace TrailBot.DataAccess.Tests.IntegrationTests
                 generatedProviders.Add(provider);
 
                 // Save, to be able to load it
-                Database.AddProvider(provider);
+                Database.Add(provider);
             }
 
             var allDatabaseProviders = Database.GetProviders();

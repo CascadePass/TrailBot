@@ -26,7 +26,7 @@ namespace TrailBot.DataAccess.Tests.IntegrationTests
 
             var matchedTopic = this.GetRandomMatchedTripReportTopic();
 
-            Database.AddMatchedTripReportTopic(matchedTopic);
+            Database.Add(matchedTopic);
 
             // Was it actually saved?
             var validate = Database.GetMatchedTripReportTopic(matchedTopic.ID);
@@ -49,10 +49,10 @@ namespace TrailBot.DataAccess.Tests.IntegrationTests
             WtaTripReport tripReport = new() { Author = Guid.NewGuid().ToString(), Url = url };
             string expert = Guid.NewGuid().ToString();
 
-            Database.AddTopic(topic);
-            Database.AddWtaTripReport(tripReport);
+            Database.Add(topic);
+            Database.Add(tripReport);
 
-            long generatedID = Database.AddMatchedTripReportTopic(tripReport, topic, expert);
+            long generatedID = Database.Add(tripReport, topic, expert);
 
             Console.WriteLine($"Generated MatchedTripReportTopic ID {generatedID}");
 
@@ -76,7 +76,7 @@ namespace TrailBot.DataAccess.Tests.IntegrationTests
             // Create a trip report to delete
             MatchedTripReportTopic matchedTopic = this.GetRandomMatchedTripReportTopic();
 
-            var addRowCount = Database.AddMatchedTripReportTopic(matchedTopic);
+            var addRowCount = Database.Add(matchedTopic);
             Console.WriteLine($"Added {addRowCount} matchedTopic rows.");
 
             if (addRowCount == 0)
@@ -102,7 +102,7 @@ namespace TrailBot.DataAccess.Tests.IntegrationTests
             // Create a trip report to delete
             MatchedTripReportTopic matchedTopic = this.GetRandomMatchedTripReportTopic();
 
-            var addRowCount = Database.AddMatchedTripReportTopic(matchedTopic);
+            var addRowCount = Database.Add(matchedTopic);
             Console.WriteLine($"Added {addRowCount} matchedTopic rows.");
 
             if (addRowCount == 0)
@@ -111,7 +111,7 @@ namespace TrailBot.DataAccess.Tests.IntegrationTests
             }
 
             // Now delete it
-            Database.DeleteMatchedTripReportTopic(matchedTopic);
+            Database.Delete(matchedTopic);
 
             // Make sure it's really been deleted
             // (no longer exists, can't be loaded by ID)
@@ -128,7 +128,7 @@ namespace TrailBot.DataAccess.Tests.IntegrationTests
             var matchedTopic = this.GetRandomMatchedTripReportTopic();
 
             // Save, to be able to load it
-            Database.AddMatchedTripReportTopic(matchedTopic);
+            Database.Add(matchedTopic);
 
             // Make sure it loads
             var validate = Database.GetMatchedTripReportTopic(matchedTopic.ID);

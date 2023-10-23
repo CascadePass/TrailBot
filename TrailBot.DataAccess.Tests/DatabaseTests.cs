@@ -65,7 +65,7 @@ namespace TrailBot.DataAccess.Tests
         public void DeleteUrl_Null()
         {
             Database.QueryProvider = new SqliteQueryProvider();
-            Database.DeleteUrl(null);
+            Database.Delete((Url)null);
         }
 
         [ExpectedException(typeof(ArgumentNullException))]
@@ -73,7 +73,7 @@ namespace TrailBot.DataAccess.Tests
         public void UpdateUrl_Null()
         {
             Database.QueryProvider = new SqliteQueryProvider();
-            Database.UpdateUrl(null);
+            Database.Update((Url)null);
         }
 
         #region AddWtaTripReport
@@ -83,7 +83,7 @@ namespace TrailBot.DataAccess.Tests
         public void AddWtaTripReport_Null()
         {
             Database.QueryProvider = new SqliteQueryProvider();
-            Database.AddWtaTripReport(null);
+            Database.Add((WtaTripReport)null);
         }
 
         [ExpectedException(typeof(ArgumentException))]
@@ -91,7 +91,7 @@ namespace TrailBot.DataAccess.Tests
         public void AddWtaTripReport_UrlProperty_Null()
         {
             Database.QueryProvider = new SqliteQueryProvider();
-            Database.AddWtaTripReport(new() { Url = null });
+            Database.Add((WtaTripReport)(new() { Url = null }));
         }
 
         [ExpectedException(typeof(ArgumentOutOfRangeException))]
@@ -103,7 +103,7 @@ namespace TrailBot.DataAccess.Tests
             WtaTripReport tr = new() { Url = new() { Address = Guid.NewGuid().ToString() } };
             tr.ID = 1;
 
-            Database.AddWtaTripReport(tr);
+            Database.Add(tr);
         }
 
         #endregion
@@ -113,7 +113,7 @@ namespace TrailBot.DataAccess.Tests
         public void UpdateWtaTripReport_Null()
         {
             Database.QueryProvider = new SqliteQueryProvider();
-            Database.UpdateWtaTripReport(null);
+            Database.Update((WtaTripReport)null);
         }
 
         [ExpectedException(typeof(ArgumentException))]
@@ -121,7 +121,7 @@ namespace TrailBot.DataAccess.Tests
         public void UpdateWtaTripReport_UrlProperty_Null()
         {
             Database.QueryProvider = new SqliteQueryProvider();
-            Database.UpdateWtaTripReport(new() { Url = null });
+            Database.Update((WtaTripReport)(new() { Url = null }));
         }
 
         #endregion

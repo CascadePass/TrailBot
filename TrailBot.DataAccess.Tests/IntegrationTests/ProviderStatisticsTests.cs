@@ -26,7 +26,7 @@ namespace TrailBot.DataAccess.Tests.IntegrationTests
 
             var statistics = this.GetRandomProviderStatistics();
 
-            Database.AddProviderStatistics(statistics);
+            Database.Add(statistics);
 
             // Was it actually saved?
             var validate = Database.GetProviderStatistics(statistics.ID);
@@ -49,11 +49,11 @@ namespace TrailBot.DataAccess.Tests.IntegrationTests
                 updatedValues = this.GetRandomProviderStatistics();
 
             // Add some values to the database
-            Database.AddProviderStatistics(original);
+            Database.Add(original);
 
             // Update those values to other random ones
             updatedValues.ID = original.ID;
-            Database.UpdateProviderStatistics(updatedValues);
+            Database.Update(updatedValues);
 
             // See what's actually stored
             ProviderStatistics storedInTable = Database.GetProviderStatistics(updatedValues.ID);
@@ -74,7 +74,7 @@ namespace TrailBot.DataAccess.Tests.IntegrationTests
             // Create a trip report to delete
             ProviderStatistics statistics = this.GetRandomProviderStatistics();
 
-            var addRowCount = Database.AddProviderStatistics(statistics);
+            var addRowCount = Database.Add(statistics);
             Console.WriteLine($"Added {addRowCount} statistics rows.");
 
             if (addRowCount == 0)
@@ -100,7 +100,7 @@ namespace TrailBot.DataAccess.Tests.IntegrationTests
             // Create a trip report to delete
             ProviderStatistics statistics = this.GetRandomProviderStatistics();
 
-            var addRowCount = Database.AddProviderStatistics(statistics);
+            var addRowCount = Database.Add(statistics);
             Console.WriteLine($"Added {addRowCount} statistics rows.");
 
             if (addRowCount == 0)
@@ -109,7 +109,7 @@ namespace TrailBot.DataAccess.Tests.IntegrationTests
             }
 
             // Now delete it
-            Database.DeleteProviderStatistics(statistics);
+            Database.Delete(statistics);
 
             // Make sure it's really been deleted
             // (no longer exists, can't be loaded by ID)
@@ -126,7 +126,7 @@ namespace TrailBot.DataAccess.Tests.IntegrationTests
             var statistics = this.GetRandomProviderStatistics();
 
             // Save, to be able to load it
-            Database.AddProviderStatistics(statistics);
+            Database.Add(statistics);
 
             // Make sure it loads
             var validate = Database.GetProviderStatistics(statistics.ID);
@@ -150,7 +150,7 @@ namespace TrailBot.DataAccess.Tests.IntegrationTests
                 updatedValues = this.GetRandomProviderStatistics();
 
             // Add some values to the database
-            Database.AddProviderStatistics(original);
+            Database.Add(original);
 
             // Update those values to other random ones
             Database.IncrementProviderStatistics(

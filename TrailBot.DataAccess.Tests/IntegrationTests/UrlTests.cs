@@ -26,7 +26,7 @@ namespace TrailBot.DataAccess.Tests.IntegrationTests
         {
             this.AssertRequirements();
             Database.QueryProvider = new SqliteQueryProvider();
-            Database.UpdateUrl(null);
+            Database.Update((Url)null);
         }
 
         [ExpectedException(typeof(ArgumentNullException))]
@@ -35,7 +35,7 @@ namespace TrailBot.DataAccess.Tests.IntegrationTests
         {
             this.AssertRequirements();
             Database.QueryProvider = new SqliteQueryProvider();
-            Database.UpdateUrl(null);
+            Database.Update((Url)null);
         }
 
         #endregion
@@ -55,7 +55,7 @@ namespace TrailBot.DataAccess.Tests.IntegrationTests
             Console.WriteLine(address);
 
             var url = Url.Create(address);
-            long id = Database.AddUrl(url);
+            long id = Database.Add(url);
 
             Console.WriteLine(id);
 
@@ -80,7 +80,7 @@ namespace TrailBot.DataAccess.Tests.IntegrationTests
             Console.WriteLine(address);
 
             var url = Url.Create(address, DateTime.Now);
-            long id = Database.AddUrl(url);
+            long id = Database.Add(url);
 
             Console.WriteLine(id);
 
@@ -105,7 +105,7 @@ namespace TrailBot.DataAccess.Tests.IntegrationTests
             Console.WriteLine(address);
 
             var url = Url.Create(address, DateTime.Now, DateTime.Now, null);
-            long id = Database.AddUrl(url);
+            long id = Database.Add(url);
 
             Console.WriteLine(id);
 
@@ -130,7 +130,7 @@ namespace TrailBot.DataAccess.Tests.IntegrationTests
             Console.WriteLine(address);
 
             var url = Url.Create(address, DateTime.Now, null, DateTime.Now);
-            long id = Database.AddUrl(url);
+            long id = Database.Add(url);
 
             Console.WriteLine(id);
 
@@ -162,7 +162,7 @@ namespace TrailBot.DataAccess.Tests.IntegrationTests
 
             using var connection = Database.GetConnection();
             var url = Url.Create(address);
-            long id = Database.AddUrl(url, connection);
+            long id = Database.Add(url, connection);
 
             Console.WriteLine(id);
 
@@ -188,7 +188,7 @@ namespace TrailBot.DataAccess.Tests.IntegrationTests
 
             using var connection = Database.GetConnection();
             var url = Url.Create(address, DateTime.Now);
-            long id = Database.AddUrl(url, connection);
+            long id = Database.Add(url, connection);
 
             Console.WriteLine(id);
 
@@ -214,7 +214,7 @@ namespace TrailBot.DataAccess.Tests.IntegrationTests
 
             using var connection = Database.GetConnection();
             var url = Url.Create(address, DateTime.Now, DateTime.Now, null);
-            long id = Database.AddUrl(url, connection);
+            long id = Database.Add(url, connection);
 
             Console.WriteLine(id);
 
@@ -240,7 +240,7 @@ namespace TrailBot.DataAccess.Tests.IntegrationTests
 
             using var connection = Database.GetConnection();
             var url = Url.Create(address, DateTime.Now, null, DateTime.Now);
-            long id = Database.AddUrl(url, connection);
+            long id = Database.Add(url, connection);
 
             Console.WriteLine(id);
 
@@ -274,7 +274,7 @@ namespace TrailBot.DataAccess.Tests.IntegrationTests
             Console.WriteLine($"Connection started {connection.State}");
 
             var url = Url.Create(address);
-            long id = Database.AddUrl(url, connection);
+            long id = Database.Add(url, connection);
 
             Console.WriteLine($"Generated ID={id}");
             Console.WriteLine($"Connection is {connection.State} after AddUrl call");
@@ -304,7 +304,7 @@ namespace TrailBot.DataAccess.Tests.IntegrationTests
 
             string address = $"https://UrlIntegrationTest.net/{Guid.NewGuid()}";
             var created = Url.Create(address);
-            Database.AddUrl(created);
+            Database.Add(created);
 
             Console.WriteLine($"Searching for {created.Address}");
             Url url = Database.GetUrl(created.Address);
@@ -324,7 +324,7 @@ namespace TrailBot.DataAccess.Tests.IntegrationTests
 
             string address = $"https://UrlIntegrationTest.net/{Guid.NewGuid()}";
             var created = Url.Create(address);
-            Database.AddUrl(created);
+            Database.Add(created);
 
             Console.WriteLine($"Searching for {created.ID}");
             Url url = Database.GetUrl(created.ID);
@@ -350,7 +350,7 @@ namespace TrailBot.DataAccess.Tests.IntegrationTests
             Console.WriteLine(address);
 
             var originalCreated = Url.Create(address);
-            long id = Database.AddUrl(originalCreated);
+            long id = Database.Add(originalCreated);
 
             Console.WriteLine($"Searching for {originalCreated.Address}");
             Url url = Database.GetUrl(originalCreated.Address);
@@ -359,11 +359,11 @@ namespace TrailBot.DataAccess.Tests.IntegrationTests
 
             Console.WriteLine($"Update Collected to {now}");
             url.Collected = now;
-            Database.UpdateUrl(url);
+            Database.Update(url);
 
             Console.WriteLine($"Update IntentLocked to {now.AddSeconds(200)}");
             url.IntentLocked = now.AddSeconds(200);
-            Database.UpdateUrl(url);
+            Database.Update(url);
 
             // Verify that the stored data can be read as expected
             var validate = Database.GetUrl(url.ID);
@@ -400,7 +400,7 @@ namespace TrailBot.DataAccess.Tests.IntegrationTests
             Console.WriteLine(address);
 
             var originalCreated = Url.Create(address);
-            long id = Database.AddUrl(originalCreated);
+            long id = Database.Add(originalCreated);
 
             var collectedDate = DateTime.Now.AddDays(1);
 
@@ -423,7 +423,7 @@ namespace TrailBot.DataAccess.Tests.IntegrationTests
             Console.WriteLine(address);
 
             var originalCreated = Url.Create(address);
-            long id = Database.AddUrl(originalCreated);
+            long id = Database.Add(originalCreated);
 
             var intentLockedDate = DateTime.Now.AddDays(1);
 
@@ -446,7 +446,7 @@ namespace TrailBot.DataAccess.Tests.IntegrationTests
             Console.WriteLine(address);
 
             var originalCreated = Url.Create(address);
-            long id = Database.AddUrl(originalCreated);
+            long id = Database.Add(originalCreated);
 
             var collectedDate = DateTime.Now.AddDays(2);
             var intentLockedDate = DateTime.Now.AddDays(3);
@@ -470,7 +470,7 @@ namespace TrailBot.DataAccess.Tests.IntegrationTests
             Console.WriteLine(address);
 
             var originalCreated = Url.Create(address);
-            long id = Database.AddUrl(originalCreated);
+            long id = Database.Add(originalCreated);
 
             Database.UpdateUrl(originalCreated.ID, null, null);
 
@@ -490,7 +490,7 @@ namespace TrailBot.DataAccess.Tests.IntegrationTests
 
             string address = $"https://UrlIntegrationTest.net/{Guid.NewGuid()}";
             var originalCreated = Url.Create(address);
-            long id = Database.AddUrl(originalCreated);
+            long id = Database.Add(originalCreated);
 
             Console.WriteLine($"Database.CheckUrlExistance({address})");
             var result = Database.CheckUrlExistance(address);
@@ -524,7 +524,7 @@ namespace TrailBot.DataAccess.Tests.IntegrationTests
 
             string address = $"https://UrlIntegrationTest.net/{Guid.NewGuid()}";
             var originalCreated = Url.Create(address);
-            long id = Database.AddUrl(originalCreated);
+            long id = Database.Add(originalCreated);
 
             var resultCount = Database.DeleteUrl(id);
 
@@ -548,11 +548,11 @@ namespace TrailBot.DataAccess.Tests.IntegrationTests
 
             string address = $"https://UrlIntegrationTest.net/{Guid.NewGuid()}";
             var originalCreated = Url.Create(address);
-            long id = Database.AddUrl(originalCreated);
+            long id = Database.Add(originalCreated);
 
             var urlDto = Database.GetUrl(id);
 
-            var resultCount = Database.DeleteUrl(urlDto);
+            var resultCount = Database.Delete(urlDto);
 
             Console.WriteLine($"Deleted {resultCount} rows");
 

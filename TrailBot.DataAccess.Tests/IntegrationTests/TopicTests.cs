@@ -28,7 +28,7 @@ namespace TrailBot.DataAccess.Tests.IntegrationTests
 
             var topic = this.GetRandomTopic();
 
-            Database.AddTopic(topic);
+            Database.Add(topic);
 
             // Was it actually saved?
             var validate = Database.GetTopic(topic.ID);
@@ -51,11 +51,11 @@ namespace TrailBot.DataAccess.Tests.IntegrationTests
                 updatedValues = this.GetRandomTopic();
 
             // Add some values to the database
-            Database.AddTopic(original);
+            Database.Add(original);
 
             // Update those values to other random ones
             updatedValues.ID = original.ID;
-            Database.UpdateTopic(updatedValues);
+            Database.Update(updatedValues);
 
             // See what's actually stored
             Topic storedInTable = Database.GetTopic(updatedValues.ID);
@@ -76,7 +76,7 @@ namespace TrailBot.DataAccess.Tests.IntegrationTests
             // Create a trip report to delete
             Topic topic = this.GetRandomTopic();
 
-            Database.AddTopic(topic);
+            Database.Add(topic);
 
             // Now delete it
             Database.DeleteTopic(topic.ID);
@@ -96,10 +96,10 @@ namespace TrailBot.DataAccess.Tests.IntegrationTests
             // Create a trip report to delete
             Topic topic = this.GetRandomTopic();
 
-            Database.AddTopic(topic);
+            Database.Add(topic);
 
             // Now delete it
-            Database.DeleteTopic(topic);
+            Database.Delete(topic);
 
             // Make sure it's really been deleted
             // (no longer exists, can't be loaded by ID)
@@ -116,7 +116,7 @@ namespace TrailBot.DataAccess.Tests.IntegrationTests
             var topic = this.GetRandomTopic();
 
             // Save, to be able to load it
-            Database.AddTopic(topic);
+            Database.Add(topic);
 
             // Make sure it loads
             var validate = Database.GetTopic(topic.ID);
@@ -141,7 +141,7 @@ namespace TrailBot.DataAccess.Tests.IntegrationTests
             {
                 var topic = this.GetRandomTopic();
 
-                Database.AddTopic(topic);
+                Database.Add(topic);
                 topics.Add(topic);
             }
 
@@ -156,7 +156,7 @@ namespace TrailBot.DataAccess.Tests.IntegrationTests
 
             foreach (Topic lookup in topics)
             {
-                Database.DeleteTopic(lookup);
+                Database.Delete(lookup);
             }
         }
 

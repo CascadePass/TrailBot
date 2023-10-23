@@ -28,7 +28,7 @@ namespace TrailBot.DataAccess.Tests.IntegrationTests
 
             var topicText = this.GetRandomTopicText();
 
-            Database.AddTopicText(topicText);
+            Database.Add(topicText);
 
             // Was it actually saved?
             var validate = Database.GetTopicText(topicText.ID);
@@ -51,11 +51,11 @@ namespace TrailBot.DataAccess.Tests.IntegrationTests
                 updatedValues = this.GetRandomTopicText();
 
             // Add some values to the database
-            Database.AddTopicText(original);
+            Database.Add(original);
 
             // Update those values to other random ones
             updatedValues.ID = original.ID;
-            Database.UpdateTopicText(updatedValues);
+            Database.Update(updatedValues);
 
             // See what's actually stored
             TopicText storedInTable = Database.GetTopicText(updatedValues.ID);
@@ -76,7 +76,7 @@ namespace TrailBot.DataAccess.Tests.IntegrationTests
             // Create a trip report to delete
             TopicText topicText = this.GetRandomTopicText();
 
-            Database.AddTopicText(topicText);
+            Database.Add(topicText);
 
             // Now delete it
             Database.DeleteTopicText(topicText.ID);
@@ -96,10 +96,10 @@ namespace TrailBot.DataAccess.Tests.IntegrationTests
             // Create a trip report to delete
             TopicText topicText = this.GetRandomTopicText();
 
-            Database.AddTopicText(topicText);
+            Database.Add(topicText);
 
             // Now delete it
-            Database.DeleteTopicText(topicText);
+            Database.Delete(topicText);
 
             // Make sure it's really been deleted
             // (no longer exists, can't be loaded by ID)
@@ -116,7 +116,7 @@ namespace TrailBot.DataAccess.Tests.IntegrationTests
             var topicText = this.GetRandomTopicText();
 
             // Save, to be able to load it
-            Database.AddTopicText(topicText);
+            Database.Add(topicText);
 
             // Make sure it loads
             var validate = Database.GetTopicText(topicText.ID);
@@ -136,7 +136,7 @@ namespace TrailBot.DataAccess.Tests.IntegrationTests
             Database.QueryProvider = new SqliteQueryProvider();
 
             Topic topic = new() { Name = Guid.NewGuid().ToString() };
-            Database.AddTopic(topic);
+            Database.Add(topic);
 
             Random random = new();
             List<TopicText> topicMatchText = new();
@@ -146,7 +146,7 @@ namespace TrailBot.DataAccess.Tests.IntegrationTests
                 text.TopicID = topic.ID;
 
                 topicMatchText.Add(text);
-                Database.AddTopicText(text);
+                Database.Add(text);
             }
 
             Console.WriteLine($"Created {topicMatchText.Count} test items.");
