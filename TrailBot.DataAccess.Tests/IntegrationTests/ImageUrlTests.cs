@@ -34,7 +34,7 @@ namespace TrailBot.DataAccess.Tests.IntegrationTests
             var validate = Database.GetImageUrl(imageUrl.ID);
             Assert.IsNotNull(validate);
 
-            this.AssertSameImageUrl(imageUrl, validate);
+            ImageUrlTests.AssertSameImageUrl(imageUrl, validate);
 
             // Cleanup
             Database.DeleteProvider(imageUrl.ID);
@@ -80,7 +80,7 @@ namespace TrailBot.DataAccess.Tests.IntegrationTests
             var validate2 = Database.GetImageUrl(imageUrl.ID);
             Assert.IsNotNull(validate2);
 
-            this.AssertSameImageUrl(imageUrl, validate2);
+            ImageUrlTests.AssertSameImageUrl(imageUrl, validate2);
 
             // Cleanup
             Database.DeleteProvider(imageUrl.ID);
@@ -106,7 +106,7 @@ namespace TrailBot.DataAccess.Tests.IntegrationTests
             var validate2 = Database.GetImageUrl(imageUrl.ID);
             Assert.IsNotNull(validate2);
 
-            this.AssertSameImageUrl(imageUrl, validate2);
+            ImageUrlTests.AssertSameImageUrl(imageUrl, validate2);
 
             // Cleanup
             Database.DeleteProvider(imageUrl.ID);
@@ -177,7 +177,7 @@ namespace TrailBot.DataAccess.Tests.IntegrationTests
             Database.Delete(url);
         }
 
-        #region Private utility methods
+        #region Utility methods
 
         private ImageUrl GetRandomImageUrl()
         {
@@ -199,7 +199,7 @@ namespace TrailBot.DataAccess.Tests.IntegrationTests
             };
         }
 
-        private void AssertSameImageUrl(ImageUrl image1, ImageUrl image2)
+        public static void AssertSameImageUrl(ImageUrl image1, ImageUrl image2)
         {
             Assert.AreEqual(image1.ID, image2.ID, "ID doesn't match");
             Assert.AreEqual(image1.Address, image2.Address, "Address doesn't match");

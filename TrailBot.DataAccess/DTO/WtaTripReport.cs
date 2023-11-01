@@ -1,9 +1,15 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace CascadePass.TrailBot.DataAccess.DTO
 {
     public class WtaTripReport : DataTransferObject
     {
+        public WtaTripReport()
+        {
+            this.Images = new();
+        }
+
         public long ID { get; set; }
 
         public Url Url { get; set; }
@@ -23,5 +29,7 @@ namespace CascadePass.TrailBot.DataAccess.DTO
         public DateTime ProcessedDate { get; set; }
 
         public string ReportText { get; set; }
+
+        public List<ImageUrl> Images { get; set; }
     }
 }

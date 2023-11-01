@@ -170,7 +170,18 @@ namespace CascadePass.TrailBot.DataAccess
             }
 
             using DbCommand query = Database.QueryProvider.AddWtaTripReport(tripReport);
-            return tripReport.ID = (long)Database.ExecuteScalar(query, connection);
+            tripReport.ID = (long)Database.ExecuteScalar(query, connection);
+
+            if (tripReport.Images != null)
+            {
+                foreach (ImageUrl imageUrl in tripReport.Images)
+                {
+                    Database.Add(imageUrl, connection);
+                    Database.AddWtaTripReportImage(tripReport.ID, imageUrl.ID, connection);
+                }
+            }
+
+            return tripReport.ID;
         }
 
         public static long Update(WtaTripReport tripReport)
@@ -224,6 +235,7 @@ namespace CascadePass.TrailBot.DataAccess
             if (reader.Read())
             {
                 result = ObjectRelationalMapper.GetWtaTripReport(reader);
+                result.Images = Database.GetImagesForTripReport(id, query.Connection);
             }
 
             query.Connection.Close();
@@ -628,6 +640,12 @@ namespace CascadePass.TrailBot.DataAccess
             return imageUrl.ID = (long)Database.ExecuteScalar(query);
         }
 
+        public static long Add(ImageUrl imageUrl, DbConnection connection)
+        {
+            using DbCommand query = Database.QueryProvider.AddImageUrl(imageUrl);
+            return imageUrl.ID = (long)Database.ExecuteScalar(query, connection);
+        }
+
         public static long AddImageUrl(string imageUrl)
         {
             using DbCommand query = Database.QueryProvider.AddImageUrl(imageUrl);
@@ -652,7 +670,7 @@ namespace CascadePass.TrailBot.DataAccess
             return (long)Database.ExecuteNonQuery(query);
         }
 
-        public static ImageUrl GetImageUrl(long id) 
+        public static ImageUrl GetImageUrl(long id)
         {
             using DbCommand query = Database.QueryProvider.GetImageUrl(id);
             using DbDataReader reader = Database.ExecuteReader(query);
@@ -687,6 +705,24 @@ namespace CascadePass.TrailBot.DataAccess
             return result;
         }
 
+        public static List<ImageUrl> GetImagesForTripReport(long id, DbConnection connection)
+        {
+            using DbCommand query = Database.QueryProvider.GetImagesForTripReport(id);
+            using DbDataReader reader = Database.ExecuteReader(query, connection);
+
+            List<ImageUrl> result = new();
+
+            while (reader.Read())
+            {
+                var provider = ObjectRelationalMapper.GetImageUrl(reader);
+                result.Add(provider);
+            }
+
+            query.Connection.Close();
+
+            return result;
+        }
+
         #endregion
 
         #region WtaTripReportImage
@@ -701,6 +737,12 @@ namespace CascadePass.TrailBot.DataAccess
         {
             using DbCommand query = Database.QueryProvider.AddWtaTripReportImage(wtaTripReportID, imageID);
             return (long)Database.ExecuteScalar(query);
+        }
+
+        public static long AddWtaTripReportImage(long wtaTripReportID, long imageID, DbConnection connection)
+        {
+            using DbCommand query = Database.QueryProvider.AddWtaTripReportImage(wtaTripReportID, imageID);
+            return (long)Database.ExecuteScalar(query, connection);
         }
 
         public static long Delete(WtaTripReportImage imageAssociation)

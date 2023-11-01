@@ -2,6 +2,7 @@
 using CascadePass.TrailBot.DataAccess.DTO;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
+using System.Collections.Generic;
 using System.Text;
 
 namespace TrailBot.DataAccess.Tests.IntegrationTests
@@ -239,6 +240,66 @@ namespace TrailBot.DataAccess.Tests.IntegrationTests
 
         #endregion
 
+        #region Images
+
+        [TestMethod]
+        public void AddWtaTripReport_Images()
+        {
+            this.AssertRequirements();
+            Database.QueryProvider = new SqliteQueryProvider();
+
+            WtaTripReport tripReport = this.GetRandomTripReport();
+
+            int createdImageCount = new Random().Next(1, 4);
+            List<string> imageUrls = new();
+
+            for (int i = 0; i < createdImageCount; i++)
+            {
+                string url = $"https://image/test/{Guid.NewGuid()}";
+                imageUrls.Add(url);
+                tripReport.Images.Add(new() { Address = url });
+
+                Console.WriteLine(url);
+            }
+
+            Database.Add(tripReport);
+
+            // Was it actually saved?
+            var validate = Database.GetWtaTripReport(tripReport.ID);
+            Assert.IsNotNull(validate);
+
+            this.AssertSameTripReport(tripReport, validate);
+
+            // Cleanup
+            Database.DeleteWtaTripReport(tripReport.ID);
+        }
+
+        [TestMethod]
+        public void AddWtaTripReport_NullImages()
+        {
+            this.AssertRequirements();
+            Database.QueryProvider = new SqliteQueryProvider();
+
+            WtaTripReport tripReport = this.GetRandomTripReport();
+            tripReport.Images = null;
+
+            Database.Add(tripReport);
+
+            // Was it actually saved?
+            var validate = Database.GetWtaTripReport(tripReport.ID);
+            Assert.IsNotNull(validate);
+
+            Assert.AreEqual(0, validate.Images.Count);
+            validate.Images = null;
+
+            this.AssertSameTripReport(tripReport, validate);
+
+            // Cleanup
+            Database.DeleteWtaTripReport(tripReport.ID);
+        }
+
+        #endregion
+
         #region Private utility methods
 
         private WtaTripReport GetRandomTripReport()
@@ -282,6 +343,22 @@ namespace TrailBot.DataAccess.Tests.IntegrationTests
             Assert.IsTrue(this.AreDatesSame(tripReport.PublishedDate, validate.PublishedDate));
             Assert.IsTrue(this.AreDatesSame(tripReport.ProcessedDate, validate.ProcessedDate));
             Assert.AreEqual(tripReport.ReportText, validate.ReportText);
+
+            Assert.IsTrue(
+                (tripReport.Images is null && validate.Images is null) ||
+                (tripReport.Images is not null && validate.Images is not null)
+            );
+
+            if (tripReport.Images is null)
+            {
+                return;
+            }
+
+            Assert.AreEqual(tripReport.Images.Count, validate.Images.Count);
+            for (int i = 0; i < tripReport.Images.Count; i++)
+            {
+                ImageUrlTests.AssertSameImageUrl(tripReport.Images[i], validate.Images[i]);
+            }
         }
 
         #endregion
