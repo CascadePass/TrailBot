@@ -1359,7 +1359,7 @@ Where
             #endregion
 
             string sql = @"
-Insert Into MatchedTripReportText (TripReportID, MatchTextID)
+Insert Into MatchedWtaTripReportText (TripReportID, MatchTextID)
 Values (@TripReportID, @MatchTextID);
 
 Select last_insert_rowid();";
@@ -1409,7 +1409,7 @@ Select last_insert_rowid();";
 
             #endregion
 
-            string sql = @"Delete From MatchedTripReportText Where MatchID = @ID";
+            string sql = @"Delete From MatchedWtaTripReportText Where MatchID = @ID";
 
             SQLiteCommand deleteCommand = new(sql);
 
@@ -1435,7 +1435,7 @@ Select last_insert_rowid();";
 
             #endregion
 
-            string sql = @"Select * From MatchedTripReportText Where MatchID = @ID";
+            string sql = @"Select * From MatchedWtaTripReportText Where MatchID = @ID";
 
             SQLiteCommand selectCommand = new(sql);
 
@@ -1511,7 +1511,7 @@ Select last_insert_rowid();";
             #endregion
 
             string sql = @"
-Insert Into MatchedTripReportTopic (TripReportID, TopicID, Exerpt)
+Insert Into MatchedWtaTripReportTopic (TripReportID, TopicID, Exerpt)
 Values (@TripReportID, @TopicID, @Exerpt);
 
 Select last_insert_rowid();";
@@ -1562,7 +1562,7 @@ Select last_insert_rowid();";
 
             #endregion
 
-            string sql = @"Delete From MatchedTripReportTopic Where MatchID = @ID";
+            string sql = @"Delete From MatchedWtaTripReportTopic Where MatchID = @ID";
 
             SQLiteCommand deleteCommand = new(sql);
 
@@ -1588,7 +1588,7 @@ Select last_insert_rowid();";
 
             #endregion
 
-            string sql = @"Select * From MatchedTripReportTopic Where MatchID = @ID";
+            string sql = @"Select * From MatchedWtaTripReportTopic Where MatchID = @ID";
 
             SQLiteCommand selectCommand = new(sql);
 

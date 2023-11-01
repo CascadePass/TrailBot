@@ -79,7 +79,7 @@ namespace TrailBot.DataAccess.Tests.SqliteQueryProviderTests
             var result = queryProvider.AddMatchedTripReportTopic(new() { TopicID = 1, TripReportID = 2 });
 
             Console.WriteLine(result.CommandText);
-            Assert.IsTrue(result.CommandText.Trim().ToUpper().StartsWith("INSERT INTO MATCHEDTRIPREPORTTOPIC"));
+            Assert.IsTrue(result.CommandText.Trim().ToUpper().StartsWith("INSERT INTO MATCHEDWTATRIPREPORTTOPIC"));
             Assert.IsTrue(result.CommandText.Trim().ToUpper().Contains("VALUES"));
             Assert.IsTrue(result.CommandText.Trim().ToUpper().Contains("SELECT LAST_INSERT_ROWID();"));
         }
@@ -188,7 +188,7 @@ namespace TrailBot.DataAccess.Tests.SqliteQueryProviderTests
             var result = queryProvider.AddMatchedTripReportTopic(tripReport, topic, Guid.NewGuid().ToString());
 
             Console.WriteLine(result.CommandText);
-            Assert.IsTrue(result.CommandText.Trim().ToUpper().StartsWith("INSERT INTO MATCHEDTRIPREPORTTOPIC"));
+            Assert.IsTrue(result.CommandText.Trim().ToUpper().StartsWith("INSERT INTO MATCHEDWTATRIPREPORTTOPIC"));
             Assert.IsTrue(result.CommandText.Trim().ToUpper().Contains("VALUES"));
             Assert.IsTrue(result.CommandText.Trim().ToUpper().Contains("SELECT LAST_INSERT_ROWID();"));
         }
@@ -282,7 +282,7 @@ namespace TrailBot.DataAccess.Tests.SqliteQueryProviderTests
             var result = queryProvider.AddMatchedTripReportTopic(4, 5, Guid.NewGuid().ToString());
 
             Console.WriteLine(result.CommandText);
-            Assert.IsTrue(result.CommandText.Trim().ToUpper().StartsWith("INSERT INTO MATCHEDTRIPREPORTTOPIC"));
+            Assert.IsTrue(result.CommandText.Trim().ToUpper().StartsWith("INSERT INTO MATCHEDWTATRIPREPORTTOPIC"));
             Assert.IsTrue(result.CommandText.Trim().ToUpper().Contains("VALUES"));
             Assert.IsTrue(result.CommandText.Trim().ToUpper().Contains("SELECT LAST_INSERT_ROWID();"));
         }
@@ -363,7 +363,7 @@ namespace TrailBot.DataAccess.Tests.SqliteQueryProviderTests
             var result = queryProvider.DeleteMatchedTripReportTopic(100);
 
             Console.WriteLine(result.CommandText);
-            Assert.IsTrue(result.CommandText.Trim().ToUpper().StartsWith("DELETE FROM MATCHEDTRIPREPORTTOPIC"));
+            Assert.IsTrue(result.CommandText.Trim().ToUpper().StartsWith("DELETE FROM MATCHEDWTATRIPREPORTTOPIC"));
         }
 
         [TestMethod]
@@ -441,7 +441,7 @@ namespace TrailBot.DataAccess.Tests.SqliteQueryProviderTests
             var result = queryProvider.DeleteMatchedTripReportTopic(new MatchedTripReportTopic() { ID = 100 });
 
             Console.WriteLine(result.CommandText);
-            Assert.IsTrue(result.CommandText.Trim().ToUpper().StartsWith("DELETE FROM MATCHEDTRIPREPORTTOPIC"));
+            Assert.IsTrue(result.CommandText.Trim().ToUpper().StartsWith("DELETE FROM MATCHEDWTATRIPREPORTTOPIC"));
         }
 
         [TestMethod]
@@ -514,7 +514,7 @@ namespace TrailBot.DataAccess.Tests.SqliteQueryProviderTests
 
             Console.WriteLine(result.CommandText);
             Assert.IsTrue(result.CommandText.Trim().ToUpper().StartsWith("SELECT"));
-            Assert.IsTrue(result.CommandText.Trim().ToUpper().Contains("FROM MATCHEDTRIPREPORTTOPIC"));
+            Assert.IsTrue(result.CommandText.Trim().ToUpper().Contains("FROM MATCHEDWTATRIPREPORTTOPIC"));
         }
 
         [TestMethod]
