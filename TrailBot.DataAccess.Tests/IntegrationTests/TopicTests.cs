@@ -181,7 +181,6 @@ namespace TrailBot.DataAccess.Tests.IntegrationTests
             {
                 ID = id,
                 Name = Guid.NewGuid().ToString(),
-                MatchText = matchText,
             };
         }
 
