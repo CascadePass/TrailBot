@@ -50,6 +50,15 @@ namespace TrailBot.DataAccess.Tests
 
         #endregion
 
+        [TestMethod]
+        public void GetConnectionString_ValidFilename()
+        {
+            string result = Database.GetConnectionString("123.db");
+
+            Assert.IsTrue(result.Contains("123.db"));
+            Assert.IsTrue(result.Contains("Data Source="));
+        }
+
         #region Exceptions
 
         [TestMethod]

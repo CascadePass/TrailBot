@@ -33,6 +33,8 @@ namespace CascadePass.TrailBot.DataAccess
 
         #endregion
 
+        #region Data Manipulation
+
         #region Url
 
         public static long Add(Url url)
@@ -776,9 +778,16 @@ namespace CascadePass.TrailBot.DataAccess
 
         #endregion
 
+        #endregion
+
         #region ADO.NET abstraction methods
 
         #region Get Connection
+
+        public static string GetConnectionString(string sqliteDatabaseFilename)
+        {
+            return $"Data Source={sqliteDatabaseFilename}";
+        }
 
         /// <summary>
         /// Gets a connection to the database.

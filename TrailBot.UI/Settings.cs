@@ -6,13 +6,27 @@ namespace CascadePass.TrailBot.UI
     [Serializable]
     public class Settings : ObservableObject
     {
-        private string xmlFolder, indexFilename;
+        private string sqliteDatabaseFilename, xmlFolder, indexFilename;
         private bool showPreviewPane, isDirty, debugMode, suggestAdditionalTerms;
 
         #region Properties
 
         [XmlIgnore]
         public bool IsDirty => this.isDirty;
+
+        public string SqliteDatabaseFilename
+        {
+            get => this.sqliteDatabaseFilename;
+            set
+            {
+                // File paths are case insensitive in Windows
+                if (!string.Equals(this.sqliteDatabaseFilename, value, StringComparison.OrdinalIgnoreCase))
+                {
+                    this.sqliteDatabaseFilename = value;
+                    this.OnPropertyChanged(nameof(this.SqliteDatabaseFilename));
+                }
+            }
+        }
 
         public string IndexFilename
         {
