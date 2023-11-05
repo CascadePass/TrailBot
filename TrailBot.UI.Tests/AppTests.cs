@@ -38,6 +38,16 @@ namespace CascadePass.TrailBot.UI.Tests
         }
 
         [TestMethod]
+        public void RequireSetupScreen_True_DatabaseFilenameNonExistant()
+        {
+            ApplicationData.Settings = new();
+            ApplicationData.WasSettingsMissing = false;
+            ApplicationData.Settings.SqliteDatabaseFilename = $"C:\\{Guid.NewGuid()}\\{Guid.NewGuid()}\\{Guid.NewGuid()}\\{Guid.NewGuid()}.db";
+
+            Assert.IsTrue(App.RequireSetupScreen);
+        }
+
+        [TestMethod]
         public void RequireSetupScreen_True_SettingsWereMissing()
         {
             ApplicationData.Settings = new();

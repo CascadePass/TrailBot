@@ -41,7 +41,7 @@ namespace CascadePass.TrailBot.UI
         {
             base.OnStartup(e);
 
-            App.SetupData();
+            App.GetSettings();
 
             MainWindow mainWindow = new()
             {
