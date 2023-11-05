@@ -1,5 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
+using System.ComponentModel;
 
 namespace CascadePass.TrailBot.UI.Tests
 {
@@ -55,6 +56,16 @@ namespace CascadePass.TrailBot.UI.Tests
         }
 
         [TestMethod]
+        public void SqliteDatabaseFilename_GetSetAccessSameValue()
+        {
+            string value = Guid.NewGuid().ToString();
+            Settings settings = new();
+
+            settings.SqliteDatabaseFilename = value;
+            Assert.IsTrue(string.Equals(settings.SqliteDatabaseFilename, value, StringComparison.Ordinal));
+        }
+
+        [TestMethod]
         public void IndexFilename_GetSetAccessSameValue()
         {
             string value = Guid.NewGuid().ToString();
@@ -105,6 +116,34 @@ namespace CascadePass.TrailBot.UI.Tests
 
             settings.ShowPreviewPane = !settings.ShowPreviewPane;
             Assert.IsTrue(settings.IsDirty);
+        }
+
+        [TestMethod]
+        public void SqliteDatabaseFilename_Makes_IsDirty_True()
+        {
+            string value = Guid.NewGuid().ToString();
+            Settings settings = new();
+
+            settings.SqliteDatabaseFilename = value;
+            Assert.IsTrue(settings.IsDirty);
+        }
+
+        [TestMethod]
+        public void SqliteDatabaseFilename_IgnoresSameValue()
+        {
+            Assert.Inconclusive();
+            //string value = Guid.NewGuid().ToString();
+            //Settings settings = new();
+            //bool eventFired = false;
+
+            //PropertyChangedEventHandler handler = Delegate() => { eventFired = true; };
+
+            //settings.SqliteDatabaseFilename = value;
+
+            //settings.PropertyChanged += handler;
+            //settings.SqliteDatabaseFilename = value;
+
+            //Assert.IsTrue(eventFired);
         }
 
         [TestMethod]
