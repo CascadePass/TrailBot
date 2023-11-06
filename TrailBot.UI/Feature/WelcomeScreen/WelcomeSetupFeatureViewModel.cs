@@ -22,6 +22,8 @@ namespace CascadePass.TrailBot.UI.Feature.WelcomeScreen
 
             this.Tasks = new();
 
+            this.DatabaseSetupTaskViewModel = new() { Settings = this.Settings, };
+
             this.DataStorageTaskViewModel = new()
             {
                 Settings = this.Settings,
@@ -34,7 +36,7 @@ namespace CascadePass.TrailBot.UI.Feature.WelcomeScreen
             this.DataStorageTaskViewModel.CompletenessChanged += this.SetupTask_Completed;
             this.ProviderSetupViewModel.CompletenessChanged += this.SetupTask_Completed;
 
-            this.Tasks.Add(this.DataStorageTaskViewModel);
+            this.Tasks.Add(this.DatabaseSetupTaskViewModel);
             this.Tasks.Add(this.ProviderSetupViewModel);
             this.Tasks.Add(this.TopicSetupViewModel);
 
@@ -51,6 +53,8 @@ namespace CascadePass.TrailBot.UI.Feature.WelcomeScreen
         public List<SetupTaskViewModel> Tasks { get; set; }
 
         public SetupDataStorageTaskViewModel DataStorageTaskViewModel { get; set; }
+
+        public DatabaseSetupTaskViewModel DatabaseSetupTaskViewModel { get; set; }
 
         public ProviderSetupViewModel ProviderSetupViewModel { get; set; }
 
