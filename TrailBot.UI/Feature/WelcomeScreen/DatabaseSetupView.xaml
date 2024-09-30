@@ -24,7 +24,13 @@
 
                 <Run Text="Filename" BaselineAlignment="Center" />
             </TextBlock>
+            
             <TextBox Text="{Binding DatabaseFilename}" />
+
+            <TextBlock
+                Visibility="{Binding DatabaseFileExists, Converter={StaticResource bool2vis}}"
+                Text="File does not exist." />
+
         </StackPanel>
     </Border>
     

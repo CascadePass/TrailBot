@@ -4,6 +4,8 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Xml.Serialization;
 using System.Globalization;
+using CascadePass.TrailBot.DataAccess;
+using CascadePass.TrailBot.DataAccess.DTO;
 
 namespace CascadePass.TrailBot
 {
@@ -121,7 +123,7 @@ namespace CascadePass.TrailBot
         public List<string> GetRecentTripReportAddresses()
         {
             IWebDriver webDriver = WebDriverProvider.GetWebDriver(this.Browser);
-            var found = this.GetRecentTripReportAddresses(webDriver, 21);
+            var found = this.GetRecentTripReportAddresses(webDriver, 3000);
 
             webDriver.Quit();
 
@@ -189,11 +191,13 @@ namespace CascadePass.TrailBot
 
                 if (!this.CompletedUrls.Contains(url))
                 {
+                    Url storageUrl = Url.Create(url, DateTime.Now);
                     found.Add(url);
 
                     if (!this.PendingUrls.Contains(url))
                     {
                         this.PendingUrls.Add(url);
+                        Database.Add(storageUrl);
                     }
                 }
             }

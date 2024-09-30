@@ -77,6 +77,7 @@
     <Compile Include="IntegrationTests\UrlTests.cs" />
     <Compile Include="IntegrationTests\WtaTripReportImageTests.cs" />
     <Compile Include="IntegrationTests\WtaTripReportTests.cs" />
+    <Compile Include="LoggingMockQueryProvider.cs" />
     <Compile Include="ObjectRelationalMapperTests.cs" />
     <Compile Include="SqliteQueryProviderTests\ImageUrlTests.cs" />
     <Compile Include="SqliteQueryProviderTests\MatchedTripReportTextTests.cs" />

@@ -1,4 +1,6 @@
-﻿using OpenQA.Selenium;
+﻿using CascadePass.TrailBot.DataAccess;
+using CascadePass.TrailBot.DataAccess.DTO;
+using OpenQA.Selenium;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -141,12 +143,36 @@ namespace CascadePass.TrailBot
             writer.Close();
         }
 
+        public void SaveTripReport(TripReport tripReport)
+        {
+            WtaTripReport wtaSource = tripReport as WtaTripReport;
+            DataAccess.DTO.WtaTripReport tr = new()
+            {
+                Url = new() { Address = tripReport.Url, Collected = DateTime.Now },
+                Title = tripReport.Title,
+                Region = wtaSource.Region,
+                HikeType = wtaSource.HikeType,
+                Author = wtaSource.Author,
+                TripDate = wtaSource.TripDate,
+                PublishedDate = wtaSource.PublishDate,
+                ProcessedDate = DateTime.Now,
+                ReportText = wtaSource.ReportText,
+            };
+
+            foreach (string imageUrl in wtaSource.ImageUrls)
+            {
+                tr.Images.Add(new() { Address = imageUrl });
+            }
+
+            Database.Add(tr);
+        }
+
         public void SaveTripReport(MatchedTripReport matchedTripReport, TripReport tripReport, WebDataProvider provider)
         {
-            if (provider.PreservationRule == PreservationRule.None)
-            {
-                return;
-            }
+            //if (provider.PreservationRule == PreservationRule.None)
+            //{
+            //    return;
+            //}
 
             Uri sourceUri = new(tripReport.Url);
 
@@ -211,7 +237,7 @@ namespace CascadePass.TrailBot
                         {
                             try
                             {
-                                int depth = wtaProvider.LastGetRecentRequest == DateTime.MinValue ? 5 : 3 * (int)ageOfWorklist.TotalDays;
+                                int depth = wtaProvider.LastGetRecentRequest == DateTime.MinValue ? 500 : 3 * (int)ageOfWorklist.TotalDays;
 
                                 wtaProvider.GetRecentTripReportAddresses(webBrowser, depth);
                                 lastGetRecent = DateTime.Now;
@@ -285,6 +311,8 @@ namespace CascadePass.TrailBot
             {
                 throw new ArgumentNullException(nameof(tripReport));
             }
+
+            this.SaveTripReport(tripReport);
 
             List<MatchInfo> matches = new();
             foreach (Topic topic in this.Topics)

@@ -129,24 +129,6 @@ namespace CascadePass.TrailBot.UI.Tests
         }
 
         [TestMethod]
-        public void SqliteDatabaseFilename_IgnoresSameValue()
-        {
-            Assert.Inconclusive();
-            //string value = Guid.NewGuid().ToString();
-            //Settings settings = new();
-            //bool eventFired = false;
-
-            //PropertyChangedEventHandler handler = Delegate() => { eventFired = true; };
-
-            //settings.SqliteDatabaseFilename = value;
-
-            //settings.PropertyChanged += handler;
-            //settings.SqliteDatabaseFilename = value;
-
-            //Assert.IsTrue(eventFired);
-        }
-
-        [TestMethod]
         public void IndexFilename_Makes_IsDirty_True()
         {
             string value = Guid.NewGuid().ToString();
@@ -172,6 +154,72 @@ namespace CascadePass.TrailBot.UI.Tests
 
             settings.SuggestAdditionalTerms = !settings.SuggestAdditionalTerms;
             Assert.IsTrue(settings.IsDirty);
+        }
+
+        #endregion
+
+
+        [TestMethod]
+        public void SqliteDatabaseFilename_IgnoresSameValue()
+        {
+            bool eventFired = false;
+            string value = Guid.NewGuid().ToString();
+            Settings settings = new();
+            settings.PropertyChanged += (sender, args) => { eventFired = true; };
+
+            settings.SqliteDatabaseFilename = value;
+            Assert.IsTrue(eventFired);
+
+            eventFired = false;
+
+            settings.SqliteDatabaseFilename = value;
+            Assert.IsFalse(eventFired);
+        }
+
+        #region Correct property name
+
+        [TestMethod]
+        public void SqliteDatabaseFilename_CorrectPropertyName()
+        {
+            string propertyName = null;
+            Settings settings = new();
+            settings.PropertyChanged += (sender, args) => { propertyName = args.PropertyName; };
+
+            settings.SqliteDatabaseFilename = Guid.NewGuid().ToString();
+            Assert.IsTrue(string.Equals(nameof(Settings.SqliteDatabaseFilename), propertyName));
+        }
+
+        [TestMethod]
+        public void ShowPreviewPane_CorrectPropertyName()
+        {
+            string propertyName = null;
+            Settings settings = new();
+            settings.PropertyChanged += (sender, args) => { propertyName = args.PropertyName; };
+
+            settings.ShowPreviewPane = !settings.ShowPreviewPane;
+            Assert.IsTrue(string.Equals(nameof(Settings.ShowPreviewPane), propertyName));
+        }
+
+        [TestMethod]
+        public void SuggestAdditionalTerms_CorrectPropertyName()
+        {
+            string propertyName = null;
+            Settings settings = new();
+            settings.PropertyChanged += (sender, args) => { propertyName = args.PropertyName; };
+
+            settings.SuggestAdditionalTerms = !settings.SuggestAdditionalTerms;
+            Assert.IsTrue(string.Equals(nameof(Settings.SuggestAdditionalTerms), propertyName));
+        }
+
+        [TestMethod]
+        public void DebugMode_CorrectPropertyName()
+        {
+            string propertyName = null;
+            Settings settings = new();
+            settings.PropertyChanged += (sender, args) => { propertyName = args.PropertyName; };
+
+            settings.DebugMode = !settings.DebugMode;
+            Assert.IsTrue(string.Equals(nameof(Settings.DebugMode), propertyName));
         }
 
         #endregion

@@ -72,6 +72,10 @@
     <Compile Include="WtaTripReport.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\TrailBot.DataAccess\TrailBot.DataAccess.csproj">
+      <Project>{ab68c993-c6f1-4878-9c79-0b7fb24e209f}</Project>
+      <Name>TrailBot.DataAccess</Name>
+    </ProjectReference>
     <ProjectReference Include="..\TrailBot.TextAnalysis\TrailBot.TextAnalysis.csproj">
       <Project>{6833993A-6A7E-4C63-BA86-03CE769106BA}</Project>
       <Name>TrailBot.TextAnalysis</Name>

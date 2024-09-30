@@ -22,7 +22,6 @@
                 Text="Let's set a few things up." />
 
             <local:DatabaseSetupView DataContext="{Binding DatabaseSetupTaskViewModel}" />
-            <local:ProviderSetupView DataContext="{Binding ProviderSetupViewModel}" Margin="0,0,0,15" />
             <local:TopicSetupView DataContext="{Binding TopicSetupViewModel}" />
         </StackPanel>
     </ScrollViewer>

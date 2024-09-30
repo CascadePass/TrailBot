@@ -31,6 +31,9 @@ namespace CascadePass.TrailBot.UI
 
         public static void GetSettings()
         {
+            ApplicationData.Settings = new();
+            ApplicationData.Settings.SqliteDatabaseFilename = @"C:\Users\User\Documents\TrailBot\TrailBot-Gather.db";
+            ApplicationData.Settings.IndexFilename = @"C:\Users\User\Documents\TrailBot\Index.xml";
             ApplicationData.Load(App.SETTINGS_FILENAME);
 
             Database.ConnectionString = Database.GetConnectionString(ApplicationData.Settings?.SqliteDatabaseFilename);

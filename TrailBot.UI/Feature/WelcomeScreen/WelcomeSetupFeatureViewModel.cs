@@ -24,20 +24,9 @@ namespace CascadePass.TrailBot.UI.Feature.WelcomeScreen
 
             this.DatabaseSetupTaskViewModel = new() { Settings = this.Settings, };
 
-            this.DataStorageTaskViewModel = new()
-            {
-                Settings = this.Settings,
-                XmlFolderPath = Path.Combine(Environment.CurrentDirectory, "Data"),
-            };
-
-            this.ProviderSetupViewModel = new(this.WebProviderManager);
             this.TopicSetupViewModel = new();
 
-            this.DataStorageTaskViewModel.CompletenessChanged += this.SetupTask_Completed;
-            this.ProviderSetupViewModel.CompletenessChanged += this.SetupTask_Completed;
-
             this.Tasks.Add(this.DatabaseSetupTaskViewModel);
-            this.Tasks.Add(this.ProviderSetupViewModel);
             this.Tasks.Add(this.TopicSetupViewModel);
 
             ApplicationData.WebProviderManager = this.WebProviderManager;
@@ -52,17 +41,13 @@ namespace CascadePass.TrailBot.UI.Feature.WelcomeScreen
 
         public List<SetupTaskViewModel> Tasks { get; set; }
 
-        public SetupDataStorageTaskViewModel DataStorageTaskViewModel { get; set; }
-
         public DatabaseSetupTaskViewModel DatabaseSetupTaskViewModel { get; set; }
-
-        public ProviderSetupViewModel ProviderSetupViewModel { get; set; }
 
         public TopicSetupViewModel TopicSetupViewModel { get; set; }
 
         private void SetupTask_Completed(object sender, EventArgs e)
         {
-            this.TopicSetupViewModel.EnableTaskEditorButton = this.DataStorageTaskViewModel.IsComplete && this.ProviderSetupViewModel.IsComplete;
+            this.TopicSetupViewModel.EnableTaskEditorButton = this.DatabaseSetupTaskViewModel.IsComplete;
         }
     }
 }

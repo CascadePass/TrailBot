@@ -498,7 +498,7 @@ namespace CascadePass.TrailBot.UI.Tests
         }
 
         [TestMethod]
-        public void MyTestMethod()
+        public void CopySelectedTextCommand()
         {
             MatchedTripReportViewModel vm = new();
             vm.SelectedPreviewText = Guid.NewGuid().ToString();
