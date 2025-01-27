@@ -14,12 +14,22 @@ jobs:
 
     runs-on: windows-latest
 
-    steps:
+steps:
     - uses: actions/checkout@v4
-    - name: Setup .NET
+    - name: Setup .NET Core SDK
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: 4.8.0
+        dotnet-version: 3.1.x # Use a compatible .NET Core SDK version
+    - name: Install .NET Framework 4.8
+      run: |
+        choco install dotnet4.8 --allow-empty-checksums
+    - name: Install dependencies
+      run: dotnet restore
+    - name: Build
+      run: dotnet build --configuration Release --no-restore
+    - name: Test
+      run: dotnet test --no-restore --verbosity normal
+
     - name: Restore dependencies
       run: dotnet restore
     - name: Build
