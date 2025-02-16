@@ -56,6 +56,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DatabaseTestConfiguration.cs" />
     <Compile Include="DatabaseTests.cs" />
     <Compile Include="DtoTests\ImageUrlTests.cs" />
     <Compile Include="DtoTests\MatchedTripReportTextTests.cs" />
@@ -93,6 +94,7 @@
     <Compile Include="SqliteQueryProviderTests\WtaTripReportTests.cs" />
     <Compile Include="IntegrationTests\SqliteIntegrationTestClass.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TestConfiguration.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

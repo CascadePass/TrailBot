@@ -117,6 +117,11 @@ namespace CascadePass.TrailBot
 
         public void SaveToFile()
         {
+            if (string.IsNullOrWhiteSpace(this.IndexFile))
+            {
+                return;
+            }
+
             //XmlWriterSettings settings = new() { OmitXmlDeclaration = true };
             XmlSerializer serializer = new(typeof(WebProviderManager), new Type[] { typeof(WtaDataProvider) });
             using StreamWriter writer = new(this.IndexFile);

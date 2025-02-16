@@ -9,6 +9,14 @@ namespace CascadePass.TrailBot.UI.Feature.WelcomeScreen
         private bool enableTaskEditorButton;
         private DelegateCommand topicEditorCommand;
 
+        public TopicSetupViewModel()
+        {
+            this.TopicEditorViewModel = new()
+            {
+                Topics = new Topic[] { new() { Name = "Snow", MatchAny = "snow\r\ngroomed" } }
+            };
+        }
+
         public bool EnableTaskEditorButton
         {
             get => this.enableTaskEditorButton;
@@ -21,6 +29,9 @@ namespace CascadePass.TrailBot.UI.Feature.WelcomeScreen
                 }
             }
         }
+
+        public TopicEditorViewModel TopicEditorViewModel { get; set; }
+
 
         public ICommand LaunchTopicEditorCommand => this.topicEditorCommand ??= new DelegateCommand(this.LaunchTopicEditorImplementation);
 

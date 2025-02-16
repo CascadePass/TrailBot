@@ -10,7 +10,7 @@ namespace CascadePass.TrailBot.UI.Feature.WelcomeScreen
 {
     public class DatabaseSetupTaskViewModel : SetupTaskViewModel
     {
-        private bool? databaseFileExists, canConnectToDatabase;
+        private bool? databaseFileIsMissing, canConnectToDatabase;
         private string databaseFilename;
 
         public Settings Settings { get; set; }
@@ -30,15 +30,15 @@ namespace CascadePass.TrailBot.UI.Feature.WelcomeScreen
             }
         }
 
-        public bool? DatabaseFileExists
+        public bool? DatabaseFileIsMissing
         {
-            get => this.databaseFileExists;
+            get => this.databaseFileIsMissing;
             private set
             {
-                if (this.databaseFileExists != value)
+                if (this.databaseFileIsMissing != value)
                 {
-                    this.databaseFileExists = value;
-                    this.OnPropertyChanged(nameof(this.DatabaseFileExists));
+                    this.databaseFileIsMissing = value;
+                    this.OnPropertyChanged(nameof(this.DatabaseFileIsMissing));
                 }
             }
         }
@@ -60,10 +60,10 @@ namespace CascadePass.TrailBot.UI.Feature.WelcomeScreen
         {
             if (string.IsNullOrWhiteSpace(this.databaseFilename))
             {
-                this.DatabaseFileExists = null;
+                this.DatabaseFileIsMissing = null;
             }
 
-            this.DatabaseFileExists = File.Exists(this.databaseFilename);
+            this.DatabaseFileIsMissing = !File.Exists(this.databaseFilename);
         }
 
         private void TestDatabaseConnection()
@@ -95,12 +95,12 @@ namespace CascadePass.TrailBot.UI.Feature.WelcomeScreen
 
         public override void Validate()
         {
-            this.databaseFileExists = null;
+            this.databaseFileIsMissing = null;
             this.canConnectToDatabase = null;
 
             this.TestFileExistence();
 
-            if (this.databaseFileExists.Value)
+            if (!this.databaseFileIsMissing.Value)
             {
                 this.TestDatabaseConnection();
             }

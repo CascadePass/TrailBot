@@ -71,6 +71,11 @@ namespace CascadePass.TrailBot.UI
             //FileStore.SerializeToXmlFile(this.WebProviderManager, "Index.xml");
             ApplicationData.WebProviderManager?.SaveToFile();
 
+            if (string.IsNullOrWhiteSpace(ApplicationData.Settings.XmlFolder))
+            {
+                return;
+            }
+
             FileStore.SerializeToXmlFile(
                 ApplicationData.WebProviderManager.Topics,
                 Path.Combine(ApplicationData.Settings.XmlFolder, "Topics.xml")

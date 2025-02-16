@@ -16,19 +16,22 @@
 
             <TextBlock Text="TrailBot uses a SQLite database to manage its work and to store trip reports." />
 
-            <TextBlock>
-                <Image
-                    Height="16" Width="16"
-                    Source="pack://application:,,,/Images/TransferDatabaseObject.png"
-                    HorizontalAlignment="Left" />
-
-                <Run Text="Filename" BaselineAlignment="Center" />
-            </TextBlock>
+            <TextBlock
+                Margin="0,10,0,10"
+                Text="TrailBot Database File"
+                FontWeight="SemiBold"
+                />
             
-            <TextBox Text="{Binding DatabaseFilename}" />
+            <TextBox
+                Text="{Binding DatabaseFilename, UpdateSourceTrigger=PropertyChanged}"
+                />
+
+            <Button Margin="0,10,0,10">
+                <TextBlock Text="Choose" />
+            </Button>
 
             <TextBlock
-                Visibility="{Binding DatabaseFileExists, Converter={StaticResource bool2vis}}"
+                Visibility="{Binding DatabaseFileIsMissing, Converter={StaticResource bool2vis}}"
                 Text="File does not exist." />
 
         </StackPanel>

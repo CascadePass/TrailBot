@@ -13,6 +13,7 @@ namespace CascadePass.TrailBot.UI.Feature.TopicEditor
 
         public TopicEditorViewModel()
         {
+            this.topicViewModels = new();
         }
 
         public Topic[] Topics {

@@ -81,7 +81,7 @@ namespace CascadePass.TrailBot.UI.Tests.Feature.WelcomeScreen
                 DatabaseFilename = Guid.NewGuid().ToString()
             };
 
-            Assert.IsFalse(viewModel.DatabaseFileExists);
+            Assert.IsFalse(viewModel.DatabaseFileIsMissing);
         }
 
         [TestMethod]
@@ -93,7 +93,7 @@ namespace CascadePass.TrailBot.UI.Tests.Feature.WelcomeScreen
                 DatabaseFilename = @"C:\Windows\cmd.exe"
             };
 
-            Assert.IsFalse(viewModel.DatabaseFileExists);
+            Assert.IsFalse(viewModel.DatabaseFileIsMissing);
         }
 
         [TestMethod]

@@ -6,13 +6,39 @@ namespace TrailBot.DataAccess.Tests.IntegrationTests
 {
     public class SqliteIntegrationTestClass
     {
+        private const string CONFIG_FILENAME = "test.config";
+
         public string DatabaseFilename { get; set; }
+
+        public DatabaseTestConfiguration ReadConfig()
+        {
+            if (File.Exists("test.config"))
+            {
+                XmlSerializer xmlSerializer = new();
+
+                using FileStream fileStream = new("test.config", FileMode.Open);
+                var config = (DatabaseTestConfiguration)xmlSerializer.Deserialize(fileStream);
+
+                this.DatabaseFilename = config.DatabaseFilename;
+
+                return config;
+            }
+
+            return null;
+        }
 
         internal void AssertDatabaseExistence()
         {
+            // It hasn't been set yet
             if (string.IsNullOrWhiteSpace(this.DatabaseFilename))
             {
-                Assert.Inconclusive("DatabaseFilename is missing.");
+                this.ReadConfig();
+            }
+
+            // If it's still null, the config is broken.
+            if (string.IsNullOrWhiteSpace(this.DatabaseFilename))
+            {
+                Assert.Inconclusive($"DatabaseFilename is missing in {SqliteIntegrationTestClass.CONFIG_FILENAME}");
             }
 
             if (!File.Exists(this.DatabaseFilename))

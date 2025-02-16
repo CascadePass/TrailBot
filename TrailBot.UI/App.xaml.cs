@@ -1,4 +1,5 @@
 ﻿using CascadePass.TrailBot.DataAccess;
+using CascadePass.TrailBot.UI.Feature.WelcomeScreen;
 using System;
 using System.IO;
 using System.Windows;
@@ -32,8 +33,8 @@ namespace CascadePass.TrailBot.UI
         public static void GetSettings()
         {
             ApplicationData.Settings = new();
-            ApplicationData.Settings.SqliteDatabaseFilename = @"C:\Users\User\Documents\TrailBot\TrailBot-Gather.db";
-            ApplicationData.Settings.IndexFilename = @"C:\Users\User\Documents\TrailBot\Index.xml";
+            ApplicationData.Settings.SqliteDatabaseFilename = @"C:\Users\forre\OneDrive\Documents\TrailBot-DEV.db";
+            //ApplicationData.Settings.IndexFilename = @"C:\Users\User\Documents\TrailBot\Index.xml";
             ApplicationData.Load(App.SETTINGS_FILENAME);
 
             Database.ConnectionString = Database.GetConnectionString(ApplicationData.Settings?.SqliteDatabaseFilename);
@@ -46,20 +47,27 @@ namespace CascadePass.TrailBot.UI
 
             App.GetSettings();
 
-            MainWindow mainWindow = new()
+            if (App.RequireSetupScreen)
             {
-                Settings = ApplicationData.Settings,
-                CurrentContent = FeaturecreenProvider.GetFirstScreen(App.RequireSetupScreen),
-            };
+                new SetupHostWindow().ShowDialog();
+            }
+            else
+            {
+                MainWindow mainWindow = new()
+                {
+                    Settings = ApplicationData.Settings,
+                    CurrentContent = FeaturecreenProvider.GetFirstScreen(App.RequireSetupScreen),
+                };
 
-            mainWindow.Show();
+                mainWindow.Show();
+            }
         }
 
         protected override void OnExit(ExitEventArgs e)
         {            
             base.OnExit(e);
 
-            ApplicationData.Save(App.SETTINGS_FILENAME);
+            //ApplicationData.Save(App.SETTINGS_FILENAME);
         }
     }
 }

@@ -96,6 +96,9 @@
     <Compile Include="Feature\WelcomeScreen\ProviderSetupViewModel.cs" />
     <Compile Include="Feature\WelcomeScreen\DatabaseSetupTaskViewModel.cs" />
     <Compile Include="Feature\WelcomeScreen\SetupDataStorageTaskViewModel.cs" />
+    <Compile Include="Feature\WelcomeScreen\SetupHostWindow.xaml.cs">
+      <DependentUpon>SetupHostWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="SetupTaskViewModel.cs" />
     <Compile Include="Feature\WelcomeScreen\TopicSetupView.xaml.cs">
       <DependentUpon>TopicSetupView.xaml</DependentUpon>
@@ -161,6 +164,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Feature\WelcomeScreen\ProviderSetupView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Feature\WelcomeScreen\SetupHostWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
