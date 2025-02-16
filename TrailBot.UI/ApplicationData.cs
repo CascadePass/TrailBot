@@ -48,6 +48,12 @@ namespace CascadePass.TrailBot.UI
 
                 ApplicationData.WebProviderManager.Topics = FileStore.DeserializeFromXmlFile<List<Topic>>(Path.Combine(ApplicationData.Settings.XmlFolder, "Topics.xml"));
 
+
+
+                ApplicationData.WebProviderManager.Topics = FileStore.DeserializeFromXmlFile<List<Topic>>(@"C:\Users\User\Documents\TrailBot\Topics.xml");
+
+
+
                 MatchedTripReport.IncludeTopicNameInSummary = ApplicationData.WebProviderManager.Topics?.Count > 1;
             }
 
@@ -64,6 +70,11 @@ namespace CascadePass.TrailBot.UI
 
             //FileStore.SerializeToXmlFile(this.WebProviderManager, "Index.xml");
             ApplicationData.WebProviderManager?.SaveToFile();
+
+            if (string.IsNullOrWhiteSpace(ApplicationData.Settings.XmlFolder))
+            {
+                return;
+            }
 
             FileStore.SerializeToXmlFile(
                 ApplicationData.WebProviderManager.Topics,

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Windows;
 using System.Windows.Media;
 
 namespace CascadePass.TrailBot.UI.Feature
@@ -37,7 +38,7 @@ namespace CascadePass.TrailBot.UI.Feature
         /// Gets a <see cref="Brush"/> to draw a section background with, based
         /// on the value of <see cref="IsComplete"/>.
         /// </summary>
-        public Brush BackgroundBrush => this.isComplete ? Brushes.LimeGreen : Brushes.OrangeRed;
+        public Brush BackgroundBrush => (Brush)(this.isComplete ? Application.Current.MainWindow.Resources["TaskCompleted"] : Application.Current.MainWindow.Resources["TaskNotValid"]);
 
         /// <summary>
         /// Determines whether a setup task has been completed, meaning

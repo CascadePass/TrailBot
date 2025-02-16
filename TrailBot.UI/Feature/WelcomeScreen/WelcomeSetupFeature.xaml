@@ -21,8 +21,7 @@
                 Margin="0,0,0,25"
                 Text="Let's set a few things up." />
 
-            <local:ManagementDataStorageView DataContext="{Binding DataStorageTaskViewModel}" Margin="0,0,0,15" />
-            <local:ProviderSetupView DataContext="{Binding ProviderSetupViewModel}" Margin="0,0,0,15" />
+            <local:DatabaseSetupView DataContext="{Binding DatabaseSetupTaskViewModel}" />
             <local:TopicSetupView DataContext="{Binding TopicSetupViewModel}" />
         </StackPanel>
     </ScrollViewer>

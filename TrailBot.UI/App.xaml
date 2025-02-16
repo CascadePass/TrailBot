@@ -19,6 +19,7 @@
         <Style x:Key="HeaderText" TargetType="TextBlock">
             <Setter Property="FontWeight" Value="Bold" />
             <Setter Property="FontSize" Value="{DynamicResource Font.Larger}" />
+            <Setter Property="Margin" Value="0,0,0,10" />
         </Style>
 
     </Application.Resources>

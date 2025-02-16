@@ -56,6 +56,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DatabaseTestConfiguration.cs" />
     <Compile Include="DatabaseTests.cs" />
     <Compile Include="DtoTests\ImageUrlTests.cs" />
     <Compile Include="DtoTests\MatchedTripReportTextTests.cs" />
@@ -77,6 +78,7 @@
     <Compile Include="IntegrationTests\UrlTests.cs" />
     <Compile Include="IntegrationTests\WtaTripReportImageTests.cs" />
     <Compile Include="IntegrationTests\WtaTripReportTests.cs" />
+    <Compile Include="LoggingMockQueryProvider.cs" />
     <Compile Include="ObjectRelationalMapperTests.cs" />
     <Compile Include="SqliteQueryProviderTests\ImageUrlTests.cs" />
     <Compile Include="SqliteQueryProviderTests\MatchedTripReportTextTests.cs" />
@@ -92,6 +94,7 @@
     <Compile Include="SqliteQueryProviderTests\WtaTripReportTests.cs" />
     <Compile Include="IntegrationTests\SqliteIntegrationTestClass.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TestConfiguration.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
