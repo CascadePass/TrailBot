@@ -10,16 +10,6 @@ namespace TrailBot.DataAccess.Tests.IntegrationTests
     [TestClass]
     public class TopicTests : SqliteIntegrationTestClass
     {
-        #region Constructor
-
-        public TopicTests()
-        {
-            this.DatabaseFilename = "C:\\Users\\User\\Documents\\TrailBot\\TrailBot-test.db";
-            Database.ConnectionString = $"Data Source={this.DatabaseFilename}";
-        }
-
-        #endregion
-
         [TestMethod]
         public void AddTopic()
         {

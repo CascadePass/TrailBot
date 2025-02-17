@@ -10,16 +10,6 @@ namespace TrailBot.DataAccess.Tests.IntegrationTests
     [TestClass]
     public class MatchTextTests : SqliteIntegrationTestClass
     {
-        #region Constructor
-
-        public MatchTextTests()
-        {
-            this.DatabaseFilename = "C:\\Users\\User\\Documents\\TrailBot\\TrailBot-test.db";
-            Database.ConnectionString = $"Data Source={this.DatabaseFilename}";
-        }
-
-        #endregion
-
         [TestMethod]
         public void AddMatchText()
         {

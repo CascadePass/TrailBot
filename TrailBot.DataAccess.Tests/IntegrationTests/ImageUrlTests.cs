@@ -10,17 +10,6 @@ namespace TrailBot.DataAccess.Tests.IntegrationTests
     [TestClass]
     public class ImageUrlTests : SqliteIntegrationTestClass
     {
-        #region Constructor
-
-        public ImageUrlTests()
-        {
-            this.DatabaseFilename = "C:\\Users\\User\\Documents\\TrailBot\\TrailBot-test.db";
-            Database.ConnectionString = $"Data Source={this.DatabaseFilename}";
-            Database.QueryProvider = new SqliteQueryProvider();
-        }
-
-        #endregion
-
         [TestMethod]
         public void AddImageUrl_ByDTO()
         {

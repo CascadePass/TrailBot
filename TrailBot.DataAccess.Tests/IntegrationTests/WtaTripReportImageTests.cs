@@ -8,17 +8,6 @@ namespace TrailBot.DataAccess.Tests.IntegrationTests
     [TestClass]
     public class WtaTripReportImageTests : SqliteIntegrationTestClass
     {
-        #region Constructor
-
-        public WtaTripReportImageTests()
-        {
-            this.DatabaseFilename = "C:\\Users\\User\\Documents\\TrailBot\\TrailBot-test.db";
-            Database.ConnectionString = $"Data Source={this.DatabaseFilename}";
-            Database.QueryProvider = new SqliteQueryProvider();
-        }
-
-        #endregion
-
         [TestMethod]
         public void AddWtaTripReportImage_ByDTO()
         {

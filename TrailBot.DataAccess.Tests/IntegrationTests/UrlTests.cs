@@ -8,16 +8,6 @@ namespace TrailBot.DataAccess.Tests.IntegrationTests
     [TestClass]
     public class UrlTests : SqliteIntegrationTestClass
     {
-        #region Constructor
-
-        public UrlTests()
-        {
-            this.DatabaseFilename = "C:\\Users\\User\\Documents\\TrailBot\\TrailBot-test.db";
-            Database.ConnectionString = $"Data Source={this.DatabaseFilename}";
-        }
-
-        #endregion
-
         #region Validation
 
         [ExpectedException(typeof(ArgumentNullException))]
