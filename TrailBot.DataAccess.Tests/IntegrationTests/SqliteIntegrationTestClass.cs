@@ -1,6 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.IO;
+using System.Xml.Serialization;
 
 namespace TrailBot.DataAccess.Tests.IntegrationTests
 {
@@ -14,7 +15,7 @@ namespace TrailBot.DataAccess.Tests.IntegrationTests
         {
             if (File.Exists("test.config"))
             {
-                XmlSerializer xmlSerializer = new();
+                XmlSerializer xmlSerializer = new(typeof(DatabaseTestConfiguration));
 
                 using FileStream fileStream = new("test.config", FileMode.Open);
                 var config = (DatabaseTestConfiguration)xmlSerializer.Deserialize(fileStream);
