@@ -8,16 +8,6 @@ namespace TrailBot.DataAccess.Tests.IntegrationTests
     [TestClass]
     public class ProviderStatisticsTests : SqliteIntegrationTestClass
     {
-        #region Constructor
-
-        public ProviderStatisticsTests()
-        {
-            this.DatabaseFilename = "C:\\Users\\User\\Documents\\TrailBot\\TrailBot-test.db";
-            Database.ConnectionString = $"Data Source={this.DatabaseFilename}";
-        }
-
-        #endregion
-
         [TestMethod]
         public void AddProviderStatistics()
         {

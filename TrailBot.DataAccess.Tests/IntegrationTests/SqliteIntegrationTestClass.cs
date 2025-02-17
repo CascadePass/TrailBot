@@ -1,5 +1,7 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using CascadePass.TrailBot.DataAccess;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Xml.Serialization;
 
@@ -11,16 +13,25 @@ namespace TrailBot.DataAccess.Tests.IntegrationTests
 
         public string DatabaseFilename { get; set; }
 
+        public SqliteIntegrationTestClass()
+        {
+            Database.QueryProvider = new SqliteQueryProvider();
+
+            this.ReadConfig();
+        }
+
         public DatabaseTestConfiguration ReadConfig()
         {
-            if (File.Exists("test.config"))
+            if (File.Exists(SqliteIntegrationTestClass.CONFIG_FILENAME))
             {
                 XmlSerializer xmlSerializer = new(typeof(DatabaseTestConfiguration));
 
-                using FileStream fileStream = new("test.config", FileMode.Open);
+                using FileStream fileStream = new(SqliteIntegrationTestClass.CONFIG_FILENAME, FileMode.Open);
                 var config = (DatabaseTestConfiguration)xmlSerializer.Deserialize(fileStream);
 
                 this.DatabaseFilename = config.DatabaseFilename;
+
+                Database.ConnectionString = $"Data Source={this.DatabaseFilename}";
 
                 return config;
             }

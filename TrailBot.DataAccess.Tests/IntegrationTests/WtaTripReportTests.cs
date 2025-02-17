@@ -10,16 +10,6 @@ namespace TrailBot.DataAccess.Tests.IntegrationTests
     [TestClass]
     public class WtaTripReportTests : SqliteIntegrationTestClass
     {
-        #region Constructor
-
-        public WtaTripReportTests()
-        {
-            this.DatabaseFilename = "C:\\Users\\User\\Documents\\TrailBot\\TrailBot-test.db";
-            Database.ConnectionString = $"Data Source={this.DatabaseFilename}";
-        }
-
-        #endregion
-
         #region CRUD calls
 
         [TestMethod]
