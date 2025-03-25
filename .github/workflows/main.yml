@@ -53,7 +53,7 @@ jobs:
     # Run tests with VSTest
     - name: Run Text Analysis Tests
       run: |
-        VSTest.console.exe TrailBot.TextAnalysis.Tests\bin\Release\TrailBot.TextAnalysis.Tests.dll
+        VSTest.console.exe TrailBot.TextAnalysis.Tests\bin\Release\CascadePass.TrailBot.TextAnalysis.Tests.dll
         
     # Run tests with VSTest
     - name: Run UI Tests
