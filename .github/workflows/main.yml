@@ -33,7 +33,7 @@ jobs:
 
     # List all files in the workspace
     - name: List Files
-      run: dir /s
+      run: dir
 
 
     # Set up VSTest to run unit tests
