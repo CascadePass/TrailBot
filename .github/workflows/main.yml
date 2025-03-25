@@ -33,7 +33,7 @@ jobs:
 
     # List all files in the workspace
     - name: List Files
-      run: dir TrailBot.Tests\bin\Release
+      run: dir TrailBot.TextAnalysis.Tests\bin\Release
 
 
     # Set up VSTest to run unit tests
@@ -48,7 +48,7 @@ jobs:
     # Run tests with VSTest
     - name: Run Main Tests
       run: |
-        VSTest.console.exe TrailBot.Tests\bin\Release\TrailBot.Tests.dll
+        VSTest.console.exe TrailBot.Tests\bin\Release\CascadePass.TrailBot.Tests.dll
 
     # Run tests with VSTest
     - name: Run Text Analysis Tests
