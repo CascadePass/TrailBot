@@ -37,5 +37,24 @@ jobs:
 
     # Run tests with VSTest
     - name: Run Tests
+    - name: Run DataAccess Tests
       run: |
-        VSTest.console.exe
+        VSTest.console.exe TrailBot.DataAccess.Tests\bin\Debug\TrailBot.DataAccess.Tests.dll
+
+    # Run tests with VSTest
+    - name: Run Tests
+    - name: Run Main Tests
+      run: |
+        VSTest.console.exe TrailBot.Tests\bin\Debug\TrailBot.Tests.
+
+    # Run tests with VSTest
+    - name: Run Tests
+    - name: Run Text Analysis Tests
+      run: |
+        VSTest.console.exe TrailBot.TextAnalysis.Tests\bin\Debug\TrailBot.TextAnalysis.Tests.
+        
+    # Run tests with VSTest
+    - name: Run Tests
+    - name: Run UI Tests
+      run: |
+        VSTest.console.exe TrailBot.UI.Tests\bin\Debug\TrailBot.UI.Tests.
