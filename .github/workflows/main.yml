@@ -48,14 +48,14 @@ jobs:
     # Run tests with VSTest
     - name: Run Main Tests
       run: |
-        VSTest.console.exe TrailBot.Tests\bin\Release\TrailBot.Tests.
+        VSTest.console.exe TrailBot.Tests\bin\Release\TrailBot.Tests.dll
 
     # Run tests with VSTest
     - name: Run Text Analysis Tests
       run: |
-        VSTest.console.exe TrailBot.TextAnalysis.Tests\bin\Release\TrailBot.TextAnalysis.Tests.
+        VSTest.console.exe TrailBot.TextAnalysis.Tests\bin\Release\TrailBot.TextAnalysis.Tests.dll
         
     # Run tests with VSTest
     - name: Run UI Tests
       run: |
-        VSTest.console.exe TrailBot.UI.Tests\bin\Release\TrailBot.UI.Tests.
+        VSTest.console.exe TrailBot.UI.Tests\bin\Release\TrailBot.UI.Tests.dll
