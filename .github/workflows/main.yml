@@ -38,4 +38,4 @@ jobs:
     # Run tests with VSTest
     - name: Run Tests
       run: |
-        VSTest.console.exe TrailBot.dll
+        VSTest.console.exe bin/Release/TrailBot.dll
