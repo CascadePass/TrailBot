@@ -31,6 +31,11 @@ jobs:
     - name: Build Solution
       run: msbuild TrailBot.sln /p:Configuration=Release
 
+    # List all files in the workspace
+    - name: List Files
+      run: dir /s
+
+
     # Set up VSTest to run unit tests
     - name: Set up VSTest
       uses: darenm/Setup-VSTest@v1
