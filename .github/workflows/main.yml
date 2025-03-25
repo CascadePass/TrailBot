@@ -1,0 +1,41 @@
+name: Build and Test WPF Solution
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  build-and-test:
+    runs-on: windows-latest
+
+    steps:
+    # Check out the code from the repository
+    - name: Checkout Code
+      uses: actions/checkout@v4
+
+    # Set up MSBuild for .NET Framework
+    - name: Set up MSBuild
+      uses: microsoft/setup-msbuild@v4
+
+    # Set up NuGet to restore dependencies
+    - name: Set up NuGet
+      uses: NuGet/setup-nuget@v4
+
+    # Restore NuGet packages
+    - name: Restore NuGet Packages
+      run: nuget restore TrailBot.sln
+
+    # Build the solution using MSBuild
+    - name: Build Solution
+      run: msbuild TrailBot.sln /p:Configuration=Release
+
+    # Set up VSTest to run unit tests
+    - name: Set up VSTest
+      uses: darenm/Setup-VSTest@v4
+
+    # Run tests with VSTest
+    - name: Run Tests
+      run: |
+        VSTest.console.exe TrailBot.dll
