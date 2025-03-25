@@ -33,7 +33,7 @@ jobs:
 
     # List all files in the workspace
     - name: List Files
-      run: dir TrailBot\TrailBot
+      run: dir TrailBot
 
 
     # Set up VSTest to run unit tests
