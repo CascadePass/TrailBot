@@ -33,7 +33,7 @@ jobs:
 
     # Set up VSTest to run unit tests
     - name: Set up VSTest
-      uses: darenm/Setup-VSTest@v4
+      uses: darenm/Setup-VSTest@v1
 
     # Run tests with VSTest
     - name: Run Tests
