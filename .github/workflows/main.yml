@@ -17,7 +17,7 @@ jobs:
 
     # Set up MSBuild for .NET Framework
     - name: Set up MSBuild
-      uses: microsoft/setup-msbuild@v4
+      uses: microsoft/setup-msbuild@v1
 
     # Set up NuGet to restore dependencies
     - name: Set up NuGet
