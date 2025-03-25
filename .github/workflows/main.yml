@@ -43,7 +43,7 @@ jobs:
     # Run tests with VSTest
     - name: Run DataAccess Tests
       run: |
-        VSTest.console.exe TrailBot.DataAccess.Tests\bin\Debug\TrailBot.DataAccess.Tests.dll
+        VSTest.console.exe TrailBot\TrailBot.DataAccess.Tests\bin\Debug\TrailBot.DataAccess.Tests.dll
 
     # Run tests with VSTest
     - name: Run Main Tests
