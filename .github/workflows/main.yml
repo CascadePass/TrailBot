@@ -58,4 +58,4 @@ jobs:
     # Run tests with VSTest
     - name: Run UI Tests
       run: |
-        VSTest.console.exe TrailBot.UI.Tests\bin\Release\TrailBot.UI.Tests.dll
+        VSTest.console.exe TrailBot.UI.Tests\bin\Release\CascadePass.TrailBot.UI.Tests.dll
