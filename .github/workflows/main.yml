@@ -1,0 +1,68 @@
+name: Build and Test WPF Solution
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build-and-test:
+    runs-on: windows-latest
+
+    steps:
+    # Check out the code from the repository
+    - name: Checkout Code
+      uses: actions/checkout@v4
+
+    # Set up MSBuild for .NET Framework
+    - name: Set up MSBuild
+      uses: microsoft/setup-msbuild@v1
+
+    # Set up NuGet to restore dependencies
+    - name: Set up NuGet
+      uses: NuGet/setup-nuget@v2
+
+    # Restore NuGet packages
+    - name: Restore NuGet Packages
+      run: nuget restore TrailBot.sln
+
+    # Build the solution using MSBuild
+    - name: Build Solution
+      run: msbuild TrailBot.sln /p:Configuration=Release
+
+    # List all files in the workspace
+    - name: List Files
+      run: dir TrailBot.UI
+
+
+    # Set up VSTest to run unit tests
+    - name: Set up VSTest
+      uses: darenm/Setup-VSTest@v1
+
+    # Run tests with VSTest
+    - name: Run DataAccess Tests
+      run: |
+        VSTest.console.exe TrailBot.DataAccess.Tests\bin\Release\TrailBot.DataAccess.Tests.dll
+
+    # Run tests with VSTest
+    - name: Run Main Tests
+      run: |
+        VSTest.console.exe TrailBot.Tests\bin\Release\CascadePass.TrailBot.Tests.dll
+
+    # Run tests with VSTest
+    - name: Run Text Analysis Tests
+      run: |
+        VSTest.console.exe TrailBot.TextAnalysis.Tests\bin\Release\CascadePass.TrailBot.TextAnalysis.Tests.dll
+        
+    # Run tests with VSTest
+    - name: Run UI Tests
+      run: |
+        VSTest.console.exe TrailBot.UI.Tests\bin\Release\CascadePass.TrailBot.UI.Tests.dll
+
+    - name: Archive build artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        path: |
+          TrailBot.UI/bin/Release
